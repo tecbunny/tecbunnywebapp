@@ -9,15 +9,18 @@ export function isBlockedIPv4(ip: string) {
     return true;
   }
 
-  const [first, second] = octets;
-  return first === 0
-    || first === 10
-    || first === 127
-    || first === 169 && second === 254
-    || first === 172 && second >= 16 && second <= 31
-    || first === 192 && second === 168
-    || first === 100 && second >= 64 && second <= 127
-    || first >= 224;
+  const ipInt = ((octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3]) >>> 0;
+
+  return (
+    (ipInt & 0xff000000) === 0x00000000 || // 0.0.0.0/8
+    (ipInt & 0xff000000) === 0x0a000000 || // 10.0.0.0/8
+    (ipInt & 0xff000000) === 0x7f000000 || // 127.0.0.0/8
+    (ipInt & 0xffff0000) === 0xa9fe0000 || // 169.254.0.0/16
+    (ipInt & 0xfff00000) === 0xac100000 || // 172.16.0.0/12
+    (ipInt & 0xffff0000) === 0xc0a80000 || // 192.168.0.0/16
+    (ipInt & 0xffc00000) === 0x64400000 || // 100.64.0.0/10
+    (ipInt & 0xe0000000) === 0xe0000000    // >= 224.0.0.0
+  );
 }
 
 export function isBlockedIPv6(ip: string) {

@@ -1,5 +1,10 @@
+import { cpus } from 'os';
+
 /** @type {import('next').NextConfig} */
 const isStaticExport = process.env.NEXT_OUTPUT_MODE === 'export';
+
+// Optimize Node.js thread pool for sharp/libvips processing
+process.env.UV_THREADPOOL_SIZE = String(Math.max(4, cpus().length));
 
 const hostFromUrl = (value) => {
   try {

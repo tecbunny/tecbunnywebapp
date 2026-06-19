@@ -3,7 +3,10 @@ import { z } from 'zod';
 const envSchema = z.object({
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().optional(),
   TURNSTILE_SECRET_KEY: z.string().optional(),
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
+  NEXT_PUBLIC_SUPABASE_URL: z.string().optional().refine((val) => {
+    if (!val) return true;
+    try { new URL(val); return true; } catch { return false; }
+  }, { message: "Invalid URL" }),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
 });

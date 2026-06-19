@@ -41,3 +41,20 @@ export async function optimizeImage(
     throw new Error('Image processing failed');
   }
 }
+
+/**
+ * Returns a Sharp transform stream that can be piped into from a Readable stream
+ * and piped out to a Writable stream (e.g., Supabase upload).
+ */
+export function createOptimizeImageStream(
+  options: { maxWidth?: number; maxHeight?: number } = { maxWidth: 1920, maxHeight: 1920 }
+): sharp.Sharp {
+  return sharp()
+    .resize({
+      width: options.maxWidth,
+      height: options.maxHeight,
+      fit: 'inside',
+      withoutEnlargement: true,
+    })
+    .webp({ quality: 80 });
+}

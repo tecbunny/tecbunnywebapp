@@ -3,7 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 
 import { logger } from './logger';
 import { isSupabaseServiceConfigured, requireSupabaseServiceEnv } from './supabase/env';
-import { optimizeImage } from './image-processor';
+import { optimizeImage, createOptimizeImageStream } from './image-processor';
+import { Readable } from 'stream';
 
 let supabase: ReturnType<typeof createClient> | null = null;
 
@@ -37,7 +38,7 @@ export interface SupabaseUploadResult {
  * Upload file to Supabase Storage
  */
 export async function uploadToSupabase(
-  file: File | Buffer | string,
+  file: File | Buffer | string | Readable,
   folder: string = 'uploads',
   options?: {
     publicAccess?: boolean;
@@ -64,17 +65,19 @@ export async function uploadToSupabase(
     fileName = fileName.replace(/[^a-zA-Z0-9.\-_]/g, '');
     const folderName = folder.replace(/[^a-zA-Z0-9\-_]/g, '');
     
-    let fileBuffer: ArrayBuffer | Buffer;
+    let fileData: ArrayBuffer | Buffer | Readable;
     let contentType = 'application/octet-stream';
 
     // Handle different input types
     if (file instanceof File) {
-      fileBuffer = Buffer.from(await file.arrayBuffer());
+      fileData = Buffer.from(await file.arrayBuffer());
       contentType = file.type;
     } else if (Buffer.isBuffer(file)) {
-      fileBuffer = file;
+      fileData = file;
     } else if (typeof file === 'string') {
-      fileBuffer = Buffer.from(file, 'base64');
+      fileData = Buffer.from(file, 'base64');
+    } else if (file instanceof Readable) {
+      fileData = file;
     } else {
       throw new Error('Invalid file format');
     }
@@ -82,15 +85,21 @@ export async function uploadToSupabase(
     // Process image if it's an image
     let width, height, format;
     if (contentType.startsWith('image/') && !contentType.includes('svg')) {
-      const optimized = await optimizeImage(fileBuffer as Buffer);
-      fileBuffer = optimized.buffer;
-      width = optimized.width;
-      height = optimized.height;
-      format = optimized.format;
-      contentType = 'image/webp';
-      
-      // Update fileName extension to webp
-      fileName = fileName.replace(/\.[^/.]+$/, "") + ".webp";
+      if (fileData instanceof Readable) {
+        // Stream processing
+        fileData = fileData.pipe(createOptimizeImageStream());
+        contentType = 'image/webp';
+        fileName = fileName.replace(/\.[^/.]+$/, "") + ".webp";
+      } else {
+        // Buffer processing
+        const optimized = await optimizeImage(fileData as Buffer);
+        fileData = optimized.buffer;
+        width = optimized.width;
+        height = optimized.height;
+        format = optimized.format;
+        contentType = 'image/webp';
+        fileName = fileName.replace(/\.[^/.]+$/, "") + ".webp";
+      }
     }
 
     const filePath = `${folderName}/${fileName}`;
@@ -100,7 +109,7 @@ export async function uploadToSupabase(
 
     const { error } = await client.storage
       .from('images')
-      .upload(filePath, fileBuffer, {
+      .upload(filePath, fileData, {
         contentType,
         upsert: true,
         cacheControl: '3600'
@@ -122,7 +131,7 @@ export async function uploadToSupabase(
       width,
       height,
       format,
-      bytes: fileBuffer.byteLength || (fileBuffer as Buffer).length
+      bytes: Buffer.isBuffer(fileData) ? fileData.length : undefined
     };
 
     return result;
