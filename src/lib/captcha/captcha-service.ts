@@ -11,6 +11,8 @@ export interface CaptchaConfig {
   language?: string;
 }
 
+import { env } from '@/env';
+
 export interface CaptchaVerificationResult {
   success: boolean;
   challenge_ts?: string;
@@ -143,8 +145,8 @@ export class CaptchaService {
 }
 
 // Create default CAPTCHA service instance loaded strictly from the environment.
-const rawSiteKey = (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '').trim();
-const rawSecretKey = (process.env.TURNSTILE_SECRET_KEY || '').trim();
+const rawSiteKey = (env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '').trim();
+const rawSecretKey = (env.TURNSTILE_SECRET_KEY || '').trim();
 
 const siteKey = rawSiteKey;
 // Auto-correct if the secret key was set to the default site key (common typo)

@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 
 import { logger } from './logger';
 import { isSupabaseServiceConfigured, requireSupabaseServiceEnv } from './supabase/env';
+import { optimizeImage } from './image-processor';
 
 let supabase: ReturnType<typeof createClient> | null = null;
 
@@ -63,14 +64,12 @@ export async function uploadToSupabase(
     fileName = fileName.replace(/[^a-zA-Z0-9.\-_]/g, '');
     const folderName = folder.replace(/[^a-zA-Z0-9\-_]/g, '');
     
-    const filePath = `${folderName}/${fileName}`;
-
     let fileBuffer: ArrayBuffer | Buffer;
     let contentType = 'application/octet-stream';
 
     // Handle different input types
     if (file instanceof File) {
-      fileBuffer = await file.arrayBuffer();
+      fileBuffer = Buffer.from(await file.arrayBuffer());
       contentType = file.type;
     } else if (Buffer.isBuffer(file)) {
       fileBuffer = file;
@@ -79,6 +78,22 @@ export async function uploadToSupabase(
     } else {
       throw new Error('Invalid file format');
     }
+
+    // Process image if it's an image
+    let width, height, format;
+    if (contentType.startsWith('image/') && !contentType.includes('svg')) {
+      const optimized = await optimizeImage(fileBuffer as Buffer);
+      fileBuffer = optimized.buffer;
+      width = optimized.width;
+      height = optimized.height;
+      format = optimized.format;
+      contentType = 'image/webp';
+      
+      // Update fileName extension to webp
+      fileName = fileName.replace(/\.[^/.]+$/, "") + ".webp";
+    }
+
+    const filePath = `${folderName}/${fileName}`;
 
     // Upload to Supabase Storage
     const client = getSupabaseClient('upload');
@@ -104,6 +119,9 @@ export async function uploadToSupabase(
       url: publicUrlData.publicUrl,
       public_id: filePath,
       secure_url: publicUrlData.publicUrl,
+      width,
+      height,
+      format,
       bytes: fileBuffer.byteLength || (fileBuffer as Buffer).length
     };
 
