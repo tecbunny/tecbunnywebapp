@@ -291,7 +291,10 @@ export const useCartStore = create<CartState>((set, get) => ({
         })
       });
 
-      if (!res.ok) throw new Error('Failed to calculate checkout totals via API');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to calculate checkout totals via API');
+      }
 
       const pricingData = await res.json();
       set({
@@ -311,7 +314,17 @@ export const useCartStore = create<CartState>((set, get) => ({
         }
       });
     } catch (error) {
-      logger.error('Error calculating pricing', { error });
+      const errMsg = error instanceof Error ? error.message : String(error);
+      const isValidation = errMsg.includes('stock') || errMsg.includes('invalid') || errMsg.includes('available');
+      if (isValidation) {
+        logger.warn('Pricing calculation validation notice:', { 
+          error: errMsg 
+        });
+      } else {
+        logger.error('Error calculating pricing', { 
+          error: errMsg 
+        });
+      }
 
       let calculatedSubtotal = 0;
       let calculatedGstAmount = 0;
