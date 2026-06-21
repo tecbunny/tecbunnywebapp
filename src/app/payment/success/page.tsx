@@ -35,7 +35,7 @@ function PaymentSuccessContent() {
           <div className="space-y-3 bg-muted p-4 rounded-lg">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Order ID:</span>
-              <span className="font-medium">{orderId}</span>
+              <span className="font-medium">{orderId ? orderId.split('-')[0].toUpperCase() : ''}</span>
             </div>
             {txnId && (
               <div className="flex justify-between text-sm">

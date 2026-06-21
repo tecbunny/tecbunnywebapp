@@ -44,7 +44,7 @@ function PaymentFailedContent() {
             {orderId && (
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Order ID:</span>
-                <span className="font-medium">{orderId}</span>
+                <span className="font-medium">{orderId ? orderId.split('-')[0].toUpperCase() : ''}</span>
               </div>
             )}
           </div>
