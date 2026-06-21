@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Script from 'next/script';
 
 import { useDeferredActivation } from '../../hooks/use-deferred-activation';
-import { CookieConsentBanner, CONSENT_STORAGE_KEY } from './CookieConsentBanner';
+import { CookieConsentBanner, CONSENT_STORAGE_KEY, safeReadStoredConsent } from './CookieConsentBanner';
 
 const Toaster = dynamic(
   () => import('../ui/toaster').then((module) => module.Toaster),
@@ -95,12 +95,8 @@ export function DeferredRuntimeServices({ gaId, metaPixelId }: DeferredRuntimeSe
   }, [isActivated]);
 
   React.useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    const storedConsent = window.localStorage.getItem(CONSENT_STORAGE_KEY);
-    if (storedConsent === 'accepted' || storedConsent === 'rejected') {
+    const storedConsent = safeReadStoredConsent();
+    if (storedConsent !== 'unknown') {
       setAnalyticsConsent(storedConsent);
     }
   }, []);

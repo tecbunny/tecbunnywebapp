@@ -7,17 +7,59 @@ type AnalyticsConsent = 'accepted' | 'rejected' | 'unknown';
 
 const CONSENT_STORAGE_KEY = 'tecbunny_analytics_consent';
 
-function readStoredConsent(): AnalyticsConsent {
+export function safeReadStoredConsent(): AnalyticsConsent {
   if (typeof window === 'undefined') {
     return 'unknown';
   }
 
-  const storedValue = window.localStorage.getItem(CONSENT_STORAGE_KEY);
-  if (storedValue === 'accepted' || storedValue === 'rejected') {
-    return storedValue;
+  try {
+    const storedValue = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+    if (storedValue === 'accepted' || storedValue === 'rejected') {
+      return storedValue;
+    }
+  } catch (e) {
+    // Ignore localStorage blocked errors
+  }
+
+  try {
+    const nameEQ = CONSENT_STORAGE_KEY + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) {
+        const val = c.substring(nameEQ.length, c.length);
+        if (val === 'accepted' || val === 'rejected') {
+          return val as AnalyticsConsent;
+        }
+      }
+    }
+  } catch (e) {
+    // Ignore cookie blocked errors
   }
 
   return 'unknown';
+}
+
+export function safeWriteStoredConsent(value: Exclude<AnalyticsConsent, 'unknown'>): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(CONSENT_STORAGE_KEY, value);
+  } catch (e) {
+    // Ignore localStorage blocked errors
+  }
+
+  try {
+    const date = new Date();
+    date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000)); // 1 year
+    const expires = "; expires=" + date.toUTCString();
+    document.cookie = CONSENT_STORAGE_KEY + "=" + value + expires + "; path=/; SameSite=Lax; Secure";
+  } catch (e) {
+    // Ignore cookie blocked errors
+  }
 }
 
 type CookieConsentBannerProps = {
@@ -29,17 +71,14 @@ export function CookieConsentBanner({ onConsentChange }: CookieConsentBannerProp
   const [hydrated, setHydrated] = React.useState(false);
 
   React.useEffect(() => {
-    const storedConsent = readStoredConsent();
+    const storedConsent = safeReadStoredConsent();
     setConsent(storedConsent);
     setHydrated(true);
   }, []);
 
   const updateConsent = React.useCallback(
     (nextConsent: Exclude<AnalyticsConsent, 'unknown'>) => {
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(CONSENT_STORAGE_KEY, nextConsent);
-      }
-
+      safeWriteStoredConsent(nextConsent);
       setConsent(nextConsent);
       onConsentChange?.(nextConsent);
     },
