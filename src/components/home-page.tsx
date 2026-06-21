@@ -132,17 +132,20 @@ function applyMagneticEffect(event: React.MouseEvent<HTMLElement>) {
   const x = event.clientX - rect.left - rect.width / 2;
   const y = event.clientY - rect.top - rect.height / 2;
   
-  // Use CSS variables to avoid direct DOM manipulation that conflicts with React's virtual DOM
-  target.style.setProperty('--m-x', `${x * 0.15}px`);
-  target.style.setProperty('--m-y', `${y * 0.15}px`);
-  target.style.transform = 'translate(var(--m-x, 0px), var(--m-y, 0px))';
+  window.requestAnimationFrame(() => {
+    target.style.setProperty('--m-x', `${x * 0.15}px`);
+    target.style.setProperty('--m-y', `${y * 0.15}px`);
+    target.style.transform = 'translate(var(--m-x, 0px), var(--m-y, 0px))';
+  });
 }
 
 function resetMagneticEffect(event: React.MouseEvent<HTMLElement>) {
   const target = event.currentTarget;
-  target.style.setProperty('--m-x', '0px');
-  target.style.setProperty('--m-y', '0px');
-  target.style.transform = 'translate(0px, 0px)';
+  window.requestAnimationFrame(() => {
+    target.style.setProperty('--m-x', '0px');
+    target.style.setProperty('--m-y', '0px');
+    target.style.transform = 'translate(0px, 0px)';
+  });
 }
 
 function scheduleWhenIdle(callback: () => void, timeout = 1600) {
@@ -184,11 +187,18 @@ function useFinePointer() {
   return hasFinePointer;
 }
 
-export default function HomePage() {
+export default function HomePage({
+  initialProducts,
+  initialPartnerBrands,
+}: {
+  initialProducts?: DbProduct[];
+  initialPartnerBrands?: Array<{ name: string; logoUrl: string }>;
+} = {}) {
   const router = useRouter();
   const [quoteNumberInput, setQuoteNumberInput] = React.useState('');
   const [lookupLoading, setLookupLoading] = React.useState(false);
   const [lookupError, setLookupError] = React.useState('');
+  const [isPending, startTransition] = React.useTransition();
 
   const handleLookupSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -203,7 +213,9 @@ export default function HomePage() {
         if (!res.ok) {
           throw new Error('Quote not found');
         }
-        router.push(`/quotes/${inputVal}`);
+        startTransition(() => {
+          router.push(`/quotes/${inputVal}`);
+        });
       })
       .catch(() => {
         setLookupError('Invalid quote number or quote not found.');
@@ -213,16 +225,18 @@ export default function HomePage() {
 
   const prefersReducedMotion = usePrefersReducedMotion();
   const hasFinePointer = useFinePointer();
-  const [featuredProducts, setFeaturedProducts] = React.useState<DbProduct[]>([]);
-  const [partnerBrands, setPartnerBrands] = React.useState<Array<{ name: string; logoUrl: string }>>([
-    { name: 'CP PLUS', logoUrl: '' },
-    { name: 'HIKVISION', logoUrl: '' },
-    { name: 'DAHUA', logoUrl: '' },
-    { name: 'UBIQUITI', logoUrl: '' },
-    { name: 'CISCO', logoUrl: '' },
-    { name: 'TP-LINK', logoUrl: '' },
-  ]);
-  const [productsLoading, setProductsLoading] = React.useState(true);
+  const [featuredProducts, setFeaturedProducts] = React.useState<DbProduct[]>(initialProducts || []);
+  const [partnerBrands, setPartnerBrands] = React.useState<Array<{ name: string; logoUrl: string }>>(
+    initialPartnerBrands || [
+      { name: 'CP PLUS', logoUrl: '' },
+      { name: 'HIKVISION', logoUrl: '' },
+      { name: 'DAHUA', logoUrl: '' },
+      { name: 'UBIQUITI', logoUrl: '' },
+      { name: 'CISCO', logoUrl: '' },
+      { name: 'TP-LINK', logoUrl: '' },
+    ]
+  );
+  const [productsLoading, setProductsLoading] = React.useState(!initialProducts);
   const [productsError, setProductsError] = React.useState<string | null>(null);
   const [enableAmbientEffects, setEnableAmbientEffects] = React.useState(false);
   const heroWords = ['Home.', 'Business.', 'Assets.', 'Future.'];
@@ -241,6 +255,7 @@ export default function HomePage() {
   }, [prefersReducedMotion]);
 
   React.useEffect(() => {
+    if (initialPartnerBrands) return;
     let isMounted = true;
     const fetchBrands = async () => {
       try {
@@ -285,6 +300,7 @@ export default function HomePage() {
   }, []);
 
   React.useEffect(() => {
+    if (initialProducts) return;
     if (!shouldLoadHardware) {
       return undefined;
     }
@@ -399,7 +415,16 @@ export default function HomePage() {
       height = canvas.height = window.innerHeight;
     };
 
-    const draw = () => {
+    let lastTime = 0;
+    const fpsInterval = 1000 / 30; // 30 FPS max
+
+    const draw = (currentTime: number) => {
+      animationId = window.requestAnimationFrame(draw);
+      
+      const elapsed = currentTime - lastTime;
+      if (elapsed < fpsInterval) return;
+      lastTime = currentTime - (elapsed % fpsInterval);
+
       if (!context) return;
       context.clearRect(0, 0, width, height);
       particles.forEach((particle) => {
@@ -413,12 +438,11 @@ export default function HomePage() {
         context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         context.fill();
       });
-      animationId = window.requestAnimationFrame(draw);
     };
 
     resize();
     window.addEventListener('resize', resize);
-    draw();
+    draw(performance.now());
 
     return () => {
       window.removeEventListener('resize', resize);
@@ -433,12 +457,21 @@ export default function HomePage() {
     const y = event.clientY - rect.top;
     const rotateX = -((y - rect.height / 2) / 20);
     const rotateY = (x - rect.width / 2) / 20;
-    tiltRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    
+    window.requestAnimationFrame(() => {
+      if (tiltRef.current) {
+        tiltRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      }
+    });
   };
 
   const handleTiltLeave = () => {
     if (!tiltRef.current) return;
-    tiltRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    window.requestAnimationFrame(() => {
+      if (tiltRef.current) {
+        tiltRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+      }
+    });
   };
 
   const handleMagneticMove = (event: React.MouseEvent<HTMLElement>) => {
@@ -671,16 +704,16 @@ export default function HomePage() {
                         setLookupError('');
                       }}
                       className="w-full bg-[#09090B] border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-colors"
-                      disabled={lookupLoading}
+                      disabled={lookupLoading || isPending}
                     />
                   </div>
 
                   <button
                     type="submit"
-                    disabled={lookupLoading || !quoteNumberInput.trim()}
+                    disabled={lookupLoading || isPending || !quoteNumberInput.trim()}
                     className="w-full bg-blue-600 text-white font-bold text-sm py-3 rounded-xl hover:bg-blue-500 disabled:opacity-50 transition duration-200 flex items-center justify-center gap-2 shadow-sm"
                   >
-                    {lookupLoading ? 'Validating ID...' : 'Check Status & Pay'}
+                    {lookupLoading || isPending ? 'Validating ID...' : 'Check Status & Pay'}
                     <ArrowRight size={14} />
                   </button>
                 </form>
