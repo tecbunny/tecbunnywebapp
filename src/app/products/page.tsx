@@ -11,13 +11,9 @@ import { envConfig } from '@/lib/environment-validator';
 // ISR: revalidate every 5 minutes (300 seconds)
 export const revalidate = 300;
 
-export const metadata: Metadata = createPageMetadata({
-  title: 'Buy CCTV, IT Hardware & Security Systems | TecBunny',
-  description: 'Shop premium CCTV systems, surveillance cameras, computer hardware, and accessories curated by TecBunny. Best pricing in Goa.',
-  keywords: ['shop', 'products', 'CCTV', 'computers', 'accessories', 'TecBunny'],
-  path: '/products',
-  image: '/brand.png',
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return createPageMetadata({});
+}
 
 function getSiteOrigin() {
   return envConfig.app.siteUrl.replace(/\/$/, '');

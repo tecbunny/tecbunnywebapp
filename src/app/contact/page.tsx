@@ -5,13 +5,9 @@ import ContactPage from '@/components/contact-page';
 import { createPageMetadata } from '@/lib/metadata';
 
 // Static metadata for better SEO and performance
-export const metadata: Metadata = createPageMetadata({
-  title: 'Contact TecBunny Solutions',
-  description: 'Get in touch with TecBunny Solutions for technology services, custom solutions, and technical support.',
-  keywords: ['contact TecBunny', 'technology support', 'technical services', 'customer support'],
-  path: '/contact',
-  image: '/brand.png',
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return createPageMetadata({});
+}
 
 // Force static generation
 // export const dynamic = 'force-static';
