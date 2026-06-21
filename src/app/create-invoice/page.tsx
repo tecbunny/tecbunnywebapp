@@ -9,11 +9,13 @@ const LazyInvoiceBuilder = dynamic(
   }
 );
 
-export const metadata: Metadata = createPageMetadata({
+export async function generateMetadata(): Promise<Metadata> {
+  return createPageMetadata({
   title: 'Generate Invoice | TecBunny Solutions',
   description: 'Instantly generate an invoice for your custom technology services and hardware solutions.',
   path: '/create-invoice',
 });
+}
 
 export default function CreateInvoicePage() {
   return <LazyInvoiceBuilder />;

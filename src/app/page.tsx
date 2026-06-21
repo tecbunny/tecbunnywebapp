@@ -11,7 +11,8 @@ export const dynamic = 'force-dynamic';
 import { headers } from 'next/headers';
 
 // Homepage metadata for SEO
-export const metadata: Metadata = createPageMetadata({
+export async function generateMetadata(): Promise<Metadata> {
+  return createPageMetadata({
   title: 'TecBunny | Tech Services, CCTV & AMC Solutions',
   description:
     'TecBunny Solutions engineered premium IT services, CCTV installation, AMC support, home automation, and custom hardware setups in Goa and Maharashtra.',
@@ -27,6 +28,7 @@ export const metadata: Metadata = createPageMetadata({
   path: '/',
   image: '/brand.png',
 });
+}
 
 function HomePageSkeleton() {
   return (

@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 import { createClient as createServerClient, createServiceClient, isSupabaseServiceConfigured } from '@/lib/supabase/server';
 import { rateLimit } from '@/lib/rate-limit';
 import { resolveSiteUrl } from '@/lib/site-url';
-import { GST_RATE } from '@/lib/constants';
+
 import { apiError, apiSuccess } from '@/lib/errors';
 import { logger } from '@/lib/logger';
 import { 
