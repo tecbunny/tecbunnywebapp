@@ -287,13 +287,13 @@ export default function HomePage({
               {initialPartnerBrands.map((brand) => (
                 <span key={brand.name} className="flex items-center justify-center transition-all hover:scale-105 duration-200">
                   {brand.logoUrl ? (
-                    <div className="bg-white px-4 py-2 rounded-md shadow-sm flex items-center justify-center h-12 md:h-14 min-w-[100px]">
+                    <div className="bg-white p-3 rounded-md shadow-sm flex items-center justify-center h-14 w-32 md:h-16 md:w-40">
                       <OptimizedImage
                         src={brand.logoUrl}
                         alt={brand.name}
                         width={120}
                         height={40}
-                        className="h-full w-auto object-contain"
+                        className="h-full w-full object-contain"
                         transformation={{ quality: 80 }}
                       />
                     </div>
