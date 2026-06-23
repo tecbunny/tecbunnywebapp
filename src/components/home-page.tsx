@@ -287,14 +287,16 @@ export default function HomePage({
               {initialPartnerBrands.map((brand) => (
                 <span key={brand.name} className="flex items-center justify-center transition-all hover:scale-105 duration-200">
                   {brand.logoUrl ? (
-                    <OptimizedImage
-                      src={brand.logoUrl}
-                      alt={brand.name}
-                      width={120}
-                      height={40}
-                      className="h-8 md:h-10 w-auto object-contain filter brightness-75 contrast-125 hover:brightness-100 transition-all duration-200"
-                      transformation={{ quality: 80 }}
-                    />
+                    <div className="bg-white px-4 py-2 rounded-md shadow-sm flex items-center justify-center h-12 md:h-14 min-w-[100px]">
+                      <OptimizedImage
+                        src={brand.logoUrl}
+                        alt={brand.name}
+                        width={120}
+                        height={40}
+                        className="h-full w-auto object-contain"
+                        transformation={{ quality: 80 }}
+                      />
+                    </div>
                   ) : (
                     <span className="text-sm font-bold tracking-widest text-zinc-400 font-tech hover:text-blue-500 transition-colors">
                       {brand.name}

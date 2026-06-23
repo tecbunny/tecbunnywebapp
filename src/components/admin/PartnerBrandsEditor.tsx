@@ -130,7 +130,7 @@ export const PartnerBrandsEditor = ({
               >
                 <Trash className="h-3 w-3" />
               </Button>
-              <div className="h-12 w-full flex items-center justify-center">
+              <div className="h-14 w-full flex items-center justify-center bg-white rounded-md p-2 shadow-sm">
                 {brand.logoUrl ? (
                   <img src={brand.logoUrl} alt={brand.name} className="max-h-full max-w-full object-contain" />
                 ) : (
