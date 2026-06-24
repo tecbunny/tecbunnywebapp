@@ -683,6 +683,11 @@ export async function buildPricingCatalog(blueprint: CustomSetupBlueprintSummary
   };
 }
 
+export function pickCapacityOption(options: CapacityPriceEntry[], cameraCount: number): CapacityPriceEntry {
+  const sorted = [...options].sort((a, b) => a.capacity - b.capacity);
+  return sorted.find((entry) => entry.capacity >= cameraCount) ?? sorted[sorted.length - 1];
+}
+
 export function calculateQuantity(cameraCount: number, capacity: number): number {
   if (capacity <= 0) {
     return 1;
