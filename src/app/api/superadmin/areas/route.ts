@@ -8,7 +8,7 @@ import { createServiceClient, isSupabaseServiceConfigured } from '@/lib/supabase
 
 const areaSchema = z.object({
   id: z.string().uuid().nullable().optional(),
-  code: z.string().trim().min(2).max(40).regex(/^[A-Za-z0-9_-]+$/),
+  code: z.string().trim().min(2).max(40).regex(/^[A-Za-z0-9_\-\s]+$/),
   name: z.string().trim().min(2).max(100),
   isActive: z.boolean().default(true),
   servicesEnabled: z.boolean().default(false),
@@ -138,7 +138,8 @@ export async function POST(request: NextRequest) {
   try {
     const parsed = areaSchema.safeParse(await request.json());
     if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid area configuration', issues: parsed.error.issues }, { status: 400 });
+      const issuesMsg = parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join(', ');
+      return NextResponse.json({ error: `Invalid area configuration: ${issuesMsg}` }, { status: 400 });
     }
     const value = parsed.data;
     const uniquePincodes = Array.from(new Set(value.pincodes));

@@ -84,6 +84,32 @@ export default function SuperadminAreasPage() {
   const [saving, setSaving] = React.useState(false);
   const { toast } = useToast();
 
+  React.useEffect(() => {
+    if (!form.id && !form.name && !form.code) {
+      const match = form.pincodesText.match(/^[1-9][0-9]{5}/);
+      if (match) {
+        const pincode = match[0];
+        fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && data[0]?.Status === 'Success' && data[0]?.PostOffice?.length > 0) {
+              const office = data[0].PostOffice[0];
+              const regionName = office.Block || office.Name || office.District || '';
+              setForm(current => {
+                if (current.name || current.code) return current;
+                return {
+                  ...current,
+                  name: regionName,
+                  code: regionName.toUpperCase().replace(/[^A-Z0-9_\-\s]/g, '')
+                };
+              });
+            }
+          })
+          .catch(err => console.error('Failed to auto-fetch postal details', err));
+      }
+    }
+  }, [form.pincodesText, form.id, form.name, form.code]);
+
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
