@@ -19,6 +19,24 @@ export const CANONICAL_ROLES = [
 
 export type CanonicalRole = (typeof CANONICAL_ROLES)[number];
 
+export const STAFF_ASSIGNABLE_ROLES = [
+  'sales_executive',
+  'store_executive',
+  'sales_agent',
+  'service_engineer',
+  'sales_manager',
+  'service_manager',
+  'accounts',
+  'admin',
+] as const;
+
+export const USER_ASSIGNABLE_ROLES = [
+  'customer',
+  ...STAFF_ASSIGNABLE_ROLES,
+] as const;
+
+export type AssignableRole = (typeof USER_ASSIGNABLE_ROLES)[number];
+
 /** @deprecated Accepted during the staged migration to canonical role names. */
 export type LegacyRole = 'sales' | 'sales-staff' | 'sales-external' | 'manager' | 'accounts';
 export type UserRole = CanonicalRole | LegacyRole;
@@ -237,6 +255,19 @@ export const ROLE_DISPLAY_NAME: Record<UserRole, string> = {
   'sales-external': 'Sales Agent (Legacy)',
   manager: 'Sales Manager (Legacy)',
   accounts: 'Accounts (Legacy)',
+};
+
+export const ROLE_DESCRIPTION: Record<CanonicalRole | 'accounts', string> = {
+  customer: 'Customer storefront access and own-order visibility.',
+  sales_executive: 'Regional lead capture and product-order creation.',
+  store_executive: 'Store order processing and quick billing.',
+  sales_agent: 'Delegated customer orders and own commission reporting.',
+  service_engineer: 'Assigned service jobs and field-report submission.',
+  sales_manager: 'Regional sales team, order dispatch, and lead assignment.',
+  service_manager: 'Regional service dispatch and engineer assignment.',
+  accounts: 'Invoice management and financial report visibility.',
+  admin: 'Day-to-day user, inventory, CRM, order, service, and report operations.',
+  superadmin: 'Root system governance, role management, configuration, and unrestricted oversight.',
 };
 
 export function getDisplayName(role: UserRole): string {

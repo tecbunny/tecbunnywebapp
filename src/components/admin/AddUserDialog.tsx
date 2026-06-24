@@ -33,6 +33,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '../../hooks/use-toast';
+import {
+  EFFECTIVE_PERMISSIONS,
+  ROLE_DESCRIPTION,
+  ROLE_DISPLAY_NAME,
+  USER_ASSIGNABLE_ROLES,
+  type AssignableRole,
+} from '@/lib/roles';
 
 const addUserSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -40,7 +47,7 @@ const addUserSchema = z.object({
   mobile: z.string().min(10, { message: 'Please enter a valid mobile number.' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }).optional(),
   confirmPassword: z.string().min(6, { message: 'Please confirm your password.' }).optional(),
-  role: z.enum(['customer', 'admin', 'manager', 'sales', 'accounts'], {
+  role: z.enum(USER_ASSIGNABLE_ROLES, {
     message: 'Please select a role.',
   }),
 }).refine((data) => {
@@ -55,9 +62,10 @@ type AddUserFormValues = z.infer<typeof addUserSchema>;
 
 interface AddUserDialogProps {
   onUserAdded?: () => void;
+  canManageStaffRoles?: boolean;
 }
 
-export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
+export function AddUserDialog({ onUserAdded, canManageStaffRoles = false }: AddUserDialogProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,6 +81,9 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
       role: 'customer',
     },
   });
+  const selectedRole = form.watch('role') as AssignableRole;
+  const availableRoles = canManageStaffRoles ? USER_ASSIGNABLE_ROLES : (['customer'] as const);
+  const effectivePermissions = Array.from(EFFECTIVE_PERMISSIONS[selectedRole] || []).sort();
 
   const onSubmit = async (values: AddUserFormValues) => {
     try {
@@ -189,17 +200,29 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="customer">Customer</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                      <SelectItem value="manager">Manager</SelectItem>
-                      <SelectItem value="sales">Sales</SelectItem>
-                      <SelectItem value="accounts">Accounts</SelectItem>
+                      {availableRoles.map((role) => (
+                        <SelectItem key={role} value={role}>
+                          {ROLE_DISPLAY_NAME[role]}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <p className="text-sm font-medium">{ROLE_DISPLAY_NAME[selectedRole]}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{ROLE_DESCRIPTION[selectedRole]}</p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {effectivePermissions.map((permission) => (
+                  <span key={permission} className="rounded border bg-background px-2 py-1 font-mono text-[11px]">
+                    {permission}
+                  </span>
+                ))}
+              </div>
+            </div>
             
             <FormField
               control={form.control}

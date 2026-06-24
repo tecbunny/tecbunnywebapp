@@ -214,6 +214,25 @@ logger.info('order_create_attempt', { userId: effectiveUserId });
 
     logger.info('order_created', { orderId: createdOrder.id, userId: effectiveUserId });
 
+    // Update user profile address if applicable
+    if (effectiveUserId && orderData.delivery_address && !orderData.agent_id && orderType === 'Delivery') {
+      try {
+        const addressParts = orderData.delivery_address.split(', ');
+        const street = addressParts.length > 0 ? addressParts[0] : orderData.delivery_address;
+        
+        await serviceSupabase.from('profiles').update({
+          address: {
+            street: street,
+            city: addressParts.length > 1 ? addressParts[1] : '',
+            state: orderData.customer_state || '',
+            pincode: orderData.delivery_pincode || ''
+          }
+        }).eq('id', effectiveUserId);
+      } catch (err) {
+        logger.error('failed_to_update_profile_address', { err, userId: effectiveUserId });
+      }
+    }
+
     // Parse the additional info back for the response
     const orderItemsData = typeof createdOrder.items === 'string'
       ? JSON.parse(createdOrder.items || '{}')

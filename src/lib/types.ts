@@ -99,6 +99,9 @@ export interface User {
   first_login_whatsapp_sent?: boolean;
   first_login_notified_at?: string | null;
     address?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
     gstin?: string;
     customerCategory?: CustomerCategory;
     discountPercentage?: number;

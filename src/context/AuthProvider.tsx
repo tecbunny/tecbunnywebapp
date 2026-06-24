@@ -353,9 +353,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const profileRole = parseRole(profile.role as string | undefined);
         const userRole = appMetadataRole ?? profileRole ?? 'customer';
         
+        let addressObj: any = profile.address;
+        if (typeof addressObj === 'string') {
+          addressObj = { street: addressObj };
+        } else if (!addressObj || typeof addressObj !== 'object') {
+          addressObj = {};
+        }
+
         return { 
           ...profile, 
           email: supabaseUser.email || profile.email || '',
+          address: addressObj.street || addressObj.address || (typeof profile.address === 'string' ? profile.address : ''),
+          city: addressObj.city || '',
+          state: addressObj.state || '',
+          pincode: addressObj.pincode || '',
           role: userRole,
           permissions: Array.isArray(supabaseUser.app_metadata?.permissions) ? supabaseUser.app_metadata.permissions as string[] : [],
           emailVerified: Boolean(supabaseUser.email_confirmed_at || profile.email_confirmed_at),

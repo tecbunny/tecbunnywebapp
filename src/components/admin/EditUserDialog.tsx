@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { UserCog, User as UserIcon, Shield, Settings, Star, Crown } from 'lucide-react';
+import { UserCog, User as UserIcon, Shield, Settings, Star, Crown, Headphones } from 'lucide-react';
 
 import {
   Dialog,
@@ -27,15 +27,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '../../hooks/use-toast';
 import { logger } from '@/lib/logger';
 import type { User, UserRole, CustomerCategory } from '@/lib/types';
+import {
+  EFFECTIVE_PERMISSIONS,
+  ROLE_DESCRIPTION,
+  ROLE_DISPLAY_NAME,
+  USER_ASSIGNABLE_ROLES,
+  type AssignableRole,
+} from '@/lib/roles';
 
 interface EditUserDialogProps {
   isOpen: boolean;
   onClose: () => void;
   user: User | null;
   onUserUpdated: () => void;
+  canManageStaffRoles?: boolean;
 }
 
-export function EditUserDialog({ isOpen, onClose, user, onUserUpdated }: EditUserDialogProps) {
+export function EditUserDialog({ isOpen, onClose, user, onUserUpdated, canManageStaffRoles = false }: EditUserDialogProps) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [formData, setFormData] = React.useState({
     name: '',
@@ -49,14 +57,28 @@ export function EditUserDialog({ isOpen, onClose, user, onUserUpdated }: EditUse
   });
 
   const { toast } = useToast();
+  const availableRoles = canManageStaffRoles ? USER_ASSIGNABLE_ROLES : (['customer'] as const);
+  const selectedAssignableRole = (USER_ASSIGNABLE_ROLES as readonly string[]).includes(formData.role)
+    ? formData.role as AssignableRole
+    : 'customer';
+  const effectivePermissions = Array.from(EFFECTIVE_PERMISSIONS[selectedAssignableRole] || []).sort();
 
   React.useEffect(() => {
     if (user) {
+      const migratedRole = user.role === 'sales'
+        ? 'sales_executive'
+        : user.role === 'sales-staff'
+          ? 'store_executive'
+          : user.role === 'sales-external'
+            ? 'sales_agent'
+            : user.role === 'manager'
+              ? 'sales_manager'
+              : user.role;
       setFormData({
         name: user.name || '',
         email: user.email || '',
         mobile: user.mobile || '',
-        role: user.role || 'customer',
+        role: migratedRole || 'customer',
         customerCategory: user.customerCategory || 'Normal',
         isActive: user.isActive ?? true,
         address: user.address || '',
@@ -166,10 +188,17 @@ export function EditUserDialog({ isOpen, onClose, user, onUserUpdated }: EditUse
       case 'superadmin':
         return <Shield className="h-4 w-4" />;
       case 'manager':
+      case 'sales_manager':
+      case 'service_manager':
         return <Settings className="h-4 w-4" />;
       case 'sales':
+      case 'sales_executive':
+      case 'store_executive':
+      case 'sales_agent':
       case 'accounts':
         return <UserCog className="h-4 w-4" />;
+      case 'service_engineer':
+        return <Headphones className="h-4 w-4" />;
       default:
         return <UserIcon className="h-4 w-4" />;
     }
@@ -296,54 +325,36 @@ export function EditUserDialog({ isOpen, onClose, user, onUserUpdated }: EditUse
                         <SelectValue>
                           <div className="flex items-center gap-2">
                             {getRoleIcon(formData.role)}
-                            <span className="capitalize">{formData.role}</span>
+                            <span>{ROLE_DISPLAY_NAME[formData.role] || formData.role}</span>
                           </div>
                         </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="customer">
-                          <div className="flex items-center gap-2">
-                            <UserIcon className="h-4 w-4" />
-                            Customer
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="sales">
-                          <div className="flex items-center gap-2">
-                            <UserCog className="h-4 w-4" />
-                            Sales
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="accounts">
-                          <div className="flex items-center gap-2">
-                            <UserCog className="h-4 w-4" />
-                            Accounts
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="manager">
-                          <div className="flex items-center gap-2">
-                            <Settings className="h-4 w-4" />
-                            Manager
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="admin">
-                          <div className="flex items-center gap-2">
-                            <Shield className="h-4 w-4" />
-                            Admin
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="superadmin">
-                          <div className="flex items-center gap-2">
-                            <Shield className="h-4 w-4 text-purple-500" />
-                            Super Admin
-                          </div>
-                        </SelectItem>
+                        {availableRoles.map((role) => (
+                          <SelectItem key={role} value={role}>
+                            <div className="flex items-center gap-2">
+                              {getRoleIcon(role)}
+                              {ROLE_DISPLAY_NAME[role]}
+                            </div>
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="bg-white/5 border border-white/10 p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">Role Permissions:</h4>
-                    <div className="text-sm text-muted-foreground space-y-1">
+                    <h4 className="font-medium">{ROLE_DISPLAY_NAME[selectedAssignableRole]}</h4>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {ROLE_DESCRIPTION[selectedAssignableRole]}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {effectivePermissions.map((permission) => (
+                        <span key={permission} className="rounded border bg-background px-2 py-1 font-mono text-[11px]">
+                          {permission}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="hidden text-sm text-muted-foreground space-y-1">
                       {formData.role === 'customer' && (
                         <>
                           <div>• Browse and purchase products</div>

@@ -33,6 +33,7 @@ import { DiscountOffersDialog } from '@/components/admin/DiscountOffersDialog';
 import { UniversalSearch, SearchFilter, SortOption } from '@/components/shared/UniversalSearch';
 import { useToast } from '../../../../hooks/use-toast';
 import { useDebounce } from '../../../../hooks/use-debounce';
+import { ROLE_DISPLAY_NAME } from '@/lib/roles';
 
 const ROLE_SENTINEL_NONE = '__none__';
 
@@ -71,15 +72,16 @@ export default function UserManagementPage() {
   const userAnalyticsBasePath = pathname?.startsWith('/superadmin')
     ? '/superadmin/mgmt/users'
     : '/mgmt/admin/users';
+  const isSuperadminView = pathname?.startsWith('/superadmin') ?? false;
   
   const roleFiltersFromTab = React.useMemo(() => {
     switch (activeTab) {
       case 'staff':
-        return ['admin', 'manager', 'accounts'];
+        return ['sales_executive', 'store_executive', 'sales_agent', 'service_engineer', 'sales_manager', 'service_manager', 'accounts', 'admin'];
       case 'customer':
         return ['customer'];
       case 'sales':
-        return ['sales'];
+        return ['sales_executive', 'store_executive', 'sales_agent', 'sales_manager'];
       default:
         return [];
     }
@@ -278,8 +280,14 @@ export default function UserManagementPage() {
       case 'admin':
         return 'destructive';
       case 'manager':
+      case 'sales_manager':
+      case 'service_manager':
         return 'default';
       case 'sales':
+      case 'sales_executive':
+      case 'store_executive':
+      case 'sales_agent':
+      case 'service_engineer':
       case 'accounts':
         return 'secondary';
       default:
@@ -292,8 +300,14 @@ export default function UserManagementPage() {
       case 'admin':
         return <Shield className="h-3 w-3" />;
       case 'manager':
+      case 'sales_manager':
+      case 'service_manager':
         return <Settings className="h-3 w-3" />;
       case 'sales':
+      case 'sales_executive':
+      case 'store_executive':
+      case 'sales_agent':
+      case 'service_engineer':
       case 'accounts':
         return <UserCog className="h-3 w-3" />;
       default:
@@ -333,9 +347,13 @@ export default function UserManagementPage() {
       type: 'checkbox',
       options: [
         { value: 'customer', label: 'Customer' },
-        { value: 'sales', label: 'Sales' },
+        { value: 'sales_executive', label: 'Sales Executive' },
+        { value: 'store_executive', label: 'Store Executive' },
+        { value: 'sales_agent', label: 'Sales Agent' },
+        { value: 'sales_manager', label: 'Sales Manager' },
+        { value: 'service_engineer', label: 'Service Engineer' },
+        { value: 'service_manager', label: 'Service Manager' },
         { value: 'accounts', label: 'Accounts' },
-        { value: 'manager', label: 'Manager' },
         { value: 'admin', label: 'Admin' }
       ],
       value: filters.role || []
@@ -499,7 +517,7 @@ export default function UserManagementPage() {
                   <RefreshCcw className="h-4 w-4" />
                   Refresh
                 </Button>
-                <AddUserDialog onUserAdded={fetchUsers} />
+                <AddUserDialog onUserAdded={fetchUsers} canManageStaffRoles={isSuperadminView} />
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -555,7 +573,7 @@ export default function UserManagementPage() {
                     <TableCell>
                       <Badge variant={getRoleVariant(user.role)} className="capitalize flex items-center gap-1">
                         {getRoleIcon(user.role)}
-                        {user.role}
+                        {ROLE_DISPLAY_NAME[user.role] || user.role}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -663,6 +681,7 @@ export default function UserManagementPage() {
         onClose={() => setShowEditDialog(false)}
         user={selectedUser}
         onUserUpdated={fetchUsers}
+        canManageStaffRoles={isSuperadminView}
       />
 
       <DiscountOffersDialog

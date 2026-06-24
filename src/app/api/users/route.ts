@@ -7,12 +7,14 @@ import { createClient as createServerClient } from '@/lib/supabase/server';
 import { getEffectiveUserRole } from '@/lib/auth/server-role';
 import { verifySuperadminSessionToken } from '@/lib/auth/superadmin-session';
 import { logger } from '@/lib/logger';
+import { normalizeRole, USER_ASSIGNABLE_ROLES, type AssignableRole } from '@/lib/roles';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-const STAFF_ROLES = ['admin', 'manager', 'accounts'];
+const STAFF_ROLES = ['sales_executive', 'store_executive', 'sales_agent', 'service_engineer', 'sales_manager', 'service_manager', 'accounts', 'admin'];
+const SALES_ROLES = ['sales_executive', 'store_executive', 'sales_agent', 'sales_manager'];
 const ROLE_SENTINEL_NONE = '__none__';
 const SORTABLE_COLUMNS: Record<string, string> = {
   name: 'name',
@@ -69,7 +71,7 @@ async function getUserTotals() {
     getSupabaseAdmin().from('profiles').select('id', { count: 'exact', head: true }),
     getSupabaseAdmin().from('profiles').select('id', { count: 'exact', head: true }).in('role', STAFF_ROLES),
     getSupabaseAdmin().from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'customer'),
-    getSupabaseAdmin().from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'sales')
+    getSupabaseAdmin().from('profiles').select('id', { count: 'exact', head: true }).in('role', SALES_ROLES)
   ]);
 
   return {
@@ -78,6 +80,55 @@ async function getUserTotals() {
     customers: customerRes.count ?? 0,
     sales: salesRes.count ?? 0
   };
+}
+
+function parseAssignableRole(value: unknown): AssignableRole | null {
+  const normalized = normalizeRole(value);
+  const migratedRole = normalized === 'sales'
+    ? 'sales_executive'
+    : normalized === 'sales-staff'
+      ? 'store_executive'
+      : normalized === 'sales-external'
+        ? 'sales_agent'
+        : normalized === 'manager'
+          ? 'sales_manager'
+          : normalized;
+  return migratedRole && (USER_ASSIGNABLE_ROLES as readonly string[]).includes(migratedRole)
+    ? migratedRole as AssignableRole
+    : null;
+}
+
+async function syncUserRole(userId: string, role: AssignableRole) {
+  const admin = getSupabaseAdmin();
+  const { data: roleRecord, error: roleError } = await admin
+    .from('roles')
+    .select('id')
+    .eq('name', role)
+    .maybeSingle();
+
+  if (roleError || !roleRecord) {
+    throw new Error(`Role catalog entry not found for ${role}`);
+  }
+
+  const { error: deleteError } = await admin.from('user_roles').delete().eq('user_id', userId);
+  if (deleteError) throw new Error(`Failed to clear previous user roles: ${deleteError.message}`);
+
+  const { error: insertError } = await admin.from('user_roles').insert({
+    user_id: userId,
+    role_id: roleRecord.id,
+  });
+  if (insertError) throw new Error(`Failed to assign user role: ${insertError.message}`);
+
+  const { data: authUser, error: authReadError } = await admin.auth.admin.getUserById(userId);
+  if (authReadError) throw new Error(`Failed to load auth metadata: ${authReadError.message}`);
+
+  const { error: authUpdateError } = await admin.auth.admin.updateUserById(userId, {
+    app_metadata: {
+      ...(authUser.user?.app_metadata ?? {}),
+      role,
+    },
+  });
+  if (authUpdateError) throw new Error(`Failed to synchronize auth role: ${authUpdateError.message}`);
 }
 
 // Create client for current user authentication
@@ -316,12 +367,15 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const email = body.email as string | undefined;
     const name = body.name as string | undefined;
-    const requestedRole = (body.role as string | undefined) || 'customer';
+    const requestedRole = parseAssignableRole(body.role || 'customer');
     const mobile = body.mobile as string | undefined;
     let password = body.password as string | undefined;
 
-    if (!email || !name) {
-      return NextResponse.json({ error: 'Email and name are required' }, { status: 400 });
+    if (!email || !name || !mobile) {
+      return NextResponse.json({ error: 'Email, mobile number, and name are required' }, { status: 400 });
+    }
+    if (!requestedRole) {
+      return NextResponse.json({ error: 'Invalid or non-assignable role' }, { status: 400 });
     }
 
     // Reject requests if a non-superadmin tries to create an account with a role other than 'customer'
@@ -348,9 +402,9 @@ export async function POST(request: NextRequest) {
       password,
       email_confirm: true,
       user_metadata: {
-        name,
-        role: requestedRole
-      }
+        name
+      },
+      app_metadata: { role: requestedRole },
     });
 
     if (createError) {
@@ -381,6 +435,24 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ 
           error: 'Failed to create user profile' 
         }, { status: 500 });
+      }
+
+      try {
+        await syncUserRole(userData.user.id, requestedRole);
+        await getSupabaseAdmin().from('security_audit_log').insert({
+          event_type: 'role_alteration',
+          user_id: userData.user.id,
+          event_data: {
+            action: 'staff_user_created',
+            new_role: requestedRole,
+            modified_by: session.user.id,
+          },
+          severity: requestedRole === 'customer' ? 'medium' : 'high',
+        });
+      } catch (roleError) {
+        await getSupabaseAdmin().auth.admin.deleteUser(userData.user.id);
+        logger.error('users.create_role_sync_failed', { error: roleError, userId: userData.user.id, requestedRole });
+        return NextResponse.json({ error: roleError instanceof Error ? roleError.message : 'Failed to assign role' }, { status: 500 });
       }
     }
 
@@ -458,13 +530,22 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'User profile not found' }, { status: 404 });
     }
 
+    const requestedRole = updates.role === undefined ? null : parseAssignableRole(updates.role);
+    if (updates.role !== undefined && !requestedRole) {
+      return NextResponse.json({ error: 'Invalid or non-assignable role' }, { status: 400 });
+    }
+
+    if (targetProfile.role === 'superadmin') {
+      return NextResponse.json({ error: 'The root Superadmin role cannot be modified here' }, { status: 403 });
+    }
+
     if (role !== 'superadmin') {
       // Reject if non-superadmin attempts to update a non-customer profile
       if (targetProfile.role !== 'customer') {
         return NextResponse.json({ error: 'Forbidden: Admins cannot update non-customer profiles' }, { status: 403 });
       }
       // Reject if non-superadmin attempts to change a user's role to something other than 'customer'
-      if (updates.role && updates.role !== 'customer') {
+      if (requestedRole && requestedRole !== 'customer') {
         return NextResponse.json({ error: 'Forbidden: Admins cannot change profile role to non-customer' }, { status: 403 });
       }
     }
@@ -495,7 +576,7 @@ export async function PUT(request: NextRequest) {
       // Build update object, accepting both camelCase and snake_case keys
       const profileUpdates: Record<string, any> = {};
       if (updates.name) profileUpdates.name = updates.name;
-      if (updates.role) profileUpdates.role = updates.role;
+      if (requestedRole) profileUpdates.role = requestedRole;
       if (updates.mobile) profileUpdates.mobile = updates.mobile;
       if (typeof updates.is_active === 'boolean') profileUpdates.is_active = updates.is_active;
       if (typeof updates.isActive === 'boolean') profileUpdates.is_active = updates.isActive;
@@ -522,6 +603,36 @@ export async function PUT(request: NextRequest) {
           return NextResponse.json({ 
             error: 'Failed to update user profile' 
           }, { status: 500 });
+        }
+      }
+
+      if (requestedRole && requestedRole !== targetProfile.role) {
+        try {
+          await syncUserRole(userId, requestedRole);
+          await getSupabaseAdmin().from('security_audit_log').insert({
+            event_type: 'role_alteration',
+            user_id: userId,
+            event_data: {
+              action: 'set',
+              previous_role: targetProfile.role,
+              new_role: requestedRole,
+              modified_by: session.user.id,
+            },
+            severity: 'high',
+          });
+        } catch (roleError) {
+          await getSupabaseAdmin().from('profiles').update({
+            role: targetProfile.role,
+            updated_at: new Date().toISOString(),
+          }).eq('id', userId);
+          const previousRole = parseAssignableRole(targetProfile.role);
+          if (previousRole) {
+            await syncUserRole(userId, previousRole).catch((rollbackError) => {
+              logger.error('users.update_role_rollback_failed', { rollbackError, userId, previousRole });
+            });
+          }
+          logger.error('users.update_role_sync_failed', { error: roleError, userId, requestedRole });
+          return NextResponse.json({ error: roleError instanceof Error ? roleError.message : 'Failed to assign role' }, { status: 500 });
         }
       }
     }
