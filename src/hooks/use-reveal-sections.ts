@@ -35,16 +35,19 @@ export function useRevealSections(selector = '[data-reveal-id]', refreshKey?: Re
       }
     );
 
-    elements.forEach((element) => {
+    // Separate DOM reads from writes to prevent forced reflow
+    const elementsData = elements.map((element) => {
       const rect = element.getBoundingClientRect();
       const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+      return { element, isInViewport };
+    });
 
+    elementsData.forEach(({ element, isInViewport }) => {
       if (isInViewport) {
         element.classList.add('is-revealed');
-        return;
+      } else {
+        observer.observe(element);
       }
-
-      observer.observe(element);
     });
     return () => observer.disconnect();
   }, [prefersReducedMotion, selector, refreshKey]);
