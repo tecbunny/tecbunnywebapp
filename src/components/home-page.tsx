@@ -38,7 +38,6 @@ const AddToCartButton = dynamic(
 );
 
 const HeroCarousel = dynamic(() => import('./HeroCarousel'), {
-  ssr: false,
   loading: () => (
     <section className="py-10 sm:py-14" aria-hidden="true">
       <div className="container mx-auto px-4">
@@ -101,9 +100,11 @@ const FEATURE_PILLARS = [
 export default function HomePage({
   initialProducts = [],
   initialPartnerBrands = [],
+  initialHeroCarousel = null,
 }: {
   initialProducts?: DbProduct[];
   initialPartnerBrands?: Array<{ name: string; logoUrl: string }>;
+  initialHeroCarousel?: any;
 }) {
   const hasPartnerBrands = initialPartnerBrands.length > 0;
 
@@ -244,7 +245,7 @@ export default function HomePage({
       </section>
 
       <div>
-        <HeroCarousel pageKey="homepage" />
+        <HeroCarousel pageKey="homepage" initialData={initialHeroCarousel} />
       </div>
 
       {/* 4. REAL-TIME REGIONAL SOCIAL PROOF */}

@@ -93,6 +93,7 @@ function parsePartnerBrands(value: unknown) {
 export default async function Page() {
   let initialProducts = undefined;
   let initialPartnerBrands = undefined;
+  let initialHeroCarousel = undefined;
 
   try {
     const headersList = await headers();
@@ -101,9 +102,10 @@ export default async function Page() {
     const baseUrl = `${protocol}://${host}`;
 
     // Parallel server-side fetching
-    const [productsRes, brandsRes] = await Promise.all([
+    const [productsRes, brandsRes, heroRes] = await Promise.all([
       fetch(`${baseUrl}/api/products?status=active&limit=12`, { cache: 'no-store' }).catch(() => null),
-      fetch(`${baseUrl}/api/settings?key=partnerBrands`, { cache: 'no-store' }).catch(() => null)
+      fetch(`${baseUrl}/api/settings?key=partnerBrands`, { cache: 'no-store' }).catch(() => null),
+      fetch(`${baseUrl}/api/page-content?key=hero-carousels`, { cache: 'no-store' }).catch(() => null)
     ]);
 
     if (productsRes?.ok) {
@@ -125,6 +127,11 @@ export default async function Page() {
       const payload = await brandsRes.json();
       initialPartnerBrands = parsePartnerBrands(payload?.value);
     }
+
+    if (heroRes?.ok) {
+      const payload = await heroRes.json();
+      initialHeroCarousel = payload?.data ?? null;
+    }
   } catch (error) {
     console.error('Error prefetching data for homepage:', error);
   }
@@ -134,6 +141,7 @@ export default async function Page() {
       <HomePage 
         initialProducts={initialProducts} 
         initialPartnerBrands={initialPartnerBrands} 
+        initialHeroCarousel={initialHeroCarousel}
       />
     </Suspense>
   );

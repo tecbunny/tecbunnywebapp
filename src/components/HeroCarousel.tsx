@@ -15,6 +15,7 @@ interface HeroCarouselProps {
   pageKey: HeroCarouselPageKey;
   intervalMs?: number;
   className?: string;
+  initialData?: any;
 }
 
 const PAGE_LABEL: Record<HeroCarouselPageKey, string> = {
@@ -88,17 +89,20 @@ function normalizeSlides(pageKey: HeroCarouselPageKey, raw: unknown): HeroCarous
     .map((slide, order) => ({ ...slide, displayOrder: order }));
 }
 
-export default function HeroCarousel({ pageKey, intervalMs = 6000, className }: HeroCarouselProps) {
-  const { content, loading } = usePageContent('hero-carousels');
+export default function HeroCarousel({ pageKey, intervalMs = 6000, className, initialData }: HeroCarouselProps) {
+  const { content, loading: hookLoading } = usePageContent('hero-carousels');
   const prefersReducedMotion = usePrefersReducedMotion();
 
+  const activeContent = initialData || content?.content;
+  const loading = !activeContent && hookLoading;
+
   const slides = React.useMemo(() => {
-    if (!content?.content) {
+    if (!activeContent) {
       return [] as HeroCarouselItem[];
     }
-    const carouselContent = ensureContent(content.content);
+    const carouselContent = ensureContent(activeContent);
     return carouselContent[pageKey].filter(slide => slide.isActive !== false);
-  }, [content, pageKey]);
+  }, [activeContent, pageKey]);
 
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [paused, setPaused] = React.useState(false);

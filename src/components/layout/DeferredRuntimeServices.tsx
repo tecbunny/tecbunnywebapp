@@ -126,7 +126,7 @@ export function DeferredRuntimeServices({ gaId, metaPixelId }: DeferredRuntimeSe
       {/* Google Consent Mode v2 — must load before gtag.js so Google detects the tag */}
       {gaId ? (
         <AnalyticsBoundary>
-          <Script id="ga-consent-defaults" strategy="afterInteractive">
+          <Script id="ga-consent-defaults" strategy="lazyOnload">
             {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('consent', 'default', {
@@ -141,7 +141,7 @@ gtag('config', '${gaId}', { anonymize_ip: true, send_page_view: false });`}
           </Script>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             onError={(e) => { console.warn('GA failed to load', e); }}
           />
         </AnalyticsBoundary>
