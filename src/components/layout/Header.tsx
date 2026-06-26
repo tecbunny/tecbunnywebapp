@@ -206,7 +206,7 @@ export function Header() {
             </span>
             <div className="flex min-w-0 flex-col">
               <span className="font-sans text-base font-black leading-none tracking-tight text-white sm:text-xl uppercase">
-                TECBUNNY<span className="text-blue-600">.</span>
+                TECBUNNY
               </span>
               <span className="mt-1 text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-blue-300 transition-colors group-hover:text-blue-200">
                 Solutions Pvt Ltd

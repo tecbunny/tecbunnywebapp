@@ -27,7 +27,7 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
 const DEFAULT_COMPANY_INFO = {
   supportEmail: 'support@tecbunny.com',
   supportPhone: '+91 96041 36010',
-  registeredAddress: 'H NO 11 NHAYGINWADA, PARSE, Parxem, Pernem, North Goa - 403512, Goa',
+  registeredAddress: 'H. No. 11, Nhayginwada, Parse, Parxem, Pernem, North Goa, Goa - 403512',
   gstin: '30AAMCT1608G1ZO',
 };
 
