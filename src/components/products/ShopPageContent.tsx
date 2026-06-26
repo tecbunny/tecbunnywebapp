@@ -4,6 +4,7 @@
 import * as React from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { 
   Search,
@@ -217,9 +218,11 @@ function ProductGridImage({
   return (
     <div className="flex h-full w-full items-center justify-center rounded-xl border border-border bg-card/40 p-1.5 transition-all duration-300 group-hover:border-border">
       <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-lg bg-white p-3 shadow-inner">
-        <img
+        <Image
           src={src}
           alt={alt}
+          width={400}
+          height={400}
           className="h-full w-full object-contain transition-all duration-500 ease-out group-hover:scale-[1.04]"
           loading="lazy"
           decoding="async"

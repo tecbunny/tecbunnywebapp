@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, RefreshCw, Share2, Shield, Truck } from 'lucide-react';
+import Image from 'next/image';
 import { sanitizeHtml } from '@/lib/sanitize-html';
 
 import { AddToCartButton } from '@/components/cart/AddToCartButton';
@@ -418,13 +419,13 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
                   <div className="absolute inset-0 bg-primary/5"></div>
                 </div>
 
-                <img
+                <Image
                   src={productImages[selectedImage]}
                   alt={displayName}
                   width={900}
                   height={900}
+                  priority={true}
                   className="max-w-full max-h-full object-contain relative z-0 transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = `https://placehold.co/600x600/0f172a/94a3b8.png?text=${encodeURIComponent(displayName)}`;

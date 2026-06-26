@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { EnhancedCartSheet as CartSheet } from '../cart/EnhancedCartSheet';
+import companyInfo from '../../../public/company-info.json';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -61,10 +62,22 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = React.useState<string | null>(null);
   const [desktopSubmenuOpen, setDesktopSubmenuOpen] = React.useState<string | null>(null);
+  let initialLocation = 'Goa';
+  if (typeof (companyInfo as any)?.locationShort === 'string' && (companyInfo as any).locationShort.trim()) {
+    initialLocation = (companyInfo as any).locationShort.trim();
+  } else if (typeof (companyInfo as any)?.registeredAddress === 'string') {
+    const match = (companyInfo as any).registeredAddress.match(/([A-Za-z\s]+Goa)/i);
+    if (match && match[1]) {
+      initialLocation = match[1].replace(/\s+/g, ' ').trim();
+    }
+  } else if (typeof (companyInfo as any)?.city === 'string' && typeof (companyInfo as any)?.state === 'string') {
+    initialLocation = `${(companyInfo as any).city}, ${(companyInfo as any).state}`;
+  }
+
   const [topInfo, setTopInfo] = React.useState({
-    location: 'Goa',
-    phone: process.env.NEXT_PUBLIC_SUPPORT_PHONE || '+91 96041 36010',
-    hours: '',
+    location: initialLocation,
+    phone: (companyInfo as any)?.supportPhone || (companyInfo as any)?.phone || process.env.NEXT_PUBLIC_SUPPORT_PHONE || '+91 96041 36010',
+    hours: (companyInfo as any)?.supportHours || '',
   });
 
   React.useEffect(() => {
@@ -82,56 +95,15 @@ export function Header() {
 
     const loadCompanyInfo = async () => {
       try {
-        let dbPhone = undefined;
-        try {
-          const settingsRes = await fetch('/api/settings?key=phone', { signal: controller.signal });
-          if (settingsRes.ok) {
-            const settingsData = await settingsRes.json();
-            if (settingsData && settingsData.value) {
-              dbPhone = String(settingsData.value).trim();
+        const settingsRes = await fetch('/api/settings?key=phone', { signal: controller.signal });
+        if (settingsRes.ok) {
+          const settingsData = await settingsRes.json();
+          if (settingsData && settingsData.value) {
+            const dbPhone = String(settingsData.value).trim();
+            if (isMounted && dbPhone) {
+              setTopInfo((current) => ({ ...current, phone: dbPhone }));
             }
           }
-        } catch {
-          // Ignore settings fetch error
-        }
-
-        const response = await fetch('/company-info.json', { cache: 'no-store', signal: controller.signal });
-        let data: any = {};
-        if (response.ok) {
-          data = await response.json();
-        }
-
-        const supportPhone = dbPhone || (typeof data?.supportPhone === 'string' && data.supportPhone.trim()
-          ? data.supportPhone.trim()
-          : typeof data?.phone === 'string' && data.phone.trim()
-            ? data.phone.trim()
-            : undefined);
-
-        const supportHours = typeof data?.supportHours === 'string' && data.supportHours.trim()
-          ? data.supportHours.trim()
-          : undefined;
-
-        let location = typeof data?.locationShort === 'string' && data.locationShort.trim()
-          ? data.locationShort.trim()
-          : undefined;
-
-        if (!location && typeof data?.registeredAddress === 'string') {
-          const match = data.registeredAddress.match(/([A-Za-z\s]+Goa)/i);
-          if (match && match[1]) {
-            location = match[1].replace(/\s+/g, ' ').trim();
-          }
-        }
-
-        if (!location && typeof data?.city === 'string' && typeof data?.state === 'string') {
-          location = `${data.city}, ${data.state}`;
-        }
-
-        if (isMounted) {
-          setTopInfo((current) => ({
-            location: location || current.location,
-            phone: supportPhone || current.phone,
-            hours: supportHours || current.hours,
-          }));
         }
       } catch (_error) {
         // Keep defaults on failure
