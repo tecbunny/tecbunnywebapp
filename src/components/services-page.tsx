@@ -387,7 +387,7 @@ export default function ServicesPage({ services, hasServiceLoadError = false }: 
                   return (
                     <div
                       key={service.id}
-                      className="bento-card p-6 flex flex-col justify-between h-full transition-all duration-300 min-w-[85vw] sm:min-w-[340px] md:min-w-[380px] shrink-0 snap-start"
+                      className="bento-card p-6 flex flex-col justify-between h-full transition-all duration-300 w-[85vw] sm:w-[280px] md:w-[320px] shrink-0 snap-start"
                     >
                       <div>
                         <div className="flex items-center justify-between">
@@ -402,14 +402,14 @@ export default function ServicesPage({ services, hasServiceLoadError = false }: 
                         </div>
 
                         <h3 className="mt-4 text-base font-bold font-tech tech-heading">{service.title || service.name}</h3>
-                        <p className="mt-2 text-xs line-clamp-3 leading-relaxed font-light tech-body">{service.description}</p>
+                        <p className="mt-2 text-xs leading-relaxed font-light tech-body text-zinc-400">{service.description}</p>
                         
                         {service.features && service.features.length > 0 && (
                           <ul className="mt-4 space-y-2 text-xs text-zinc-500">
                             {service.features.map((feature, idx) => (
                               <li key={idx} className="flex items-start gap-2">
                                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-50" />
-                                <span className="line-clamp-2 font-light tech-body">{feature}</span>
+                                <span className="font-light tech-body">{feature}</span>
                               </li>
                             ))}
                           </ul>
