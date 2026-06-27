@@ -13,6 +13,7 @@ import { WishlistButton } from '@/components/wishlist/WishlistButton';
 import { logger } from '@/lib/logger';
 import { createClient } from '@/lib/supabase/client';
 import { isPubliclyVisibleProduct } from '@/lib/product-visibility';
+import { getAllProductImages } from '@/lib/image-utils';
 import type { Product } from '@/lib/types';
 import { useAnalytics } from '../../hooks/use-analytics';
 import { useToast } from '../../hooks/use-toast';
@@ -112,25 +113,7 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
   const productImages = useMemo(() => {
     if (!product) return [];
 
-    const images: string[] = [];
-
-    if (product.image) {
-      images.push(product.image);
-    }
-
-    const normalizedArray: string[] = Array.isArray((product as any).images)
-      ? (product as any).images.map((img: any) => (typeof img === 'string' ? img : img?.url || '')).filter(Boolean)
-      : [];
-    images.push(...normalizedArray);
-
-    if ((product as any).additional_images && Array.isArray((product as any).additional_images)) {
-      const additionalNormalized = (product as any).additional_images
-        .map((img: any) => (typeof img === 'string' ? img : img?.url || ''))
-        .filter(Boolean);
-      images.push(...additionalNormalized);
-    }
-
-    const uniqueImages = [...new Set(images)];
+    const uniqueImages = getAllProductImages(product);
 
     const toPngPlaceholder = (size: string = '600x600') =>
       `https://placehold.co/${size}/0066cc/ffffff.png?text=Product+Image`;
