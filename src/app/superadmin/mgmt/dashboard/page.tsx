@@ -133,6 +133,12 @@ export default async function SuperadminDashboard() {
       description: 'Authority over architectural structures mapping modular custom dynamic configurations.',
       href: '/superadmin/mgmt/custom-setups',
       icon: Sliders,
+    },
+    {
+      title: 'Project Pipeline',
+      description: 'Add, update, delete, and manage upcoming/pipeline investment projects and generate PDF summaries.',
+      href: '/projects',
+      icon: ClipboardList,
     }
   ];
 
