@@ -138,6 +138,7 @@ export async function middleware(request: NextRequest) {
       { path: '/api/warranty/activate', methods: ['POST'] },
       { path: '/api/quotes/bid', methods: ['POST'] },
       { path: '/api/uploads/quote-documents', methods: ['POST'] },
+      { path: '/api/ai/research', methods: ['POST'] },
     ];
 
     let isPublicApiRoute = publicApiRoutes.some(route => {

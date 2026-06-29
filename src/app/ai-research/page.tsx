@@ -237,7 +237,7 @@ export default function AiResearchPage() {
           </div>
           <div>
             <h1 className="text-lg font-semibold text-foreground">AI Research Assistant</h1>
-            <p className="text-xs text-muted-foreground">Powered by Gemini 2.5 Flash Lite</p>
+            <p className="text-xs text-muted-foreground">Powered by Sarvam AI</p>
           </div>
         </div>
       </header>
