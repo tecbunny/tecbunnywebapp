@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Product Scraper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0f172a; /* Slate 900 */
+      color: #f1f5f9; /* Slate 100 */
+      width: 380px;
+      height: 560px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .logo-icon {
+      background: linear-gradient(135deg, #6366f1, #a855f7); /* Indigo to Purple */
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .logo-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: #ffffff;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      background: linear-gradient(135deg, #f8fafc, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 0.75rem;
+      color: #94a3b8; /* Slate 400 */
+      margin-top: -2px;
+    }
+
+    /* Action Panel */
+    .action-panel {
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 11px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669); /* Emerald */
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-success:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-success:active {
+      transform: translateY(1px);
+    }
+
+    .btn-success:disabled {
+      background: #334155;
+      color: #64748b;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Preview Form */
+    .preview-card {
+      background: rgba(30, 41, 59, 0.6); /* Slate 800 with transparency */
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #f8fafc;
+      padding: 8px 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25);
+    }
+
+    textarea {
+      resize: none;
+      height: 60px;
+    }
+
+    /* Image Preview Container */
+    .image-preview-container {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .image-thumbnail {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      object-fit: cover;
+      display: none; /* Shown dynamically */
+    }
+
+    .image-placeholder {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: #0f172a;
+      border: 1px dashed #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #475569;
+      flex-shrink: 0;
+    }
+
+    .image-placeholder svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* Status Container */
+    .status-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      margin-bottom: 18px;
+      display: none; /* Shown dynamically */
+    }
+
+    .status-info {
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #93c5fd;
+      display: flex;
+    }
+
+    .status-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #6ee7b7;
+      display: flex;
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M17.25 12a.75.75 0 0 1-.75.75H8.75a.75.75 0 0 1 0-1.5h7.75a.75.75 0 0 1 .75.75Zm.75-4a.75.75 0 0 0-.75-.75H5.75a.75.75 0 0 0 0 1.5h11.5A.75.75 0 0 0 18 8Zm-6 8a.75.75 0 0 0-.75-.75H5.75a.75.75 0 0 0 0 1.5h5.5A.75.75 0 0 0 12 16Z"/>
+        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM3.5 12a8.5 8.5 0 1 1 17 0 8.5 8.5 0 0 1-17 0Z" clip-rule="evenodd"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Product Extractor</h1>
+      <div class="subtitle">E-Commerce Data Pipeline</div>
+    </div>
+  </header>
+
+  <!-- Scrape Trigger -->
+  <div class="action-panel">
+    <button id="scrapeBtn" class="btn btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+      </svg>
+      Scrape Product
+    </button>
+  </div>
+
+  <!-- Editable Preview Card -->
+  <div class="preview-card">
+    <div class="form-group">
+      <label for="productTitle">Title</label>
+      <input type="text" id="productTitle" placeholder="Product title will appear here...">
+    </div>
+
+    <div class="form-group">
+      <label for="productPrice">Price</label>
+      <input type="text" id="productPrice" placeholder="Product price...">
+    </div>
+
+    <div class="form-group">
+      <label for="productDescription">Description</label>
+      <textarea id="productDescription" placeholder="Product description..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="productImage">Image URL</label>
+      <div class="image-preview-container">
+        <img id="imgThumbnail" class="image-thumbnail" alt="Preview">
+        <div id="imgPlaceholder" class="image-placeholder">
+          <svg viewBox="0 0 24 24">
+            <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+          </svg>
+        </div>
+        <input type="text" id="productImage" placeholder="Product image URL...">
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Panel -->
+  <div id="statusContainer" class="status-container"></div>
+
+  <!-- Send Trigger -->
+  <div>
+    <button id="sendBtn" class="btn btn-success" disabled>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+      Send to Website
+    </button>
+  </div>
+
+  <!-- Script logic loaded at the bottom -->
+  <script src="popup.js"></script>
+</body>
+</html>
