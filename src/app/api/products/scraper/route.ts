@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     // 3. Parse and Validate Request Body
     const body = await request.json();
-    const { title, price, mrp, category, description, imageUrl, sourceUrl } = body;
+    const { title, price, mrp, category, brand, description, imageUrl, sourceUrl } = body;
 
     if (!title) {
       return NextResponse.json(
@@ -92,6 +92,7 @@ export async function POST(request: NextRequest) {
       price: parsedPrice,
       mrp: parsedMrp,
       category: category || null,
+      brand: brand || null,
       image: imageUrl || null,
       images: imageUrl ? [imageUrl] : [],
       status: 'active', // Saved as active directly

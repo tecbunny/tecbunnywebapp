@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const priceInput = document.getElementById('productPrice');
   const mrpInput = document.getElementById('productMrp');
   const categoryInput = document.getElementById('productCategory');
+  const brandInput = document.getElementById('productBrand');
   const descInput = document.getElementById('productDescription');
   const imgInput = document.getElementById('productImage');
 
@@ -174,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceInput.value = data.price || '';
         mrpInput.value = data.mrp || '';
         categoryInput.value = data.category || '';
+        brandInput.value = data.brand || '';
         descInput.value = data.description || '';
         imgInput.value = data.imageUrl || '';
         currentSourceUrl = data.sourceUrl || tab.url;
@@ -213,6 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
       price: priceInput.value.trim(),
       mrp: mrpInput.value.trim(),
       category: categoryInput.value.trim(),
+      brand: brandInput.value.trim(),
       description: descInput.value.trim(),
       imageUrl: imgInput.value.trim(),
       sourceUrl: currentSourceUrl

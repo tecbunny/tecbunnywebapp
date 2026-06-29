@@ -220,6 +220,16 @@
         category = crumbs.join(' > ');
       }
 
+      // Brand on Amazon
+      let brand = '';
+      const brandEl = document.getElementById('bylineInfo') || document.getElementById('brand') || document.querySelector('.po-brand .a-span9') || document.querySelector('.po-brand span');
+      if (brandEl) {
+        brand = brandEl.textContent.trim()
+          .replace(/Visit the\s+/i, '')
+          .replace(/\s+Store/i, '')
+          .replace(/Brand:\s+/i, '');
+      }
+
       // Feature bullets / Product description
       const bulletsEl = document.getElementById('feature-bullets');
       const descEl = document.getElementById('productDescription');
@@ -247,7 +257,7 @@
         }
       }
 
-      return { title, price, mrp, category, description, imageUrl };
+      return { title, price, mrp, category, brand, description, imageUrl };
     }
 
     // Flipkart Extractor
@@ -271,13 +281,20 @@
         category = crumbs.join(' > ');
       }
 
+      // Brand on Flipkart
+      const brandEl = document.querySelector('span[class*="brand" i]') || document.querySelector('.G6XhEE') || document.querySelector('a[class*="brand" i]');
+      let brand = brandEl ? brandEl.textContent.trim() : '';
+      if (!brand && title) {
+        brand = title.split(' ')[0];
+      }
+
       const descEl = document.querySelector('._1mX1Vo') || document.querySelector('.yN-eZm') || document.querySelector('div[class*="product-description"]');
       const description = descEl ? descEl.textContent.trim() : '';
 
       const imgEl = document.querySelector('img[class*="_396cs4"]') || document.querySelector('img.q6DClP') || document.querySelector('._396cs4');
       const imageUrl = imgEl ? imgEl.getAttribute('src') || imgEl.src : '';
 
-      return { title, price, mrp, category, description, imageUrl };
+      return { title, price, mrp, category, brand, description, imageUrl };
     }
 
     // JioMart Extractor
@@ -301,13 +318,20 @@
         category = crumbs.join(' > ');
       }
 
+      // Brand on JioMart
+      const brandEl = document.querySelector('.pdp-brand-name') || document.getElementById('brand_name') || document.querySelector('.brand');
+      let brand = brandEl ? brandEl.textContent.trim() : '';
+      if (!brand && title) {
+        brand = title.split(' ')[0];
+      }
+
       const descEl = document.querySelector('#pdp_desc') || document.querySelector('.pdp-desc-content') || document.querySelector('#product_description');
       const description = descEl ? descEl.textContent.trim() : '';
 
       const imgEl = document.querySelector('#main_img') || document.querySelector('.main-image img') || document.querySelector('#pdp-main-image img');
       const imageUrl = imgEl ? imgEl.getAttribute('src') || imgEl.src : '';
 
-      return { title, price, mrp, category, description, imageUrl };
+      return { title, price, mrp, category, brand, description, imageUrl };
     }
 
     return null;
@@ -353,6 +377,22 @@
   const jsonLd = getJsonLdData() || {};
   const domainData = getDomainSpecificData() || {};
 
+  function getFallbackBrand(jsonLdData, prodTitle) {
+    if (jsonLdData && jsonLdData.brand) {
+      if (typeof jsonLdData.brand === 'object') {
+        return jsonLdData.brand.name || '';
+      }
+      return jsonLdData.brand;
+    }
+    const metaBrand = getMetaContent('product:brand') || getMetaContent('brand');
+    if (metaBrand) return metaBrand;
+    if (prodTitle) {
+      const firstWord = prodTitle.trim().split(' ')[0];
+      if (firstWord && firstWord.length > 1) return firstWord;
+    }
+    return '';
+  }
+
   // Title: Domain-Specific -> JSON-LD -> OG Tag -> Meta Title -> Fallback Title
   const title = domainData.title ||
                 jsonLd.title || 
@@ -379,6 +419,11 @@
                    getFallbackCategory() || 
                    '';
 
+  // Brand: Domain-Specific -> Fallback Brand
+  const brand = domainData.brand || 
+                getFallbackBrand(jsonLd, title) || 
+                '';
+
   // Description: Domain-Specific -> JSON-LD -> OG Description -> Meta Description
   const description = domainData.description ||
                       jsonLd.description || 
@@ -401,6 +446,7 @@
     price: price.trim(),
     mrp: mrp.trim(),
     category: category.trim(),
+    brand: brand.trim(),
     description: description.trim(),
     imageUrl: imageUrl.trim(),
     sourceUrl: sourceUrl.trim()
