@@ -18,9 +18,10 @@ async function run() {
   });
 
   const { data, error } = await supabase
-    .from('inventory_items')
+    .from('orders')
     .select('*')
-    .limit(1);
+    .eq('id', 'aa7be19e-a8ce-4bf2-819e-a81baf9b6201')
+    .maybeSingle();
 
   if (error) {
     console.log('Postgres Query Error Message:', error.message);
