@@ -316,24 +316,47 @@ function PayuPaymentContent() {
             You will be redirected to PayU to complete your payment. Please do not refresh or close the window during the transaction.
           </p>
 
-          <Button
-            onClick={initiatePayuPayment}
-            disabled={processing}
-            className="w-full"
-            size="lg"
-          >
-            {processing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Connecting to PayU…
-              </>
-            ) : (
-              <>
+          {payuData ? (
+            <form
+              ref={formRef}
+              method="post"
+              action={payuData.paymentUrl}
+              className="space-y-4"
+            >
+              {Object.entries(payuData.params).map(([key, value]) => (
+                <input key={key} type="hidden" name={key} value={value} />
+              ))}
+              
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+                disabled={processing}
+              >
                 <CreditCard className="mr-2 h-4 w-4" />
                 Proceed to PayU Checkout
-              </>
-            )}
-          </Button>
+              </Button>
+            </form>
+          ) : (
+            <Button
+              onClick={initiatePayuPayment}
+              disabled={processing}
+              className="w-full"
+              size="lg"
+            >
+              {processing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Connecting to PayU…
+                </>
+              ) : (
+                <>
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  Proceed to PayU Checkout
+                </>
+              )}
+            </Button>
+          )}
 
           {submitted && gatewayUrl && (
             <p className="text-xs text-muted-foreground text-center">
@@ -347,19 +370,6 @@ function PayuPaymentContent() {
               </Button>
               .
             </p>
-          )}
-
-          {payuData && (
-            <form
-              ref={formRef}
-              method="post"
-              action={payuData.paymentUrl}
-              className="hidden"
-            >
-              {Object.entries(payuData.params).map(([key, value]) => (
-                <input key={key} type="hidden" name={key} value={value} />
-              ))}
-            </form>
           )}
         </CardContent>
       </Card>
