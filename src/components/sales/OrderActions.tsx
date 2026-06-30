@@ -756,15 +756,17 @@ export function OrderActions({ order, onStatusUpdate, variant = 'dropdown' }: Or
           <>
             <Button
               variant="outline"
-              size="sm"
+              size="icon"
+              className="h-8 w-8 shrink-0"
               onClick={() => window.open(`/orders/${order.id}`, '_blank')}
+              title="View Details"
             >
-              <Eye className="h-4 w-4 mr-2" />
-              View Details
+              <Eye className="h-4 w-4" />
+              <span className="sr-only">View Details</span>
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
+                <Button variant="ghost" className="h-8 w-8 p-0 shrink-0">
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -796,26 +798,30 @@ export function OrderActions({ order, onStatusUpdate, variant = 'dropdown' }: Or
             </DropdownMenu>
           </>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <Button
               variant="outline"
-              size="sm"
+              size="icon"
+              className="h-8 w-8 shrink-0"
               onClick={() => window.open(`/orders/${order.id}`, '_blank')}
+              title="View Details"
             >
-              <Eye className="h-4 w-4 mr-2" />
-              View Details
+              <Eye className="h-4 w-4" />
+              <span className="sr-only">View Details</span>
             </Button>
             <Button
               variant="outline"
-              size="sm"
+              size="icon"
+              className="h-8 w-8 shrink-0"
               onClick={handlePrintInvoice}
+              title="Print Invoice"
             >
-              <Printer className="h-4 w-4 mr-2" />
-              Print Invoice
+              <Printer className="h-4 w-4" />
+              <span className="sr-only">Print Invoice</span>
             </Button>
             {!hasPermission && (
-              <div className="text-xs text-muted-foreground">
-                {order.type === 'Pickup' ? 'Sales Required' : 'Manager Required'}
+              <div className="text-[10px] text-muted-foreground whitespace-nowrap">
+                {order.type === 'Pickup' ? 'Sales Req.' : 'Mgr. Req.'}
               </div>
             )}
           </div>

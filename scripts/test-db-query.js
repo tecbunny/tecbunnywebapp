@@ -18,31 +18,8 @@ async function run() {
   });
 
   const { data, error } = await supabase
-    .from('orders')
-    .select(
-      [
-        'id',
-        'customer_id',
-        'customer_name',
-        'customer_email',
-        'customer_phone',
-        'status',
-        'type',
-        'subtotal',
-        'gst_amount',
-        'discount_amount',
-        'shipping_amount',
-        'total',
-        'delivery_address',
-        'notes',
-        'payment_method',
-        'payment_status',
-        'payment_reference',
-        'items',
-        'created_at',
-        'updated_at'
-      ].join(', ')
-    )
+    .from('inventory_items')
+    .select('*')
     .limit(1);
 
   if (error) {
@@ -50,7 +27,8 @@ async function run() {
     console.log('Postgres Query Error Code:', error.code);
     console.log('Postgres Query Error Details:', error.details);
   } else {
-    console.log('Query succeeded, data length:', data?.length);
+    console.log('Query succeeded, columns/keys:', data ? Object.keys(data[0] || {}) : 'none');
+    console.log('Sample row:', data ? data[0] : 'none');
   }
 }
 

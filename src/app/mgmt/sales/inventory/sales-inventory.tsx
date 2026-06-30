@@ -177,61 +177,51 @@ export default function InventoryManagementPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="w-[80px]">Image</TableHead>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Category</TableHead>
-                                    <TableHead className="text-center">Stock Status</TableHead>
-                                    <TableHead className="text-center">Stock Quantity</TableHead>
-                                    <TableHead className="text-center">Actions</TableHead>
+                                    <TableHead className="px-2 py-3 text-xs sm:text-sm font-medium">Product Name</TableHead>
+                                    <TableHead className="px-2 py-3 text-xs sm:text-sm font-medium">Brand</TableHead>
+                                    <TableHead className="px-2 py-3 text-xs sm:text-sm font-medium">Price</TableHead>
+                                    <TableHead className="px-2 py-3 text-center text-xs sm:text-sm font-medium">Stock Quantity</TableHead>
+                                    <TableHead className="px-2 py-3 text-center text-xs sm:text-sm font-medium">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {loading ? (
                                     Array.from({ length: 5 }).map((_, i) => (
                                         <TableRow key={`skeleton-${i}`}>
-                                            <TableCell><Skeleton className="h-12 w-12 rounded-md" /></TableCell>
-                                            <TableCell><Skeleton className="h-6 w-48 rounded-md" /></TableCell>
-                                            <TableCell><Skeleton className="h-6 w-24 rounded-md" /></TableCell>
-                                            <TableCell className="text-center"><Skeleton className="h-6 w-24 mx-auto rounded-md" /></TableCell>
-                                            <TableCell className="text-center"><Skeleton className="h-6 w-12 mx-auto rounded-md" /></TableCell>
-                                            <TableCell className="text-center"><Skeleton className="h-8 w-32 mx-auto rounded-md" /></TableCell>
+                                            <TableCell className="px-2 py-3"><Skeleton className="h-6 w-48 rounded-md" /></TableCell>
+                                            <TableCell className="px-2 py-3"><Skeleton className="h-6 w-24 rounded-md" /></TableCell>
+                                            <TableCell className="px-2 py-3"><Skeleton className="h-6 w-16 rounded-md" /></TableCell>
+                                            <TableCell className="text-center px-2 py-3"><Skeleton className="h-6 w-12 mx-auto rounded-md" /></TableCell>
+                                            <TableCell className="text-center px-2 py-3"><Skeleton className="h-8 w-32 mx-auto rounded-md" /></TableCell>
                                         </TableRow>
                                     ))
                                 ) : (
                                     productList.map((product) => (
                                         <TableRow key={product.id}>
-                                            <TableCell>
-                                                {product.image ? (
-                                                    <Image
-                                                        src={product.image}
-                                                        alt={product.name}
-                                                        width={48}
-                                                        height={48}
-                                                        className="rounded-md object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-12 h-12 rounded-md bg-gray-200 flex items-center justify-center text-gray-600 font-semibold">
-                                                        {(product.name?.charAt(0) ?? '?').toUpperCase()}
-                                                    </div>
-                                                )}
+                                            <TableCell className="font-medium px-2 py-3 text-xs sm:text-sm max-w-[200px] lg:max-w-[300px]">
+                                                <div className="truncate" title={product.name}>
+                                                    {product.name}
+                                                </div>
                                             </TableCell>
-                                            <TableCell className="font-medium">{product.name}</TableCell>
-                                            <TableCell>{product.category}</TableCell>
-                                            <TableCell className="text-center">
-                                                {getStockBadge(product.stock_quantity || 0)}
+                                            <TableCell className="px-2 py-3 text-xs sm:text-sm whitespace-nowrap">
+                                                {product.brand || 'Generic'}
                                             </TableCell>
-                                            <TableCell className="text-center">
+                                            <TableCell className="px-2 py-3 text-xs sm:text-sm whitespace-nowrap">
+                                                ₹{(product.price ?? 0).toFixed(2)}
+                                            </TableCell>
+                                            <TableCell className="text-center px-2 py-3 text-xs sm:text-sm whitespace-nowrap">
                                                 {editingStock === product.id ? (
                                                     <div className="flex items-center gap-2 justify-center">
                                                         <Input
                                                             type="number"
                                                             value={newStockValue}
                                                             onChange={(e) => setNewStockValue(Number(e.target.value))}
-                                                            className="w-20 text-center"
+                                                            className="w-16 h-8 text-center text-xs"
                                                             min="0"
                                                         />
                                                         <Button
                                                             size="sm"
+                                                            className="h-8 text-xs px-2"
                                                             onClick={() => handleStockSave(product.id)}
                                                         >
                                                             Save
@@ -239,6 +229,7 @@ export default function InventoryManagementPage() {
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
+                                                            className="h-8 text-xs px-2"
                                                             onClick={handleStockCancel}
                                                         >
                                                             Cancel
@@ -246,10 +237,11 @@ export default function InventoryManagementPage() {
                                                     </div>
                                                 ) : (
                                                     <div className="flex items-center gap-2 justify-center">
-                                                        <span className="font-bold text-lg">{product.stock_quantity || 0}</span>
+                                                        <span className="font-bold text-xs sm:text-sm">{product.stock_quantity || 0}</span>
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
+                                                            className="h-7 text-xs px-2"
                                                             onClick={() => handleStockEdit(product.id, product.stock_quantity || 0)}
                                                         >
                                                             Edit
@@ -257,32 +249,35 @@ export default function InventoryManagementPage() {
                                                     </div>
                                                 )}
                                             </TableCell>
-                                            <TableCell className="text-center">
-                                                <div className="flex items-center gap-2 justify-center">
+                                            <TableCell className="text-center px-2 py-3 text-xs sm:text-sm whitespace-nowrap">
+                                                <div className="flex items-center gap-1.5 justify-center">
                                                     <Button
                                                         size="sm"
                                                         variant="outline"
+                                                        className="h-7 w-7 p-0"
                                                         onClick={() => updateStock(product.id, Math.max(0, (product.stock_quantity || 0) - 1))}
                                                         disabled={(product.stock_quantity || 0) === 0 || editingStock === product.id}
                                                     >
-                                                        <Minus className="h-4 w-4" />
+                                                        <Minus className="h-3.5 w-3.5" />
                                                     </Button>
                                                     <Button
                                                         size="sm"
                                                         variant="outline"
+                                                        className="h-7 w-7 p-0"
                                                         onClick={() => updateStock(product.id, (product.stock_quantity || 0) + 1)}
                                                         disabled={editingStock === product.id}
                                                     >
-                                                        <Plus className="h-4 w-4" />
+                                                        <Plus className="h-3.5 w-3.5" />
                                                     </Button>
                                                     {product.isSerialNumberCompulsory && (
                                                         <Button 
                                                             variant="outline" 
                                                             size="sm"
+                                                            className="h-7 text-xs px-2"
                                                             onClick={() => setSelectedProduct(product)}
                                                             disabled={(product.stock_quantity || 0) === 0}
                                                         >
-                                                            View Serials ({product.available_serials || 0})
+                                                            Serials ({product.available_serials || 0})
                                                         </Button>
                                                     )}
                                                 </div>
