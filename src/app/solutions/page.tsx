@@ -49,6 +49,76 @@ export default function SolutionsPage() {
     budget: '₹1.5L - ₹5L',
     details: ''
   });
+  const [propertyType, setPropertyType] = React.useState<'resort' | 'coworking' | 'office' | 'restaurant'>('resort');
+  const [dailyRevenue, setDailyRevenue] = React.useState<number>(150000);
+  const [downtimeHours, setDowntimeHours] = React.useState<number>(4);
+  const [affectedSystems, setAffectedSystems] = React.useState<string[]>(['wifi', 'pos']);
+
+  const calculateDowntimeLoss = () => {
+    const hourlyRevenue = dailyRevenue / 24;
+    const propertyImpactCoefficients = {
+      resort: 0.85,
+      coworking: 0.95,
+      office: 0.60,
+      restaurant: 0.50
+    };
+
+    let systemMultiplier = 0.2;
+    if (affectedSystems.includes('wifi')) systemMultiplier += 0.35;
+    if (affectedSystems.includes('pos')) systemMultiplier += 0.30;
+    if (affectedSystems.includes('cctv')) systemMultiplier += 0.10;
+    if (affectedSystems.includes('bookings')) systemMultiplier += 0.25;
+
+    const baseLoss = hourlyRevenue * downtimeHours * propertyImpactCoefficients[propertyType] * systemMultiplier;
+    const operationalOverhead = (dailyRevenue * 0.05) * (downtimeHours / 24);
+    return Math.round(baseLoss + operationalOverhead);
+  };
+
+  const getDowntimeRiskLevel = (loss: number) => {
+    const ratio = loss / dailyRevenue;
+    if (ratio < 0.05) return { text: 'Low Impact', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    if (ratio < 0.15) return { text: 'Moderate Financial Risk', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+    return { text: 'CRITICAL OPERATIONAL EXPOSURE', color: 'text-red-400 bg-red-500/10 border-red-500/20' };
+  };
+
+  const handleSystemToggle = (system: string) => {
+    setAffectedSystems(prev => 
+      prev.includes(system) ? prev.filter(s => s !== system) : [...prev, system]
+    );
+  };
+
+  const applyCalculatorToForm = () => {
+    const computedLoss = calculateDowntimeLoss();
+    const systemNames = affectedSystems.map(s => {
+      if (s === 'wifi') return 'Guest Wi-Fi';
+      if (s === 'pos') return 'POS / Billing System';
+      if (s === 'cctv') return 'CCTV Security';
+      if (s === 'bookings') return 'Online Booking Engine';
+      return s;
+    }).join(', ');
+
+    setForm(prev => ({
+      ...prev,
+      details: `We ran the Downtime Cost Calculator. Details:
+- Property Type: ${propertyType.toUpperCase()}
+- Daily Revenue: ₹${dailyRevenue.toLocaleString('en-IN')}
+- Selected Outage: ${downtimeHours} hours
+- Systems Affected: ${systemNames || 'None'}
+- Computed Financial Loss Risk: ₹${computedLoss.toLocaleString('en-IN')}
+
+We require an infrastructure redundancy proposal with direct SLAs to prevent this downtime.`
+    }));
+
+    const formElement = document.getElementById('b2b-form-section');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    toast({
+      title: 'Calculator Data Applied!',
+      description: 'The results have been pre-filled in your onboarding request requirements below.',
+    });
+  };
 
   const caseStudies: CaseStudy[] = [
     {
@@ -273,8 +343,164 @@ ${form.details.trim()}
           </div>
         </section>
 
+        {/* B2B Institutional Downtime Cost Calculator */}
+        <section className="bg-zinc-950/60 border border-zinc-900 rounded-3xl p-8 relative overflow-hidden space-y-8">
+          <div className="absolute -right-24 -bottom-24 h-48 w-48 rounded-full bg-blue-500/5 blur-3xl pointer-events-none" />
+
+          <div className="space-y-2">
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-blue-400">Financial Risk Assessment</span>
+            <h2 className="text-2xl font-bold font-tech text-white">Institutional Downtime Cost Calculator</h2>
+            <p className="text-xs text-zinc-400 font-light leading-relaxed max-w-2xl">
+              Select your business parameters to project estimated financial exposure from network infrastructure outages during North Goa's high tourist seasons.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Controls */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-450 block">Property Type</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {(['resort', 'coworking', 'office', 'restaurant'] as const).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setPropertyType(type)}
+                      className={`h-11 rounded-xl text-xs font-semibold capitalize border transition-all duration-200
+                        ${propertyType === type
+                          ? 'border-blue-500 bg-blue-500/10 text-white'
+                          : 'border-zinc-900 bg-zinc-950 hover:border-zinc-800 text-zinc-400'
+                        }
+                      `}
+                    >
+                      {type === 'resort' ? 'Resort / Hotel' : type === 'coworking' ? 'Co-working' : type === 'office' ? 'Office' : 'Restaurant'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-450">Average Daily Revenue</span>
+                  <span className="font-bold text-white font-mono">₹{dailyRevenue.toLocaleString('en-IN')}</span>
+                </div>
+                <input
+                  type="range"
+                  min="20000"
+                  max="1000000"
+                  step="10000"
+                  value={dailyRevenue}
+                  onChange={(e) => setDailyRevenue(Number(e.target.value))}
+                  className="w-full h-1 bg-zinc-900 rounded-lg appearance-none cursor-pointer accent-blue-500 focus:outline-none"
+                />
+                <div className="flex justify-between text-[10px] text-zinc-650 font-mono">
+                  <span>₹20,000</span>
+                  <span>₹5,00,000</span>
+                  <span>₹10,00,000</span>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-450">Estimated Outage Duration</span>
+                  <span className="font-bold text-white font-mono">{downtimeHours} Hour{downtimeHours > 1 ? 's' : ''}</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="24"
+                  step="1"
+                  value={downtimeHours}
+                  onChange={(e) => setDowntimeHours(Number(e.target.value))}
+                  className="w-full h-1 bg-zinc-900 rounded-lg appearance-none cursor-pointer accent-blue-500 focus:outline-none"
+                />
+                <div className="flex justify-between text-[10px] text-zinc-650 font-mono">
+                  <span>1 Hour</span>
+                  <span>12 Hours</span>
+                  <span>24 Hours</span>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-450 block">Affected Critical Systems</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { id: 'wifi', label: 'Guest Wi-Fi / Hotspot' },
+                    { id: 'pos', label: 'Billing / POS Terminals' },
+                    { id: 'cctv', label: 'CCTV Feed Monitoring' },
+                    { id: 'bookings', label: 'Front-Desk Booking Sync' }
+                  ].map((sys) => (
+                    <button
+                      key={sys.id}
+                      type="button"
+                      onClick={() => handleSystemToggle(sys.id)}
+                      className={`h-11 px-4 rounded-xl text-xs font-semibold text-left border transition-all duration-200 flex items-center justify-between
+                        ${affectedSystems.includes(sys.id)
+                          ? 'border-blue-500/40 bg-blue-500/5 text-white'
+                          : 'border-zinc-900 bg-zinc-950/40 text-zinc-500 hover:border-zinc-900'
+                        }
+                      `}
+                    >
+                      <span>{sys.label}</span>
+                      <span className={`h-4 w-4 rounded border flex items-center justify-center text-[10px]
+                        ${affectedSystems.includes(sys.id)
+                          ? 'border-blue-500 bg-blue-600 text-white'
+                          : 'border-zinc-855 bg-zinc-900'
+                        }
+                      `}>
+                        {affectedSystems.includes(sys.id) && '✓'}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Results Display */}
+            <div className="lg:col-span-5 p-6 bg-zinc-900/30 border border-zinc-900 rounded-2xl flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Risk Assessment Report</span>
+                  {(() => {
+                    const risk = getDowntimeRiskLevel(calculateDowntimeLoss());
+                    return (
+                      <span className={`text-[9px] font-extrabold uppercase px-2 py-1 rounded border tracking-wider font-tech ${risk.color}`}>
+                        {risk.text}
+                      </span>
+                    );
+                  })()}
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-450 block">Direct Financial Exposure</span>
+                  <div className="text-4xl font-extrabold text-white font-tech tracking-tight">
+                    ₹{calculateDowntimeLoss().toLocaleString('en-IN')}
+                  </div>
+                  <span className="text-[10px] text-zinc-550 font-light block">Estimated direct loss + operational overhead recovery.</span>
+                </div>
+
+                <div className="border-t border-zinc-900/80 pt-4 space-y-2">
+                  <span className="text-[9px] font-extrabold uppercase text-blue-400 tracking-widest block">Technical Justification</span>
+                  <p className="text-[11px] text-zinc-450 leading-relaxed font-light font-sans">
+                    Consumer router chipsets lack multi-WAN failover capability and thermal resistance required for continuous Goan grid fluctuation loads. Switching to managed Ubiquiti switches with automated dual-ISP backup lines reduces downtime probability to sub-0.01%.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={applyCalculatorToForm}
+                className="w-full h-11 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group"
+              >
+                <span>Apply to Redundancy Proposal</span>
+                <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* Split Layout: Lead Capture & Enterprise FAQ */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <section id="b2b-form-section" className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column: Intake Form */}
           <div className="lg:col-span-7 bg-zinc-950/60 border border-zinc-900 rounded-3xl p-8 relative overflow-hidden">
             <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-blue-500/5 blur-2xl pointer-events-none" />

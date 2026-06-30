@@ -53,7 +53,7 @@ export default function CheckoutPage() {
     name: '',
     email: '',
     phone: '',
-    gstin: '',
+    company_gstin: '',
     address: '',
     city: '',
     pincode: '',
@@ -67,12 +67,12 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
-    if (customerInfo.gstin && customerInfo.gstin.length === 15) {
+    if (customerInfo.company_gstin && customerInfo.company_gstin.length === 15) {
       const fetchGstDetails = async () => {
         setIsFetchingGst(true);
         setGstError('');
         try {
-          const res = await fetch(`/api/gst-verify?gstin=${customerInfo.gstin.toUpperCase()}`);
+          const res = await fetch(`/api/gst-verify?gstin=${customerInfo.company_gstin.toUpperCase()}`);
           const data = await res.json();
           if (data.success && data.data) {
             setCustomerInfo(prev => ({
@@ -102,7 +102,7 @@ export default function CheckoutPage() {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [customerInfo.gstin, toast]);
+  }, [customerInfo.company_gstin, toast]);
 
   useEffect(() => {
     if (!quoteId) return;
@@ -161,8 +161,9 @@ export default function CheckoutPage() {
   }, [cartItems]);
 
   useEffect(() => {
-    void refreshPricing();
-  }, [refreshPricing]);
+    const effectiveState = orderType === 'Pickup' ? 'Goa' : customerInfo.state;
+    void refreshPricing(undefined, undefined, effectiveState);
+  }, [refreshPricing, customerInfo.state, orderType]);
 
   // Pre-fill user information when user data is available
   useEffect(() => {
@@ -177,6 +178,48 @@ export default function CheckoutPage() {
       }));
     }
   }, [user]);
+
+  // Debounced background cart recovery trigger
+  useEffect(() => {
+    const cleanPhone = customerInfo.phone.replace(/\D/g, '');
+    let timerId: NodeJS.Timeout | null = null;
+
+    if (cleanPhone.length === 10 && cartItems.length > 0) {
+      const triggerAbandonmentLog = async () => {
+        try {
+          const itemsPayload = cartItems.map(item => ({
+            name: item.title || item.name || '',
+            quantity: item.quantity || 1
+          }));
+
+          const subtotal = pricing?.subtotal ?? cartSubtotal;
+          const gst = pricing?.gstAmount ?? cartGst;
+          const totalAmount = pricing?.finalTotal ?? (subtotal + gst);
+
+          await fetch('/api/cart/abandoned', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: customerInfo.name,
+              phone: cleanPhone,
+              cartItems: itemsPayload,
+              amount: totalAmount
+            })
+          });
+        } catch (e) {
+          console.error('Failed to log abandoned draft cart', e);
+        }
+      };
+
+      timerId = setTimeout(triggerAbandonmentLog, 1500);
+    }
+
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+    };
+  }, [customerInfo.phone, customerInfo.name, cartItems, pricing, cartSubtotal, cartGst]);
 
   // Auto-select first available payment method
   useEffect(() => {
@@ -260,6 +303,13 @@ export default function CheckoutPage() {
         error = 'State is required';
       } else if (!resolveIndianStateInfo(value)) {
         error = 'Enter a valid Indian state or union territory';
+      }
+    } else if (field === 'company_gstin') {
+      if (value.trim()) {
+        const gstinRegex = /^[a-zA-Z0-9]{15}$/;
+        if (!gstinRegex.test(value.trim())) {
+          error = 'GSTIN must be exactly 15 alphanumeric characters';
+        }
       }
     }
 
@@ -391,7 +441,7 @@ export default function CheckoutPage() {
       // Guest checkout is supported; sign in only if you want to save order history.
       // Run field validation
       let isValid = true;
-      const fieldsToValidate = ['name', 'email', 'phone'];
+      const fieldsToValidate = ['name', 'email', 'phone', 'company_gstin'];
       if (orderType === 'Delivery') {
         fieldsToValidate.push('address', 'city', 'pincode', 'state');
       }
@@ -456,7 +506,7 @@ export default function CheckoutPage() {
         customerInfo.notes?.trim(),
         customerInfo.installDate ? `Preferred install date: ${customerInfo.installDate}` : '',
         customerInfo.siteStatus ? `Site status: ${customerInfo.siteStatus}` : '',
-        customerInfo.gstin ? `GSTIN: ${customerInfo.gstin}` : ''
+        customerInfo.company_gstin ? `GSTIN: ${customerInfo.company_gstin}` : ''
       ].filter(Boolean).join(' | ');
 
       const idempotencyKey = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -465,6 +515,7 @@ export default function CheckoutPage() {
         customer_name: customerInfo.name,
         customer_email: customerInfo.email,
         customer_phone: customerInfo.phone,
+        company_gstin: customerInfo.company_gstin || undefined,
         type: serviceOnlyCart ? 'Service' : (hasServiceItem ? 'Delivery' : orderType),
         delivery_address: orderType === 'Delivery' ? 
           `${customerInfo.address}, ${customerInfo.city}, ${customerInfo.state} - ${customerInfo.pincode}` : 
@@ -642,20 +693,21 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center gap-2">
-                      <label htmlFor="gstin" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">GSTIN (Optional)</label>
+                      <label htmlFor="company_gstin" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Company GSTIN (Optional)</label>
                       {isFetchingGst && <span className="h-3 w-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>}
                     </div>
                     <input
                       type="text"
-                      id="gstin"
+                      id="company_gstin"
                       maxLength={15}
-                      value={customerInfo.gstin}
-                      onChange={(event) => handleInputChange('gstin', event.target.value.toUpperCase())}
-                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${gstError ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
+                      value={customerInfo.company_gstin}
+                      onChange={(event) => handleInputChange('company_gstin', event.target.value.toUpperCase())}
+                      onBlur={(event) => handleInputBlur('company_gstin', event.target.value)}
+                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${gstError || fieldErrors.company_gstin ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
                       placeholder="15-character GSTIN"
                     />
-                    {gstError && (
-                      <span className="text-[10px] text-red-400 mt-1 block pl-1">{gstError}</span>
+                    {(gstError || fieldErrors.company_gstin) && (
+                      <span className="text-[10px] text-red-400 mt-1 block pl-1">{gstError || fieldErrors.company_gstin}</span>
                     )}
                   </div>
                 </div>
@@ -1031,6 +1083,74 @@ export default function CheckoutPage() {
                         Initialize Deployment <CheckCircle className="h-4 w-4" />
                       </span>
                     )}
+                  </button>
+                </div>
+
+                {/* B2C WhatsApp Recovery Simulator Panel */}
+                <div className="bento-card p-6 space-y-4 bg-blue-500/5 border border-blue-500/20 rounded-2xl shadow-sm">
+                  <div className="flex items-center gap-2 pb-2 border-b border-blue-500/10">
+                    <Sparkles className="h-4 w-4 text-blue-400" />
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider font-sans tech-heading">WhatsApp Recovery Simulator</h3>
+                  </div>
+
+                  <p className="text-[11px] text-muted-foreground leading-relaxed font-light">
+                    Test the Conversational Commerce triggers. Input your phone number in the contact form, then click below to preview the formatted WhatsApp recovery message with UPI deep-link.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!customerInfo.phone || customerInfo.phone.trim().length < 10) {
+                        toast({
+                          variant: 'destructive',
+                          title: 'Phone Number Required',
+                          description: 'Please input a valid phone number in the Operational Contact form first.',
+                        });
+                        return;
+                      }
+
+                      try {
+                        const itemsPayload = cartItems.map(item => ({
+                          name: item.title || item.name || '',
+                          quantity: item.quantity || 1
+                        }));
+
+                        const subtotal = pricing?.subtotal ?? cartSubtotal;
+                        const gst = pricing?.gstAmount ?? cartGst;
+                        const totalAmount = pricing?.finalTotal ?? (subtotal + gst);
+
+                        const res = await fetch('/api/cart/abandoned', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            name: customerInfo.name || 'Valued Customer',
+                            phone: customerInfo.phone,
+                            cartItems: itemsPayload,
+                            amount: totalAmount
+                          })
+                        });
+
+                        const data = await res.json();
+                        if (data.success) {
+                          alert(`[SIMULATED WHATSAPP MESSAGE SENT TO ${customerInfo.phone}]\n\n${data.whatsappMessage}\n\n[UPI DEEP LINK URL]:\n${data.upiDeepLink}`);
+                          toast({
+                            title: 'Recovery Simulation Success',
+                            description: 'WhatsApp recovery message previewed successfully.',
+                          });
+                        } else {
+                          throw new Error(data.error);
+                        }
+                      } catch (err) {
+                        toast({
+                          variant: 'destructive',
+                          title: 'Simulation Failed',
+                          description: 'Could not execute recovery trigger test.',
+                        });
+                      }
+                    }}
+                    className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] uppercase tracking-wider rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
+                  >
+                    Simulate WhatsApp Recovery
                   </button>
                 </div>
 

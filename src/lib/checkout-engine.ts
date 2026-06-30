@@ -3,6 +3,7 @@ import { offerDiscountService } from './offer-discount-service';
 import { enhancedCommissionService } from './enhanced-commission-service';
 import type { CartItem, Product, CustomerCategory, Coupon, AutoOffer } from './types';
 import { logger } from './logger';
+import { resolveIndianStateInfo, resolveIndianStateFromText } from './indian-tax';
 
 const toPaise = (value: number) => Math.round((Number.isFinite(value) ? value : 0) * 100);
 const fromPaise = (value: number) => value / 100;
@@ -14,6 +15,7 @@ export interface CheckoutEngineRequest {
   customerCategory?: CustomerCategory;
   couponCode?: string;
   salesAgentId?: string; // Optional agent ID to calculate commissions
+  customerState?: string; // Optional state/address to determine GST split
 }
 
 export interface CheckoutEngineResponse {
@@ -22,6 +24,9 @@ export interface CheckoutEngineResponse {
   autoOfferDiscount: number;
   couponDiscount: number;
   gstAmount: number;
+  cgstAmount?: number;
+  sgstAmount?: number;
+  igstAmount?: number;
   finalTotal: number;
   
   bestOffer: AutoOffer | null;
@@ -36,6 +41,15 @@ export interface CheckoutEngineResponse {
     total_price: number;
     discount_amount: number;
     pricing_info: any;
+    isService?: boolean;
+    hsnCode?: string | null;
+    sacCode?: string | null;
+    gstRate?: number;
+    taxableBase?: number;
+    gstAmount?: number;
+    cgst?: number;
+    sgst?: number;
+    igst?: number;
   }>;
 
   commissionEstimate?: {
@@ -78,7 +92,7 @@ export class CheckoutEngine {
       const supabase = await pricingService['getSupabaseClient']();
       const { data: dbProducts, error: dbError } = await supabase
         .from('products')
-        .select('id, title, price, mrp, status, is_deleted, gst_rate, offer_price, stock_quantity')
+        .select('id, title, price, mrp, status, is_deleted, gst_rate, hsn_code, sac_code, is_service, offer_price, stock_quantity')
         .in('id', productIds);
       
       if (dbError || !dbProducts) {
@@ -178,11 +192,23 @@ export class CheckoutEngine {
           .map((share) => fromPaise(share.paise));
       })();
 
+      // Determine geographic tax split based on destination state lookup
+      const resolvedState = request.customerState ? resolveIndianStateInfo(request.customerState) : null;
+      const isIntraState = !request.customerState || resolvedState?.name?.toLowerCase() === 'goa';
+
+      let totalCgst = 0;
+      let totalSgst = 0;
+      let totalIgst = 0;
+
       const itemPricesWithTaxes = pricedItems.map((item, index) => {
         const pInfo = pricingResult.item_prices[index];
         const dbProd = dbProductMap.get(item.id);
         const gstRateRaw = dbProd?.gst_rate ?? 18;
         const gstRate = typeof gstRateRaw === 'number' ? gstRateRaw : parseFloat(gstRateRaw) || 18;
+        
+        const isService = dbProd?.is_service ?? false;
+        const hsnCode = isService ? null : (dbProd?.hsn_code || null);
+        const sacCode = isService ? (dbProd?.sac_code || null) : null;
 
         const itemGrossInclusive = roundMoney(item.price * item.quantity);
         const itemDiscountInclusive = distributedDiscounts[index];
@@ -192,9 +218,23 @@ export class CheckoutEngine {
         const itemNetExclusive = roundMoney(itemNetInclusive / (1 + (gstRate / 100)));
         const itemGst = roundMoney(itemNetInclusive - itemNetExclusive);
 
+        let cgst = 0;
+        let sgst = 0;
+        let igst = 0;
+
+        if (isIntraState) {
+          cgst = roundMoney(itemGst / 2);
+          sgst = roundMoney(itemGst - cgst);
+        } else {
+          igst = itemGst;
+        }
+
         finalSubtotal += itemNetExclusive;
         gstAmount += itemGst;
         finalTotal += itemNetInclusive;
+        totalCgst += cgst;
+        totalSgst += sgst;
+        totalIgst += igst;
 
         return {
           product_id: item.id,
@@ -202,7 +242,16 @@ export class CheckoutEngine {
           unit_price: item.price,
           total_price: itemNetExclusive, // Price before tax after discount
           discount_amount: itemDiscountInclusive,
-          pricing_info: pInfo.pricing_info
+          pricing_info: pInfo.pricing_info,
+          isService,
+          hsnCode,
+          sacCode,
+          gstRate,
+          taxableBase: itemNetExclusive,
+          gstAmount: itemGst,
+          cgst,
+          sgst,
+          igst
         };
       });
 
@@ -238,6 +287,9 @@ export class CheckoutEngine {
         autoOfferDiscount: roundMoney(discountResult.offerDiscount),
         couponDiscount: roundMoney(discountResult.couponDiscount),
         gstAmount: Math.max(0, roundMoney(gstAmount)),
+        cgstAmount: Math.max(0, roundMoney(totalCgst)),
+        sgstAmount: Math.max(0, roundMoney(totalSgst)),
+        igstAmount: Math.max(0, roundMoney(totalIgst)),
         finalTotal: Math.max(0, roundMoney(finalTotal)),
         bestOffer: discountResult.bestOffer,
         appliedCoupon,

@@ -41,6 +41,8 @@ const PUBLIC_PRODUCT_COLUMNS = [
   'hsncode',
   'hsn',
   'hsn_sac',
+  'sac_code',
+  'is_service',
   'gst_rate',
   'gst_percentage',
   'tax_ai_confidence',
@@ -85,6 +87,8 @@ const COLUMN_ALIASES: Record<string, string[]> = {
   seo_title: ['seo_title', 'meta_title'],
   seo_description: ['seo_description', 'meta_description'],
   hsnCode: ['hsn_code', 'hsncode'],
+  sacCode: ['sac_code', 'saccode'],
+  isService: ['is_service', 'isservice'],
   gstRate: ['gst_rate', 'gst_percentage'],
   product_url: ['product_url'],
   mrp: ['mrp', 'maximum_retail_price', 'list_price'],
@@ -121,6 +125,22 @@ function normalizeProductRecord(product: any) {
       product.hsnCode = normalized;
     }
   }
+
+  const rawSac =
+    product.sacCode ??
+    product.sac_code ??
+    null;
+  if (rawSac != null) {
+    const normalized = typeof rawSac === 'string' ? rawSac.trim() : rawSac;
+    if (normalized && typeof normalized === 'string') {
+      product.sacCode = normalized;
+    }
+  }
+
+  product.isService =
+    product.isService ??
+    product.is_service ??
+    false;
 
   const rawGst =
     product.gstRate ??

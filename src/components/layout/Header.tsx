@@ -44,7 +44,7 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
 
 const navLinks = [
   { name: 'Home', href: '/' },
-  { name: 'Enterprise Solutions', href: '/solutions' },
+  { name: 'Solutions', href: '/solutions' },
   { name: 'Products', href: '/products' },
   { 
     name: 'Services', 
@@ -59,8 +59,8 @@ const navLinks = [
     ]
   },
   { name: 'Portfolio', href: '/portfolio' },
-  { name: 'About Us', href: '/about' },
-  { name: 'Contact Us', href: '/contact' },
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/contact' },
   {
     name: 'Policies',
     href: '/info/policies',
@@ -238,7 +238,7 @@ export function Header() {
                   >
                     <Link
                       href={item.href}
-                      className={`relative rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-all duration-200 inline-flex items-center gap-1 xl:px-5
+                      className={`relative rounded-full px-2.5 py-1.5 text-xs font-bold whitespace-nowrap transition-all duration-200 inline-flex items-center gap-1 lg:px-3 lg:text-xs xl:px-4.5 xl:text-sm
                         ${isActive(item.href)
                           ? 'bg-blue-500/20 text-white border border-blue-500/30 shadow-sm'
                           : 'text-zinc-300 hover:text-white hover:bg-zinc-800/50'
@@ -268,7 +268,7 @@ export function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`relative inline-flex items-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-all duration-200 xl:px-5
+                    className={`relative inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-bold transition-all duration-200 lg:px-3 lg:text-xs xl:px-4.5 xl:text-sm
                       ${isActive(item.href)
                         ? 'bg-blue-500/20 text-white border border-blue-500/30 shadow-sm'
                         : 'text-zinc-300 hover:text-white hover:bg-zinc-800/50'

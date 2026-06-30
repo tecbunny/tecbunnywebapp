@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { items, customerCategory, couponCode, salesAgentId } = body;
+    const { items, customerCategory, couponCode, salesAgentId, customerState } = body;
 
     if (!items || !Array.isArray(items)) {
       return NextResponse.json({ error: 'Invalid items payload' }, { status: 400 });
@@ -42,7 +42,8 @@ export async function POST(req: NextRequest) {
       userId,
       customerCategory: customerCategory ? String(customerCategory) as CustomerCategory : undefined,
       couponCode: couponCode ? String(couponCode) : undefined,
-      salesAgentId: salesAgentId ? String(salesAgentId) : undefined
+      salesAgentId: salesAgentId ? String(salesAgentId) : undefined,
+      customerState: customerState ? String(customerState) : undefined
     });
 
     // Marketing Layer: Inject B2B ITC Incentive Alert

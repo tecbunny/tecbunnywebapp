@@ -113,47 +113,6 @@ logger.info('order_create_attempt', { userId: effectiveUserId });
       return apiError('VALIDATION_ERROR', { correlationId, overrideMessage: 'Missing required customer information' });
     }
 
-    // Security: Recalculate totals server-side to prevent price tampering
-    // We now rely solely on the CheckoutEngine for the final source of truth for taxes and totals
-    const checkoutResult = await checkoutEngine.calculate({
-      items: (orderData.items || []).map((item: any) => ({
-        id: item.id || item.productId,
-        quantity: item.quantity,
-        price: item.price,
-      })),
-      userId: effectiveUserId || undefined,
-      couponCode: orderData.coupon_code || orderData.couponCode || undefined,
-      salesAgentId: orderData.agent_id || undefined,
-    });
-
-    const serverDiscountPaise = Math.round(checkoutResult.totalDiscount * 100);
-    const clientDiscountPaise = Math.round(Math.max(0, orderData.discount_amount || 0) * 100);
-
-    if (clientDiscountPaise > serverDiscountPaise + 100) { // 100 Paise (1 INR) tolerance
-      logger.warn('order_discount_tampered', {
-        userId: effectiveUserId,
-        clientDiscount: clientDiscountPaise / 100,
-        serverDiscount: serverDiscountPaise / 100
-      });
-      return apiError('VALIDATION_ERROR', { correlationId, overrideMessage: 'Invalid discount amount' });
-    }
-
-    const subtotal = checkoutResult.subtotal;
-    const gst_amount = checkoutResult.gstAmount;
-    const discount_amount = checkoutResult.totalDiscount;
-    const shipping_amount = 0; // Fix: calculate shipping rules definitively here instead of trusting client
-    const total = checkoutResult.finalTotal + shipping_amount;
-
-    // Re-map validated items from checkout engine for the RPC
-    const validatedItems = checkoutResult.itemPrices.map(item => ({
-      id: item.product_id,
-      productId: item.product_id,
-      quantity: item.quantity,
-      price: item.unit_price,
-      total_price: item.total_price,
-      discount_amount: item.discount_amount
-    }));
-    
     const normalizeOrderType = (value: unknown): string => {
       if (typeof value !== 'string') return '';
       const key = value.trim().toLowerCase();
@@ -183,6 +142,63 @@ logger.info('order_create_attempt', { userId: effectiveUserId });
       orderType = 'Delivery';
     }
 
+    const destinationState = resolveIndianStateInfo(orderData.place_of_supply_state_code)
+      ?? resolveIndianStateInfo(orderData.customer_state_code)
+      ?? resolveIndianStateInfo(orderData.customer_state)
+      ?? resolveIndianStateFromText(orderData.delivery_address)
+      ?? (orderType === 'Pickup' ? TECBUNNY_REGISTERED_STATE : null);
+
+    // Security: Recalculate totals server-side to prevent price tampering
+    // We now rely solely on the CheckoutEngine for the final source of truth for taxes and totals
+    const checkoutResult = await checkoutEngine.calculate({
+      items: (orderData.items || []).map((item: any) => ({
+        id: item.id || item.productId,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      userId: effectiveUserId || undefined,
+      couponCode: orderData.coupon_code || orderData.couponCode || undefined,
+      salesAgentId: orderData.agent_id || undefined,
+      customerState: destinationState?.name || undefined
+    });
+
+    const serverDiscountPaise = Math.round(checkoutResult.totalDiscount * 100);
+    const clientDiscountPaise = Math.round(Math.max(0, orderData.discount_amount || 0) * 100);
+
+    if (clientDiscountPaise > serverDiscountPaise + 100) { // 100 Paise (1 INR) tolerance
+      logger.warn('order_discount_tampered', {
+        userId: effectiveUserId,
+        clientDiscount: clientDiscountPaise / 100,
+        serverDiscount: serverDiscountPaise / 100
+      });
+      return apiError('VALIDATION_ERROR', { correlationId, overrideMessage: 'Invalid discount amount' });
+    }
+
+    const subtotal = checkoutResult.subtotal;
+    const gst_amount = checkoutResult.gstAmount;
+    const discount_amount = checkoutResult.totalDiscount;
+    const shipping_amount = 0; // Fix: calculate shipping rules definitively here instead of trusting client
+    const total = checkoutResult.finalTotal + shipping_amount;
+
+    // Re-map validated items from checkout engine for the RPC
+    const validatedItems = checkoutResult.itemPrices.map(item => ({
+      id: item.product_id,
+      productId: item.product_id,
+      quantity: item.quantity,
+      price: item.unit_price,
+      total_price: item.total_price,
+      discount_amount: item.discount_amount,
+      isService: item.isService || false,
+      hsnCode: item.hsnCode || null,
+      sacCode: item.sacCode || null,
+      gstRate: item.gstRate || 18,
+      taxableBase: item.taxableBase || item.total_price,
+      gstAmount: item.gstAmount || 0,
+      cgst: item.cgst || 0,
+      sgst: item.sgst || 0,
+      igst: item.igst || 0
+    }));
+
     const serviceOrderTypes = new Set(['Service', 'Repair', 'Installation', 'Setup']);
     if (serviceOrderTypes.has(orderType)) {
       const servicePincode = extractPincode(orderData);
@@ -206,11 +222,6 @@ logger.info('order_create_attempt', { userId: effectiveUserId });
     const pickupStore = orderType === 'Pickup'
       ? (orderData.pickup_store || orderData.delivery_address || null)
       : null;
-    const destinationState = resolveIndianStateInfo(orderData.place_of_supply_state_code)
-      ?? resolveIndianStateInfo(orderData.customer_state_code)
-      ?? resolveIndianStateInfo(orderData.customer_state)
-      ?? resolveIndianStateFromText(orderData.delivery_address)
-      ?? (orderType === 'Pickup' ? TECBUNNY_REGISTERED_STATE : null);
     const placeOfSupply = formatPlaceOfSupply(
       destinationState,
       typeof orderData.place_of_supply === 'string' ? orderData.place_of_supply : orderData.customer_state,

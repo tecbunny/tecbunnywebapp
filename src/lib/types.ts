@@ -27,6 +27,11 @@ export interface Product {
   image: string;     // Make this required as many components expect it
   warranty?: string;
   hsnCode?: string;
+  hsn_code?: string;
+  sacCode?: string;
+  sac_code?: string;
+  isService?: boolean;
+  is_service?: boolean;
   gstRate?: number;
   gst_rate?: number;
   installation_applicable?: boolean;
@@ -180,6 +185,13 @@ export interface OrderItem {
   price: number;
   gstRate?: number;
   hsnCode?: string;
+  sacCode?: string | null;
+  isService?: boolean;
+  taxableBase?: number;
+  gstAmount?: number;
+  cgst?: number;
+  sgst?: number;
+  igst?: number;
   name: string;
   serialNumbers?: string[];
 }

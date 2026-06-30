@@ -123,8 +123,8 @@ export const useCart = () => {
     storeRemoveCoupon(user);
   }, [storeRemoveCoupon, user]);
 
-  const refreshPricing = useCallback((currentAppliedCoupon?: any) => {
-    return storeRefreshPricing(currentAppliedCoupon, user);
+  const refreshPricing = useCallback((currentAppliedCoupon?: any, customerCategory?: any, customerState?: string) => {
+    return storeRefreshPricing(currentAppliedCoupon, user, customerCategory, customerState);
   }, [storeRefreshPricing, user]);
 
   // Compute legacy values

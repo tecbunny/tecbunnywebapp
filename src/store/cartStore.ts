@@ -77,7 +77,7 @@ export interface CartState {
   clearCart: (user: any) => void;
   applyCoupon: (coupon: Coupon, user: any, customerCategory?: CustomerCategory) => Promise<boolean>;
   removeCoupon: (user: any, customerCategory?: CustomerCategory) => void;
-  refreshPricing: (currentAppliedCoupon: Coupon | null | undefined, user: any, customerCategory?: CustomerCategory) => Promise<void>;
+  refreshPricing: (currentAppliedCoupon: Coupon | null | undefined, user: any, customerCategory?: CustomerCategory, customerState?: string) => Promise<void>;
   resetGuestSession: () => void;
   clearCartMemory: () => void;
   
@@ -261,7 +261,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     }
   },
 
-  refreshPricing: async (currentAppliedCoupon, user, customerCategory) => {
+  refreshPricing: async (currentAppliedCoupon, user, customerCategory, customerState) => {
     const state = get();
     if (!user && isGuestSessionExpired(user)) {
       set({ isSessionExpired: true });
@@ -287,7 +287,8 @@ export const useCartStore = create<CartState>((set, get) => ({
         body: JSON.stringify({
           items: state.cartItems,
           customerCategory: customerCategory,
-          couponCode: appliedCoupon?.code
+          couponCode: appliedCoupon?.code,
+          customerState: customerState
         })
       });
 

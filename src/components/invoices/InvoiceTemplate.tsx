@@ -183,31 +183,44 @@ export function InvoiceTemplate({ order, settings, autoPrint }: InvoiceTemplateP
                             <TableBody>
                                 {order.items.map(item => {
                                     const gstRate = item.gstRate || 0;
-                                    const basePrice = item.price / (1 + (gstRate / 100));
-                                    const taxableValue = basePrice * item.quantity;
-                                    const taxAmount = taxableValue * (gstRate / 100);
+                                    const isService = item.isService ?? (item.sacCode ? true : false);
+                                    const taxCode = isService ? (item.sacCode || 'N/A') : (item.hsnCode || 'N/A');
+
+                                    const taxableValue = typeof item.taxableBase === 'number'
+                                        ? item.taxableBase
+                                        : (item.price / (1 + (gstRate / 100))) * item.quantity;
+                                    const basePrice = item.quantity > 0 ? taxableValue / item.quantity : 0;
+
+                                    const taxAmount = typeof item.gstAmount === 'number'
+                                        ? item.gstAmount
+                                        : taxableValue * (gstRate / 100);
+
                                     const totalWithTax = taxableValue + taxAmount;
                                     const splitRate = gstRate / 2;
-                                    const splitTax = taxAmount / 2;
+
+                                    const cgst = typeof item.cgst === 'number' ? item.cgst : taxAmount / 2;
+                                    const sgst = typeof item.sgst === 'number' ? item.sgst : taxAmount / 2;
+                                    const igst = typeof item.igst === 'number' ? item.igst : taxAmount;
+
                                     return (
                                         <React.Fragment key={item.productId}>
                                             <TableRow>
                                                 <TableCell className="font-medium">{item.name}</TableCell>
-                                                <TableCell className="text-center">{item.hsnCode || 'N/A'}</TableCell>
+                                                <TableCell className="text-center">{taxCode}</TableCell>
                                                 <TableCell className="text-center">{item.quantity}</TableCell>
                                                 <TableCell className="text-right">₹{money(basePrice)}</TableCell>
                                                 <TableCell className="text-right">₹{money(taxableValue)}</TableCell>
                                                 {isIntraStateSupply ? (
                                                     <>
                                                         <TableCell className="text-right">{money(splitRate)}%</TableCell>
-                                                        <TableCell className="text-right">₹{money(splitTax)}</TableCell>
+                                                        <TableCell className="text-right">₹{money(cgst)}</TableCell>
                                                         <TableCell className="text-right">{money(splitRate)}%</TableCell>
-                                                        <TableCell className="text-right">₹{money(splitTax)}</TableCell>
+                                                        <TableCell className="text-right">₹{money(sgst)}</TableCell>
                                                     </>
                                                 ) : (
                                                     <>
                                                         <TableCell className="text-right">{money(gstRate)}%</TableCell>
-                                                        <TableCell className="text-right">₹{money(taxAmount)}</TableCell>
+                                                        <TableCell className="text-right">₹{money(igst)}</TableCell>
                                                     </>
                                                 )}
                                                 <TableCell className="text-right font-medium">₹{money(totalWithTax)}</TableCell>

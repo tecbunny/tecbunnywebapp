@@ -7,12 +7,12 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE
 
 async function run() {
   const supabase = createClient(url, serviceKey);
-  const { data, error } = await supabase.from('orders').select('items').limit(1);
-
+  const { data, error } = await supabase.from('products').select('*').limit(1);
   if (error) {
-    console.error('Error:', error);
+    console.error('Error fetching products:', error);
   } else {
-    console.log('Order Items full JSON:', JSON.stringify(data[0]?.items, null, 2));
+    console.log('Product Columns:', Object.keys(data[0] || {}));
+    console.log('Sample Product:', data[0]);
   }
 }
 run();
