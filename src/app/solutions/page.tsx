@@ -125,7 +125,7 @@ We require an infrastructure redundancy proposal with direct SLAs to prevent thi
       title: "6-Node Mesh Network for Heritage Estate",
       category: "Networking & IT Infrastructure",
       location: "Anjuna, North Goa",
-      scope: "Fitted shielded Cat6 outdoor lines and managed Ubiquiti UniFi access points through 18-inch Portuguese-style stone walls.",
+      scope: "Fitted shielded Cat6 outdoor lines and managed Digisol access points through 18-inch Portuguese-style stone walls.",
       results: "Sub-50ms seamless roaming handoffs with sustained 450+ Mbps download coverage over a 12,000 sq ft footprint.",
       icon: Wifi
     },
@@ -676,7 +676,7 @@ ${form.details.trim()}
                 </div>
                 <div className="space-y-1.5 pt-4">
                   <h4 className="text-xs font-bold text-white">What hardware brands do you configure?</h4>
-                  <p className="text-[11px] text-zinc-500 leading-relaxed font-light">We configure authorized enterprise hardware including Ubiquiti UniFi, TP-Link Omada, Hikvision, CP Plus, and Honeywell.</p>
+                  <p className="text-[11px] text-zinc-500 leading-relaxed font-light">We configure authorized enterprise hardware including Digisol, HFCL IO, TP-Link Omada, Hikvision, CP Plus, and Honeywell.</p>
                 </div>
                 <div className="space-y-1.5 pt-4">
                   <h4 className="text-xs font-bold text-white">Do you offer Net-30 payment terms?</h4>

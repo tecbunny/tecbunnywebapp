@@ -65,12 +65,12 @@ export default function PortfolioPage() {
         "Monsoon humidity protection for outdoor pool access points."
       ],
       blueprint: [
-        { item: "Ubiquiti UniFi U6-Lite Access Points", qty: "6 units" },
-        { item: "Ubiquiti UniFi Cloud Gateway Ultra", qty: "1 unit" },
-        { item: "Ubiquiti UniFi Lite 8-Port PoE Switch", qty: "1 unit" },
+        { item: "Digisol Wi-Fi 6 Access Points", qty: "6 units" },
+        { item: "Digisol Cloud-Managed Gateway", qty: "1 unit" },
+        { item: "Digisol Lite 8-Port PoE Switch", qty: "1 unit" },
         { item: "Finolex Cat6 FTP Shielded Weatherproof Cable", qty: "150 meters" }
       ],
-      results: "Implemented a fully managed UniFi subnet. Handoff latency is verified at sub-50ms (seamless roaming), with a steady 450+ Mbps download speed sustained across all indoor areas and the poolside garden."
+      results: "Implemented a fully managed Digisol subnet. Handoff latency is verified at sub-50ms (seamless roaming), with a steady 450+ Mbps download speed sustained across all indoor areas and the poolside garden."
     },
     {
       title: "8-Camera Enterprise IP CCTV Surveillance Setup",
