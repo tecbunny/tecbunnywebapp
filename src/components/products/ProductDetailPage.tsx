@@ -207,9 +207,15 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
 
     const fallbackText = `Experience the best in ${product.category} technology with the ${displayName}. This premium product combines cutting-edge features with exceptional build quality to deliver outstanding performance and reliability. Perfect for both professionals and enthusiasts who demand the very best.`;
 
-    const rawDescription = (product.description && product.description.trim().length > 0)
+    let rawDescription = (product.description && product.description.trim().length > 0)
       ? product.description
       : `<p>${fallbackText}</p>`;
+
+    // If description lacks common structural HTML tags, assume it's plain text and preserve newlines
+    const hasHtmlStructure = /<\/?(p|br|ul|ol|li|div|h[1-6]|table|blockquote)\b/i.test(rawDescription);
+    if (!hasHtmlStructure) {
+      rawDescription = rawDescription.replace(/\r\n/g, '<br />').replace(/\n/g, '<br />');
+    }
 
     return sanitizeHtml(rawDescription);
   }, [product, displayName]);
