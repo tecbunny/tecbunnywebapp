@@ -158,7 +158,6 @@ async function processInfobipMessages(supabase: any, results: any[], claimedMess
           .from('whatsapp_conversations')
           .insert({
             contact_id: waContact.id,
-            status: 'open',
             last_message_at: timestamp
           })
           .select()
@@ -169,8 +168,7 @@ async function processInfobipMessages(supabase: any, results: any[], claimedMess
         }
       } else {
         await supabase.from('whatsapp_conversations').update({
-          last_message_at: timestamp,
-          status: waConv.status === 'resolved' ? 'open' : waConv.status
+          last_message_at: timestamp
         }).eq('id', waConv.id);
       }
       conversationId = waConv?.id;
