@@ -544,6 +544,7 @@
     warrantyType: '',
     additional1: '',
     additional2: '',
-    additional3: ''
+    additional3: '',
+    rawText: document.body.innerText || ''
   };
 })();

@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const backBtn = document.getElementById('backBtn');
   const saveSettingsBtn = document.getElementById('saveSettingsBtn');
   const scrapeBtn = document.getElementById('scrapeBtn');
+  const aiBtn = document.getElementById('aiBtn');
   const sendBtn = document.getElementById('sendBtn');
 
   // Input Fields
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const settingsStatus = document.getElementById('settingsStatus');
 
   let currentSourceUrl = '';
+  let scrapedRawText = '';
 
   // Helpers
   function showStatus(message, type) {
@@ -193,11 +195,17 @@ document.addEventListener('DOMContentLoaded', () => {
         add2Input.value = data.additional2 || '';
         add3Input.value = data.additional3 || '';
         currentSourceUrl = data.sourceUrl || tab.url;
+        scrapedRawText = data.rawText || '';
 
         updateImagePreview(data.imageUrl);
         
         // Enable send button
         sendBtn.disabled = false;
+        
+        if (scrapedRawText) {
+          aiBtn.style.display = 'block';
+        }
+        
         showStatus('Product scraped successfully! You can review and edit fields before sending.', 'success');
       } else {
         throw new Error('Scraping returned no data.');
@@ -216,6 +224,45 @@ document.addEventListener('DOMContentLoaded', () => {
         Scrape Product
       `;
     }
+  });
+
+  // AI Button Click Handler
+  aiBtn.addEventListener('click', () => {
+    if (!scrapedRawText) return;
+    
+    clearStatus();
+    aiBtn.disabled = true;
+    const originalText = aiBtn.innerHTML;
+    aiBtn.textContent = 'Enhancing...';
+
+    chrome.runtime.sendMessage({ action: 'enhanceProduct', rawText: scrapedRawText }, (response) => {
+      if (chrome.runtime.lastError) {
+        showStatus(`Extension communication error: ${chrome.runtime.lastError.message}`, 'error');
+      } else if (response && response.success && response.data) {
+        const d = response.data;
+        // Only overwrite if the AI found something and the user didn't manually change it to something else (simplification: just overwrite)
+        if (d.title) titleInput.value = d.title;
+        if (d.price) priceInput.value = d.price;
+        if (d.mrp) mrpInput.value = d.mrp;
+        if (d.category) categoryInput.value = d.category;
+        if (d.brand) brandInput.value = d.brand;
+        if (d.shortDescription) shortDescInput.value = d.shortDescription;
+        if (d.modelNo) modelInput.value = d.modelNo;
+        if (d.warrantyPeriod) warrantyPeriodInput.value = d.warrantyPeriod;
+        if (d.warrantyType) warrantyTypeInput.value = d.warrantyType;
+        if (d.additional1) add1Input.value = d.additional1;
+        if (d.additional2) add2Input.value = d.additional2;
+        if (d.additional3) add3Input.value = d.additional3;
+        
+        showStatus('✨ Product details magically enhanced with AI!', 'success');
+      } else {
+        const errMsg = response && response.error ? response.error : 'Unknown AI error.';
+        showStatus(`AI Enhancement failed: ${errMsg}`, 'error');
+      }
+      
+      aiBtn.disabled = false;
+      aiBtn.innerHTML = originalText;
+    });
   });
 
   // Send Button Click Handler

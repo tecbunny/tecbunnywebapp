@@ -28,6 +28,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "3.1024.0",
     "@aws-sdk/s3-request-presigner": "3.1024.0",
+    "@google/genai": "^2.10.0",
     "@hookform/resolvers": "5.2.1",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "1.1.15",
@@ -93,13 +94,13 @@
     "@types/speakeasy": "2.0.10",
     "autoprefixer": "10.4.21",
     "cross-env": "10.0.0",
+    "dotenv": "^17.4.2",
     "postcss": "8.5.14",
     "tailwindcss": "4.1.13",
+    "ts-node": "^10.9.2",
     "typescript": "5.9.2",
     "vite": "^7.3.3",
-    "vitest": "^4.1.5",
-    "dotenv": "^17.4.2",
-    "ts-node": "^10.9.2"
+    "vitest": "^4.1.5"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-x64-gnu": "^4.1.12",

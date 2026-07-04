@@ -9,6 +9,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ success: false, error: error.message });
       });
     return true; // Keep message channel open for asynchronous reply
+  } else if (message.action === 'enhanceProduct') {
+    enhanceProductWithAI(message.rawText)
+      .then(response => {
+        sendResponse(response);
+      })
+      .catch(error => {
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
   }
 });
 
@@ -60,6 +69,55 @@ async function sendProductData(productData) {
     return { 
       success: false, 
       error: `Network failure: ${error.message}. Make sure your website is online and accessible at https://www.tecbunny.com` 
+    };
+  }
+}
+
+async function enhanceProductWithAI(rawText) {
+  const url = 'https://www.tecbunny.com/api/products/scraper/ai';
+  // Retrieve saved credentials from local storage
+  const credentials = await new Promise(resolve => {
+    chrome.storage.local.get(['superadminUser', 'superadminPass'], resolve);
+  });
+
+  const username = credentials.superadminUser || '';
+  const password = credentials.superadminPass || '';
+  
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-superadmin-username': username,
+        'x-superadmin-password': password
+      },
+      body: JSON.stringify({ rawText })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return { success: true, data: data.data };
+    } else {
+      let errorText = '';
+      try {
+        const rawTextData = await response.text();
+        try {
+          const parsed = JSON.parse(rawTextData);
+          errorText = parsed.error || rawTextData;
+        } catch (_) {
+          errorText = rawTextData;
+        }
+      } catch (_) {}
+      
+      return { 
+        success: false, 
+        error: errorText || `Server responded with status ${response.status}`
+      };
+    }
+  } catch (error) {
+    return { 
+      success: false, 
+      error: `Network failure: ${error.message}. Make sure your website is online.` 
     };
   }
 }
