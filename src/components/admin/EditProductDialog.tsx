@@ -40,7 +40,9 @@ import type { Product } from '@/lib/types';
 const productSchema = z.object({
   title: z.string().min(3, 'Title is required'),
   description: z.string().min(10, 'Description is required'),
+  short_description: z.string().optional(),
   price: z.coerce.number().min(0, 'Price must be positive'),
+  mrp: z.coerce.number().min(0).optional(),
   category: z.string().min(1, 'Category is required'),
   brand: z.string().optional(),
   image: z.union([z.string().url('Must be a valid URL'), z.literal('')]).optional(),
@@ -151,7 +153,9 @@ export function EditProductDialog({ open, onOpenChange, product, onProductUpdate
     defaultValues: {
       title: product.title || product.name || '',
       description: product.description || '',
+      short_description: product.short_description || '',
       price: product.price || 0,
+      mrp: product.mrp || 0,
       category: product.category || '',
       brand: product.brand || '',
       image: product.image || '',
@@ -165,7 +169,9 @@ export function EditProductDialog({ open, onOpenChange, product, onProductUpdate
     form.reset({
         title: product.title || product.name || '',
         description: product.description || '',
+        short_description: product.short_description || '',
         price: product.price || 0,
+        mrp: product.mrp || 0,
         category: product.category || '',
         brand: product.brand || '',
         image: product.image || '',
@@ -234,7 +240,9 @@ export function EditProductDialog({ open, onOpenChange, product, onProductUpdate
           title: values.title,
           name: values.title, // For backward compatibility
           description: values.description,
+          short_description: values.short_description,
           price: values.price,
+          mrp: values.mrp,
           category: values.category,
           brand: values.brand,
           image: values.image,
@@ -292,6 +300,53 @@ export function EditProductDialog({ open, onOpenChange, product, onProductUpdate
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="short_description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Short Description (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Brief summary..." 
+                      className="min-h-[80px]"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sale Price (₹)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="mrp"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>MRP (₹)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
