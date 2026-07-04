@@ -460,8 +460,8 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
             <span className="text-foreground font-semibold">{displayName}</span>
           </nav>
 
-          <section className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="space-y-6">
+          <section className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+            <div className="space-y-6 lg:col-span-5">
               <div className="relative bg-white border border-border rounded-3xl p-8 h-[550px] flex items-center justify-center overflow-hidden group shadow-2xl">
                 <div className="absolute inset-0 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                   <div className="product-scan-line bg-gradient-to-b from-transparent via-primary/30 to-transparent"></div>
@@ -535,7 +535,7 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col lg:col-span-7">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground font-tech leading-tight mb-3">
                 {displayName}
               </h1>
@@ -575,19 +575,26 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
                 <p className="text-xs text-muted-foreground/60 font-mono relative z-10">PRICE INCLUSIVE OF GST. INSTALLATION & CABLING CHARGED ON ACTUALS.</p>
               </div>
 
-              <div className="prose prose-invert prose-sm mb-8 text-muted-foreground">
-                <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} className="leading-relaxed" />
+              <div className="mb-8">
                 {highlightSpecs.length > 0 && (
-                  <ul className="list-none pl-0 space-y-2 mt-6">
-                    {highlightSpecs.map(([key, value]) => (
-                      <li key={key} className="flex items-center gap-3 text-sm">
-                        <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
-                        <span className="text-muted-foreground/80 font-mono uppercase text-xs">{key}:</span>
-                        <span className="text-foreground/90 font-medium">{value}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="bg-card/30 border border-border/50 rounded-xl p-5 mb-8">
+                    <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                      <span className="w-1 h-4 bg-primary rounded-full"></span>
+                      Key Specifications
+                    </h3>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 list-none pl-0 m-0">
+                      {highlightSpecs.map(([key, value]) => (
+                        <li key={key} className="flex items-start gap-2 text-sm">
+                          <span className="text-muted-foreground/80 font-mono uppercase text-[11px] w-[100px] shrink-0 pt-0.5">{key}</span>
+                          <span className="text-foreground/90 font-medium break-words leading-tight">{value}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
+                <div className="prose prose-invert prose-sm text-muted-foreground max-w-none space-y-4">
+                  <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} className="leading-relaxed" />
+                </div>
               </div>
 
               <div className="mt-auto space-y-4">
