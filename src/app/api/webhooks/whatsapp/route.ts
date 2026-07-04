@@ -116,11 +116,73 @@ async function processInfobipMessages(supabase: any, results: any[], claimedMess
       customer = newCustomer;
     }
 
-    // Log the message
+    // 1. Find or create WhatsApp contact
+    const contactName = result.contact?.name || customer?.name || `Customer ${phoneNumber.slice(-4)}`;
+    let { data: waContact } = await supabase
+      .from('whatsapp_contacts')
+      .select('*')
+      .eq('phone_number', phoneNumber)
+      .maybeSingle();
+
+    if (!waContact) {
+      const { data: newContact, error: insertError } = await supabase
+        .from('whatsapp_contacts')
+        .insert({
+          phone_number: phoneNumber,
+          name: contactName,
+          customer_id: customer?.id
+        })
+        .select()
+        .single();
+      waContact = newContact;
+      
+      if (insertError) {
+        logger.error('Failed to create whatsapp_contact', { insertError, phoneNumber });
+      }
+    } else if (!waContact.customer_id && customer) {
+      // Link existing wa contact to newly created customer
+      await supabase.from('whatsapp_contacts').update({ customer_id: customer.id }).eq('id', waContact.id);
+    }
+
+    // 2. Find or create WhatsApp conversation
+    let conversationId = null;
+    if (waContact) {
+      let { data: waConv } = await supabase
+        .from('whatsapp_conversations')
+        .select('*')
+        .eq('contact_id', waContact.id)
+        .maybeSingle();
+        
+      const previewText = getMessageContent(result.message) || 'Incoming message';
+        
+      if (!waConv) {
+        const { data: newConv } = await supabase
+          .from('whatsapp_conversations')
+          .insert({
+            contact_id: waContact.id,
+            status: 'open',
+            last_message_at: timestamp,
+            last_message_preview: previewText
+          })
+          .select()
+          .single();
+        waConv = newConv;
+      } else {
+        await supabase.from('whatsapp_conversations').update({
+          last_message_at: timestamp,
+          last_message_preview: previewText,
+          status: waConv.status === 'resolved' ? 'open' : waConv.status
+        }).eq('id', waConv.id);
+      }
+      conversationId = waConv?.id;
+    }
+
+    // 3. Log the message
     await supabase
       .from('whatsapp_messages')
       .insert({
-        customer_id: customer.id,
+        customer_id: customer?.id,
+        conversation_id: conversationId,
         phone_number: phoneNumber,
         message_type: result.message?.type?.toLowerCase() || 'unknown',
         direction: 'inbound',
