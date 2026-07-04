@@ -692,7 +692,9 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
 
                 <p className="text-xs text-center text-muted-foreground/60">
                   <Shield className="inline-block h-3.5 w-3.5 mr-1 text-primary" />
-                  {product.warranty ? `${product.warranty} included.` : '2-Year Manufacturer Warranty included.'}
+                  {((product.specifications as Record<string, string>)?.warrantyPeriod || (product as any).warranty) 
+                    ? `${((product.specifications as Record<string, string>)?.warrantyPeriod || (product as any).warranty)} included.` 
+                    : 'Standard Manufacturer Warranty included.'}
                 </p>
               </div>
             </div>
@@ -767,9 +769,9 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
               {activeTab === 'warranty' && (
                 <div className="rounded-2xl border border-border bg-muted/10 p-6 text-sm text-muted-foreground space-y-4 max-w-2xl backdrop-blur-sm">
                   <p className="leading-relaxed">
-                    {product.warranty
-                      ? `${product.warranty} coverage provided by manufacturer.`
-                      : '2-Year Manufacturer Warranty included with standard purchase.'}
+                    {((product.specifications as Record<string, string>)?.warrantyPeriod || (product as any).warranty)
+                      ? `${((product.specifications as Record<string, string>)?.warrantyPeriod || (product as any).warranty)} coverage provided by manufacturer.`
+                      : 'Standard Manufacturer Warranty included with purchase.'}
                   </p>
                   <div className="flex items-center gap-3 text-muted-foreground/80">
                     <RefreshCw className="h-4 w-4 text-primary animate-spin-slow" />
