@@ -95,9 +95,17 @@ export async function POST(request: NextRequest) {
         additional3: {
           type: Type.STRING,
           description: "A third key feature or specification of the product."
+        },
+        seoTitle: {
+          type: Type.STRING,
+          description: "An optimized SEO Title, max 60 characters, compelling for search engines."
+        },
+        seoDescription: {
+          type: Type.STRING,
+          description: "An optimized SEO Meta Description, max 160 characters, written to maximize click-through rate."
         }
       },
-      required: ["title", "shortDescription"]
+      required: ["title", "shortDescription", "seoTitle", "seoDescription"]
     };
 
     const prompt = `

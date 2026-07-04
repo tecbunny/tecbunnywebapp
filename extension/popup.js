@@ -19,9 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const mrpInput = document.getElementById('productMrp');
   const categoryInput = document.getElementById('productCategory');
   const brandInput = document.getElementById('productBrand');
+  const shortDescInput = document.getElementById('productShortDesc');
+  const seoTitleInput = document.getElementById('seoTitle');
+  const seoDescInput = document.getElementById('seoDesc');
   const descInput = document.getElementById('productDescription');
   const imgInput = document.getElementById('productImage');
-  const shortDescInput = document.getElementById('productShortDesc');
   const modelInput = document.getElementById('productModel');
   const warrantyPeriodInput = document.getElementById('productWarrantyPeriod');
   const warrantyTypeInput = document.getElementById('productWarrantyType');
@@ -247,6 +249,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (d.category) categoryInput.value = d.category;
         if (d.brand) brandInput.value = d.brand;
         if (d.shortDescription) shortDescInput.value = d.shortDescription;
+        if (d.seoTitle) seoTitleInput.value = d.seoTitle;
+        if (d.seoDescription) seoDescInput.value = d.seoDescription;
         if (d.modelNo) modelInput.value = d.modelNo;
         if (d.warrantyPeriod) warrantyPeriodInput.value = d.warrantyPeriod;
         if (d.warrantyType) warrantyTypeInput.value = d.warrantyType;
@@ -281,6 +285,8 @@ document.addEventListener('DOMContentLoaded', () => {
       imageUrl: imgInput.value.trim(),
       sourceUrl: currentSourceUrl,
       shortDescription: shortDescInput.value.trim(),
+      seoTitle: seoTitleInput.value.trim(),
+      seoDescription: seoDescInput.value.trim(),
       modelNo: modelInput.value.trim(),
       warrantyPeriod: warrantyPeriodInput.value.trim(),
       warrantyType: warrantyTypeInput.value.trim(),

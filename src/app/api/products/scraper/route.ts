@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { 
       title, price, mrp, category, brand, description, imageUrl, sourceUrl,
-      shortDescription, modelNo, warrantyPeriod, warrantyType, additional1, additional2, additional3
+      shortDescription, seoTitle, seoDescription, modelNo, warrantyPeriod, warrantyType, additional1, additional2, additional3
     } = body;
 
     if (!title) {
@@ -126,6 +126,10 @@ export async function POST(request: NextRequest) {
       tags: ['scraped'],
       is_active: true,
       stock_quantity: 1,
+      metadata: {
+        ...(seoTitle && { seo_title: seoTitle }),
+        ...(seoDescription && { seo_description: seoDescription })
+      },
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
