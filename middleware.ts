@@ -148,6 +148,7 @@ export async function middleware(request: NextRequest) {
       { path: '/api/quotes/bid', methods: ['POST'] },
       { path: '/api/uploads/quote-documents', methods: ['POST'] },
       { path: '/api/ai/research', methods: ['POST'] },
+      { path: '/api/whatsapp/webhook', methods: ['GET', 'POST'] },
     ];
 
     let isPublicApiRoute = publicApiRoutes.some(route => {
@@ -216,6 +217,7 @@ export async function middleware(request: NextRequest) {
         isInternalApiCall ||
         checkPathPrefix(pathname, '/api/payment/payu/callback') ||
         checkPathPrefix(pathname, '/api/webhooks') ||
+        checkPathPrefix(pathname, '/api/whatsapp/webhook') ||
         checkPathPrefix(pathname, '/api/products/scraper');
 
       if (!isCsrfExempt && !isSameOrigin) {
