@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
 import { logger } from './logger';
 import { getRedis } from './redis';
-import { sendInfobipWhatsAppOtp } from './infobip/infobip-whatsapp-otp';
+import { WhatsAppService } from './whatsapp-service';
 import improvedEmailService from './improved-email-service';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -227,16 +227,19 @@ export class OTPManager {
   }
 
   private async sendWhatsAppOTP(phone: string, code: string, purpose: string): Promise<ChannelSendSuccess> {
-    const infobipResult = await sendInfobipWhatsAppOtp(phone, code, 'Customer', code);
-    if (infobipResult.success) {
+    try {
+      const whatsapp = new WhatsAppService();
+      const formattedPhone = phone.startsWith('+91') ? phone : `+91${phone.replace(/\D/g, '')}`;
+      const result = await whatsapp.sendOTP(formattedPhone, code);
       return {
         success: true,
-        provider: 'infobip-whatsapp',
-        providerMessageId: infobipResult.messageId,
-        raw: infobipResult.raw
+        provider: 'meta-whatsapp',
+        providerMessageId: result?.messages?.[0]?.id,
+        raw: result
       };
+    } catch (error: any) {
+      throw new Error(error.message || 'WhatsApp send failed');
     }
-    throw new Error(infobipResult.error || 'WhatsApp send failed');
   }
 
   private async sendOTPViaChannel(channel: OTPChannel, phone: string | undefined, email: string | undefined, code: string, purpose: string): Promise<any> {

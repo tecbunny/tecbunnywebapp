@@ -243,7 +243,6 @@ export class WhatsAppService {
     to: string, 
     message: any, 
     messageType: 'text' | 'template' = 'text', 
-    isInfobip: boolean = true,
     category: 'orderUpdates' | 'serviceUpdates' | 'securityAlerts' = 'orderUpdates'
   ) {
     try {
@@ -259,37 +258,17 @@ export class WhatsAppService {
       const formattedNumber = cleanNumber.startsWith('91') ? cleanNumber : `91${cleanNumber}`;
 
       let url = `${this.baseUrl}/${this.phoneNumberId}/messages`;
-      let payload: any;
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.accessToken}`
       };
 
-      if (isInfobip) {
-        // Infobip Configuration
-        // Ensure baseUrl is set to Infobip base URL (e.g. https://xyz.api.infobip.com)
-        // Ensure phoneNumberId is the 'from' number
-        url = `${this.baseUrl}/whatsapp/1/message/template`;
-        headers['Authorization'] = `App ${this.accessToken}`;
-        
-        payload = {
-          messages: [
-            {
-              from: this.phoneNumberId,
-              to: formattedNumber,
-              content: messageType === 'text' ? { text: message } : message
-            }
-          ]
-        };
-      } else {
-        // Meta/Cloud API Configuration
-        headers['Authorization'] = `Bearer ${this.accessToken}`;
-        payload = {
-          messaging_product: 'whatsapp',
-          to: formattedNumber,
-          type: messageType,
-          [messageType]: messageType === 'text' ? { body: message } : message
-        };
-      }
+      const payload = {
+        messaging_product: 'whatsapp',
+        to: formattedNumber,
+        type: messageType,
+        [messageType]: messageType === 'text' ? { body: message } : message
+      };
 
       const response = await fetchWithTimeoutAndRetry(url, {
         method: 'POST',
@@ -315,6 +294,33 @@ export class WhatsAppService {
     }
   }
 
+  // Send OTP using Meta Cloud API template
+  async sendOTP(to: string, code: string, templateName: string = 'otp1', languageCode: string = 'en_US') {
+    const templateMessage = {
+      name: templateName,
+      language: { code: languageCode },
+      components: [
+        {
+          type: "body",
+          parameters: [
+            { type: "text", text: code }
+          ]
+        },
+        {
+          type: "button",
+          sub_type: "url",
+          index: "0",
+          parameters: [
+            { type: "text", text: code }
+          ]
+        }
+      ]
+    };
+
+    // 'securityAlerts' = bypass marketing consent for critical auth messages
+    return this.sendMessage(to, templateMessage, 'template', 'securityAlerts');
+  }
+
   // Send welcome message template
   async sendWelcomeTemplate(to: string, data: z.infer<typeof accountWelcomeSchema>) {
     const { customerName } = data;
@@ -327,7 +333,7 @@ export class WhatsAppService {
       },
       language: 'en_US'
     };
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'serviceUpdates');
   }
 
   // Send agent commission notification
@@ -341,7 +347,7 @@ export class WhatsAppService {
     }
 
     // For now, using text message if no specific template is approved yet
-    return this.sendMessage(to, message, 'text', true, 'serviceUpdates');
+    return this.sendMessage(to, message, 'text', 'serviceUpdates');
   }
 
   // Send order confirmation (remains order_confirmation)
@@ -368,7 +374,7 @@ export class WhatsAppService {
       language: 'en_US'
     };
 
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send shipment confirmation (updated to shipment_shipped)
@@ -402,7 +408,7 @@ export class WhatsAppService {
       language: 'en_US'
     };
 
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send out for delivery notification (shipment_out_for_delivery)
@@ -434,7 +440,7 @@ export class WhatsAppService {
       language: 'en_US'
     };
 
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send payment confirmation (updated to payment_confirmed with params)
@@ -467,7 +473,7 @@ export class WhatsAppService {
       language: 'en_US'
     };
 
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send payment action required (payment_action_pending)
@@ -484,7 +490,7 @@ export class WhatsAppService {
       },
       language: 'en_US'
     };
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send order delayed (order_delayed)
@@ -501,7 +507,7 @@ export class WhatsAppService {
       },
       language: 'en_US'
     };
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send delivery failed (delivery_failed)
@@ -518,7 +524,7 @@ export class WhatsAppService {
       },
       language: 'en_US'
     };
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send delivery confirmation (shipment_delivered)
@@ -535,7 +541,7 @@ export class WhatsAppService {
       },
       language: 'en_US'
     };
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send order pickup ready (order_ready_pickup + pickup_authorization)
@@ -555,7 +561,7 @@ export class WhatsAppService {
     };
     
     // Send first message
-    await this.sendMessage(to, readyContent, 'template', true);
+    await this.sendMessage(to, readyContent, 'template', 'orderUpdates');
 
     // 2. Skip sending Code via WhatsApp (Show on website only)
     logger.info('Order pickup ready sent, skipping WhatsApp OTP code (available on website only):', { to, orderNumber });
@@ -576,7 +582,7 @@ export class WhatsAppService {
       },
       language: 'en_US'
     };
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send order action needed (order_action_needed)
@@ -593,7 +599,7 @@ export class WhatsAppService {
       },
       language: 'en_US'
     };
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send order cancelled (order_cancelled)
@@ -610,7 +616,7 @@ export class WhatsAppService {
       },
       language: 'en_US'
     };
-    return this.sendMessage(to, content, 'template', true);
+    return this.sendMessage(to, content, 'template', 'orderUpdates');
   }
 
   // Send order status update
@@ -706,7 +712,7 @@ ${description}
 
     message += `\n\n🛍️ Shop now: ${link}`;
 
-    return this.sendMessage(to, message, 'text', true, 'serviceUpdates');
+    return this.sendMessage(to, message, 'text', 'serviceUpdates');
   }
 
   // Send cart abandonment reminder
@@ -732,7 +738,7 @@ ${cartLink}
 Need help? Just reply to this message! 💬
     `.trim();
 
-    return this.sendMessage(to, message, 'text', true, 'serviceUpdates');
+    return this.sendMessage(to, message, 'text', 'serviceUpdates');
   }
 }
 

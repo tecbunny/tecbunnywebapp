@@ -72,15 +72,10 @@ class EnvironmentValidator {
     };
 
     // WhatsApp Configuration
-    const infobipApiKey = this.getEnv('INFOBIP_API_KEY', '');
-    const infobipFrom = this.getEnv('INFOBIP_WHATSAPP_FROM', '');
-    const infobipBase = this.getEnv('INFOBIP_BASE_URL', '');
-    const infobipUrl = infobipBase ? `https://${infobipBase}` : '';
-
     this.config.whatsapp = {
-      accessToken: this.optionalEnv('WHATSAPP_ACCESS_TOKEN', 'WhatsApp Access Token') || infobipApiKey,
-      phoneNumberId: this.optionalEnv('WHATSAPP_PHONE_NUMBER_ID', 'WhatsApp Phone Number ID') || infobipFrom,
-      apiUrl: this.getEnv('WHATSAPP_API_URL', infobipUrl || 'https://graph.facebook.com/v18.0')
+      accessToken: this.getEnv('WHATSAPP_ACCESS_TOKEN', 'WhatsApp Access Token'),
+      phoneNumberId: this.getEnv('WHATSAPP_PHONE_NUMBER_ID', 'WhatsApp Phone Number ID'),
+      apiUrl: this.getEnv('WHATSAPP_API_URL', 'https://graph.facebook.com/v19.0')
     };
 
     // App Configuration

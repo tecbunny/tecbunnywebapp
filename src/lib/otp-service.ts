@@ -6,7 +6,7 @@
 import { createServiceClient, isSupabaseServiceConfigured } from '@/lib/supabase/server';
 import type { OtpType } from '@/lib/types';
 import { emailClient } from './email/client';
-import { sendInfobipWhatsAppOtp } from './infobip/infobip-whatsapp-otp';
+import { WhatsAppService } from './whatsapp-service';
 import crypto from 'crypto';
 import { rateLimit } from './rate-limit';
 
@@ -209,7 +209,7 @@ export class OtpService {
   }
 
   /**
-   * Send OTP via Infobip WhatsApp
+   * Send OTP via Meta WhatsApp API
    */
   private async sendOtpWhatsApp(
     phone: string, 
@@ -218,14 +218,10 @@ export class OtpService {
   ): Promise<{ success: boolean; error?: string }> {
     try {
       const formattedPhone = phone.startsWith('+91') ? phone : `+91${phone.replace(/\D/g, '')}`;
-      const userName = otpType === 'agent_order' ? 'Agent order customer' : 'Customer';
-      const result = await sendInfobipWhatsAppOtp(formattedPhone, otpCode, userName, otpCode);
+      const whatsapp = new WhatsAppService();
+      await whatsapp.sendOTP(formattedPhone, otpCode);
 
-      if (!result.success) {
-        return { success: false, error: result.error || 'WhatsApp delivery failed' };
-      }
-
-      logger.debug('WhatsApp OTP sent', { phone: formattedPhone, messageId: result.messageId });
+      logger.debug('WhatsApp OTP sent via Meta Cloud API', { phone: formattedPhone });
       return { success: true };
 
     } catch (error) {

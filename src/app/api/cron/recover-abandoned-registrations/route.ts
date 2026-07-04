@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
         continue;
       }
 
-      // 3. Format WhatsApp Recovery Template (Infobip)
+      // 3. Format WhatsApp Recovery Template (Meta API)
       const recoveryPayload = {
         templateName: 'registration_recovery_guest_1',
         templateData: {
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
       };
 
       try {
-        await whatsapp.sendMessage(session.phone, recoveryPayload, 'template', true, 'securityAlerts');
+        await whatsapp.sendMessage(session.phone, recoveryPayload, 'template', 'securityAlerts');
         
         // 4. Update session to avoid double recovery
         await supabase

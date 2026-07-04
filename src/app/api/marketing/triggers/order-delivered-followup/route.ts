@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       logger.error('upsell_trigger_coupon_generation_failed', { orderId, error: couponError });
     }
 
-    // 4. Dispatch Infobip WhatsApp Payload
+    // 4. Dispatch Meta WhatsApp Payload
     if (order.customer_phone) {
       const payload = {
         templateName: 'surveillance_upsell_1',
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
         language: 'en_US'
       };
 
-      await whatsapp.sendMessage(order.customer_phone, payload, 'template', true, 'orderUpdates');
+      await whatsapp.sendMessage(order.customer_phone, payload, 'template', 'orderUpdates');
       
       logger.info('upsell_whatsapp_dispatched', { orderId, couponCode });
     }
