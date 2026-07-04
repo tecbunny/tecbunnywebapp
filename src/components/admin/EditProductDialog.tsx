@@ -153,7 +153,7 @@ export function EditProductDialog({ open, onOpenChange, product, onProductUpdate
     defaultValues: {
       title: product.title || product.name || '',
       description: product.description || '',
-      short_description: product.short_description || '',
+      short_description: (product as any).short_description || '',
       price: product.price || 0,
       mrp: product.mrp || 0,
       category: product.category || '',
@@ -169,7 +169,7 @@ export function EditProductDialog({ open, onOpenChange, product, onProductUpdate
     form.reset({
         title: product.title || product.name || '',
         description: product.description || '',
-        short_description: product.short_description || '',
+        short_description: (product as any).short_description || '',
         price: product.price || 0,
         mrp: product.mrp || 0,
         category: product.category || '',
@@ -327,7 +327,7 @@ export function EditProductDialog({ open, onOpenChange, product, onProductUpdate
                   <FormItem>
                     <FormLabel>Sale Price (₹)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                      <Input type="number" step="0.01" placeholder="0.00" {...field} value={field.value as string | number | undefined} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -340,7 +340,7 @@ export function EditProductDialog({ open, onOpenChange, product, onProductUpdate
                   <FormItem>
                     <FormLabel>MRP (₹)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                      <Input type="number" step="0.01" placeholder="0.00" {...field} value={field.value as string | number | undefined} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

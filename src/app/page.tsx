@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 
 import HomePage from '@/components/home-page';
 import { createPageMetadata } from '@/lib/metadata';
-import { createClient } from '@/lib/supabase/server';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 // Revalidate homepage every 60 seconds (ISR) to fix 2.8s Document Request Latency
 export const revalidate = 60;
@@ -97,7 +97,10 @@ export default async function Page() {
   let initialHeroCarousel = undefined;
 
   try {
-    const supabase = await createClient();
+    const supabase = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
     // Parallel server-side fetching directly from DB (prevents Next.js internal API deadlocks)
     const [productsRes, brandsRes, heroRes] = await Promise.all([
