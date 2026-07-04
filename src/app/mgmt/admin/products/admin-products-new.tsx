@@ -692,7 +692,7 @@ export default function AdminProductsPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-12">
+                      <TableHead className="w-10">
                         <Checkbox 
                           checked={filteredProducts.length > 0 && selectedProductIds.size === filteredProducts.length}
                           onCheckedChange={handleSelectAll}
@@ -700,11 +700,11 @@ export default function AdminProductsPage() {
                       </TableHead>
                       <TableHead>Title</TableHead>
                       <TableHead>Category</TableHead>
-                      <TableHead>MRP</TableHead>
-                      <TableHead>Sale Price</TableHead>
-                      <TableHead>Stock</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+                      <TableHead className="w-20 lg:w-28">MRP</TableHead>
+                      <TableHead className="w-20 lg:w-28">Sale Price</TableHead>
+                      <TableHead className="hidden lg:table-cell w-16">Stock</TableHead>
+                      <TableHead className="hidden lg:table-cell w-20">Status</TableHead>
+                      <TableHead className="text-right w-24">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -716,29 +716,29 @@ export default function AdminProductsPage() {
                             onCheckedChange={(checked) => handleSelectProduct(product.id, checked as boolean)}
                           />
                         </TableCell>
-                        <TableCell className="font-medium">
+                        <TableCell className="max-w-[120px] lg:max-w-[200px]">
                           <div className="flex items-center gap-2">
                             {getProductDisplayImage(product) ? (
-                              <img src={getProductDisplayImage(product)!} alt={product.title} className="w-8 h-8 rounded object-cover" />
+                              <img src={getProductDisplayImage(product)!} alt={product.title} className="w-8 h-8 rounded object-cover flex-shrink-0" />
                             ) : (
-                              <div className="w-8 h-8 rounded bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground">
+                              <div className="w-8 h-8 rounded bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground flex-shrink-0">
                                 No Image
                               </div>
                             )}
-                            <span className="truncate max-w-[200px]">{product.title || product.name}</span>
+                            <span className="truncate block w-full">{product.title || product.name}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="max-w-[150px] md:max-w-[200px]">
+                        <TableCell className="max-w-[100px] lg:max-w-[150px]">
                           <Badge variant="outline" className="truncate block w-full text-left" title={product.category}>
                             {product.category}
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <div className="flex flex-col gap-1 w-28">
+                          <div className="flex flex-col gap-1 w-20 lg:w-28">
                             <Input
                               type="number"
                               placeholder="MRP"
-                              className="h-8 text-sm"
+                              className="h-8 text-sm px-2"
                               value={editedPrices[product.id]?.mrp ?? product.mrp ?? 0}
                               disabled={savingProductId === product.id}
                               onChange={(e) => handlePriceChange(product.id, 'mrp', parseFloat(e.target.value) || 0)}
@@ -746,21 +746,21 @@ export default function AdminProductsPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex flex-col gap-1 w-28">
+                          <div className="flex flex-col gap-1 w-20 lg:w-28">
                             <Input
                               type="number"
-                              placeholder="Sale Price"
-                              className="h-8 text-sm"
+                              placeholder="Sale"
+                              className="h-8 text-sm px-2"
                               value={editedPrices[product.id]?.price ?? product.price ?? 0}
                               disabled={savingProductId === product.id}
                               onChange={(e) => handlePriceChange(product.id, 'price', parseFloat(e.target.value) || 0)}
                             />
                           </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden lg:table-cell">
                           {product.stock_quantity ?? 'N/A'}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden lg:table-cell">
                           <Badge variant={product.status === 'active' ? 'default' : 'secondary'}>
                             {product.status || 'Active'}
                           </Badge>
