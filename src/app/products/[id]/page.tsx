@@ -47,8 +47,11 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     .filter(([k]) => !['sourceurl', 'source_url', 'source-url'].includes(k.toLowerCase()))
     .map(([k, v]) => `${k}: ${v}`).join(', ') : '';
 
+  const specSeoDesc = (product.specifications as Record<string, string>)?.['seo_description'] || '';
+  const specSeoTitle = (product.specifications as Record<string, string>)?.['seo_title'] || '';
+
   const plainDesc = await cleanMetadataDescription(
-    `${product.seo_description || product.description || product.details} Technical Specs: ${specs}`
+    `${product.seo_description || specSeoDesc || product.description || product.details} Technical Specs: ${specs}`
   );
 
   const productPrice = Number(product.price ?? product.offer_price ?? 0);
@@ -58,7 +61,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const ogTitle = `${formattedPrice} - ${title} (${availabilityText})`;
   const ogDescription = `${plainDesc.substring(0, 120)}... Need a custom setup in Goa? Chat with a TecBunny Expert: https://wa.me/919604136010`;
 
-  const baseTitle = product.title || product.name || '';
+  const baseTitle = product.seo_title || specSeoTitle || product.title || product.name || '';
   const localSuffix = ' | Buy in Goa | TecBunny';
   let seoTitle = baseTitle;
   if (baseTitle.length + localSuffix.length <= 60) {

@@ -120,14 +120,14 @@ export async function POST(request: NextRequest) {
         ...(warrantyType && { 'Warranty Type': warrantyType }),
         ...(additional1 && { 'Additional 1': additional1 }),
         ...(additional2 && { 'Additional 2': additional2 }),
-        ...(additional3 && { 'Additional 3': additional3 })
+        ...(additional3 && { 'Additional 3': additional3 }),
+        ...(seoTitle && { seo_title: seoTitle }),
+        ...(seoDescription && { seo_description: seoDescription })
       },
       short_description: shortDescription || null,
       tags: ['scraped'],
       is_active: true,
       stock_quantity: 1,
-      ...(seoTitle && { seo_title: seoTitle }),
-      ...(seoDescription && { seo_description: seoDescription }),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };

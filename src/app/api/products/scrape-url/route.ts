@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
       You are an expert e-commerce data extraction assistant and a world-class technical copywriter.
       Read the following raw text scraped from an e-commerce product webpage.
       Extract all the required fields into JSON format.
+      For the 'title', DO NOT use the raw long title from the website. Instead, generate a clean, concise title strictly in the format: BRAND NAME MODEL NAME AND NUMBER COLOR AND VARIANT (e.g. "Boat Rockerz 200 Black 16GB").
       For the 'htmlDescription', craft a stunning, well-structured product description using modern HTML tags (like <h3>, <ul>, <li>, <br/>, <strong>). Make sure it looks professional and highlights key features.
       If a field is not present or cannot be determined confidently, leave it empty or null.
       
@@ -126,14 +127,14 @@ export async function POST(request: NextRequest) {
         ...(result.warrantyType && { 'Warranty Type': result.warrantyType }),
         ...(result.additional1 && { 'Additional 1': result.additional1 }),
         ...(result.additional2 && { 'Additional 2': result.additional2 }),
-        ...(result.additional3 && { 'Additional 3': result.additional3 })
+        ...(result.additional3 && { 'Additional 3': result.additional3 }),
+        ...(result.seoTitle && { seo_title: result.seoTitle }),
+        ...(result.seoDescription && { seo_description: result.seoDescription })
       },
       short_description: result.shortDescription || null,
       tags: ['scraped-url'],
       is_active: true,
-      stock_quantity: 1,
-      ...(result.seoTitle && { seo_title: result.seoTitle }),
-      ...(result.seoDescription && { seo_description: result.seoDescription })
+      stock_quantity: 1
     };
 
     const { data: insertedProduct, error: dbError } = await supabase
