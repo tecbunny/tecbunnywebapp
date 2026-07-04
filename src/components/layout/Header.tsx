@@ -228,7 +228,7 @@ export function Header() {
             </div>
           </Link>
 
-          <div className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
+          <div className="hidden min-w-0 flex-1 items-center justify-center xl:flex">
             <nav className="flex items-center gap-1 rounded-full border border-zinc-800 bg-zinc-900 p-1">
               {navLinks.map((item) => (
                 item.children ? (
@@ -285,7 +285,7 @@ export function Header() {
             </nav>
           </div>
 
-          <div className="relative z-20 hidden flex-shrink-0 items-center gap-2 lg:flex xl:gap-3.5">
+          <div className="relative z-20 hidden flex-shrink-0 items-center gap-2 xl:flex xl:gap-3.5">
             {loading ? (
               <div className="flex items-center gap-2 animate-pulse">
                 <div className="h-8 w-14 rounded-full bg-zinc-100" />
@@ -380,7 +380,7 @@ export function Header() {
           </div>
 
           {/* Mobile: cart icon + hamburger */}
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex items-center gap-2 xl:hidden">
             {!isB2BPath && (
               <CartSheet>
                 <button
@@ -418,7 +418,7 @@ export function Header() {
 
       <div
         id="mobile-menu"
-        className={`absolute left-0 top-full w-full border-t border-zinc-800 bg-zinc-950 lg:hidden transition-all duration-300
+        className={`absolute left-0 top-full w-full border-t border-zinc-800 bg-zinc-950 xl:hidden transition-all duration-300
           ${mobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}
         `}
       >

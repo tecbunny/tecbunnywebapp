@@ -8,6 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 
+const Turnstile = NextDynamic(() => import('react-turnstile').then(m => m.default), {
+  ssr: false,
+}) as unknown as React.ComponentType<any>;
+
 function SuperadminSignInForm() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
@@ -17,13 +21,6 @@ function SuperadminSignInForm() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const turnstileSiteKey = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY : undefined;
-  const Turnstile = useMemo(
-    () =>
-      NextDynamic(() => import('react-turnstile').then(m => m.default), {
-        ssr: false,
-      }) as unknown as React.ComponentType<any>,
-    []
-  );
 
   const searchParams = useSearchParams();
   const { toast } = useToast();

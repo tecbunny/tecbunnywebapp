@@ -230,19 +230,32 @@
           .replace(/Brand:\s+/i, '');
       }
 
-      // Feature bullets / Product description
+      // Feature bullets / Product description / Tech Specs
       const bulletsEl = document.getElementById('feature-bullets');
       const descEl = document.getElementById('productDescription');
-      let description = '';
+      const aplusEl = document.getElementById('aplus');
+      const techSpecsEl = document.getElementById('productDetails_techSpec_section_1') || document.getElementById('detailBullets_feature_div') || document.getElementById('detailBulletsWrapper_feature_div');
+      
+      let descParts = [];
+      
       if (bulletsEl) {
-        description = Array.from(bulletsEl.querySelectorAll('li'))
-          .map(li => li.textContent.trim())
-          .filter(text => text.length > 0)
-          .join('<br />');
+        const text = bulletsEl.innerText || bulletsEl.textContent;
+        if (text) descParts.push(text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
       }
-      if (!description && descEl) {
-        description = descEl.textContent.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />');
+      if (descEl) {
+        const text = descEl.innerText || descEl.textContent;
+        if (text) descParts.push(text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
       }
+      if (techSpecsEl) {
+        const text = techSpecsEl.innerText || techSpecsEl.textContent;
+        if (text) descParts.push("<b>Technical Specifications:</b><br />" + text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
+      }
+      if (aplusEl) {
+        const text = aplusEl.innerText || aplusEl.textContent;
+        if (text) descParts.push("<b>From the Manufacturer:</b><br />" + text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
+      }
+      
+      const description = descParts.join('<br /><br />');
 
       // Image
       const imgEl = document.getElementById('landingImage') || document.getElementById('imgBlkFront');
@@ -288,8 +301,24 @@
         brand = title.split(' ')[0];
       }
 
+      const highlightEl = document.querySelector('._2418kt') || document.querySelector('._2cM9lP');
       const descEl = document.querySelector('._1mX1Vo') || document.querySelector('.yN-eZm') || document.querySelector('div[class*="product-description"]');
-      const description = descEl ? descEl.textContent.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />') : '';
+      const specsEl = document.querySelector('._14cfVK') || document.querySelector('.X3BRgc') || document.querySelector('._3k-BhJ') || document.querySelector('._3dtsli');
+      
+      let descParts = [];
+      if (highlightEl) {
+        const text = highlightEl.innerText || highlightEl.textContent;
+        if (text) descParts.push(text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
+      }
+      if (descEl) {
+        const text = descEl.innerText || descEl.textContent;
+        if (text) descParts.push(text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
+      }
+      if (specsEl) {
+        const text = specsEl.innerText || specsEl.textContent;
+        if (text) descParts.push("<b>Specifications:</b><br />" + text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
+      }
+      const description = descParts.join('<br /><br />');
 
       const imgEl = document.querySelector('img[class*="_396cs4"]') || document.querySelector('img.q6DClP') || document.querySelector('._396cs4');
       const imageUrl = imgEl ? imgEl.getAttribute('src') || imgEl.src : '';
@@ -326,7 +355,23 @@
       }
 
       const descEl = document.querySelector('#pdp_desc') || document.querySelector('.pdp-desc-content') || document.querySelector('#product_description');
-      const description = descEl ? descEl.textContent.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />') : '';
+      const featuresEl = document.querySelector('.product-features') || document.querySelector('.pdp-features');
+      const specsEl = document.querySelector('.product-key-features') || document.querySelector('.product-specifications') || document.querySelector('#pdp_specs');
+      
+      let descParts = [];
+      if (featuresEl) {
+        const text = featuresEl.innerText || featuresEl.textContent;
+        if (text) descParts.push(text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
+      }
+      if (descEl) {
+        const text = descEl.innerText || descEl.textContent;
+        if (text) descParts.push(text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
+      }
+      if (specsEl) {
+        const text = specsEl.innerText || specsEl.textContent;
+        if (text) descParts.push("<b>Specifications:</b><br />" + text.trim().replace(/\r\n/g, '<br />').replace(/\n/g, '<br />'));
+      }
+      const description = descParts.join('<br /><br />');
 
       const imgEl = document.querySelector('#main_img') || document.querySelector('.main-image img') || document.querySelector('#pdp-main-image img');
       const imageUrl = imgEl ? imgEl.getAttribute('src') || imgEl.src : '';
