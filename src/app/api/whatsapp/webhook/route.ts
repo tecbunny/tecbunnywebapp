@@ -107,7 +107,7 @@ export async function POST(request: Request) {
             .limit(10);
 
           const aiHistory = (history || []).map(msg => ({
-            role: msg.sender_type === 'customer' ? 'user' : 'model' as const,
+            role: (msg.sender_type === 'customer' ? 'user' : 'model') as 'user' | 'model',
             parts: [{ text: msg.content }]
           }));
 

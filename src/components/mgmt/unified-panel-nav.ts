@@ -139,6 +139,7 @@ export const unifiedPanelNavSections: UnifiedPanelNavSection[] = [
       { href: '/superadmin/mgmt/social-media', label: 'Social Media', icon: Share2, roles: ['superadmin'] },
       { href: '/superadmin/mgmt/offers', label: 'Offers & Coupons', icon: Ticket, roles: ['superadmin'] },
       { href: '/superadmin/mgmt/marketing', label: 'Marketing Target', icon: Activity, roles: ['superadmin'] },
+      { href: '/superadmin/mgmt/whatsapp', label: 'WhatsApp Inbox', icon: MessageSquare, roles: ['superadmin'] },
       { href: '/superadmin/mgmt/ai-config', label: 'AI Configuration', icon: Bot, roles: ['superadmin'], permission: PERMS.AI_CONFIG },
       { href: '/superadmin/mgmt/settings?section=website', label: 'Website Settings', icon: Activity, roles: ['superadmin'], permission: PERMS.SYSTEM_CONFIG },
       { href: '/superadmin/mgmt/settings?section=brand', label: 'Brand Settings', icon: ImageIcon, roles: ['superadmin'], permission: PERMS.SYSTEM_CONFIG },

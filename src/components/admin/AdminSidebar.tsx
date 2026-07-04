@@ -22,7 +22,6 @@ import {
   Share2,
   FileText,
   DollarSign,
-  MessageCircle,
   Settings2,
   Bot,
   Activity,
@@ -72,10 +71,9 @@ export const adminNavSections: NavSection[] = [
     ]
   },
   {
-    title: 'Marketing & Support',
+    title: 'Marketing',
     items: [
       { href: '/mgmt/admin/broadcast-desk', label: 'Broadcast Desk', icon: Megaphone },
-      { href: '/mgmt/admin/whatsapp', label: 'WhatsApp Inbox', icon: MessageSquare },
     ]
   }
 ];
