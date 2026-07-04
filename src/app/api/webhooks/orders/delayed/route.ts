@@ -125,7 +125,7 @@ async function processOrderDelayed(supabase: any, data: any, source: string) {
             }
           },
           language: 'en_US'
-        }, 'template', true, 'orderUpdates');
+        }, 'template', 'orderUpdates');
         
         logger.info('delay_mitigation_applied', { orderId, coupon: warrantyCoupon });
       }
