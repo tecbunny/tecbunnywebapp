@@ -91,6 +91,7 @@ lib-cov
 
 # next.js build output
 .next
+.turbo
 
 # nuxt.js build output
 .nuxt
