@@ -4,7 +4,7 @@ import speakeasy from 'speakeasy';
 import qrcode from 'qrcode';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 import { createServiceClient, isSupabaseServiceConfigured } from './supabase/server';
 
 export interface TwoFactorSetup {

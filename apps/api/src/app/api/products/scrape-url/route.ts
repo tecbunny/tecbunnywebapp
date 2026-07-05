@@ -1,6 +1,6 @@
-import { createServiceClient } from "@tecbunny/core";
+import { createSupabaseServiceClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { GoogleGenAI, Type } from '@google/genai';
 import * as cheerio from 'cheerio';
 
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
 
     const result = JSON.parse(aiResponse.text);
 
-    const supabase = await createServiceClient();
+    const supabase = await createSupabaseServiceClient();
 
     let parsedPrice = 0;
     if (result.price) {

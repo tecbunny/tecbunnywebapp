@@ -1,8 +1,8 @@
-import { createServiceClient } from "@tecbunny/core";
+import { createSupabaseServiceClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
 
 import { WhatsAppService } from "@tecbunny/core/whatsapp-service";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 /**
  * SLA Re-engagement Loop: Automated background evaluation worker
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const supabase = createServiceClient();
+    const supabase = createSupabaseServiceClient();
     const whatsapp = new WhatsAppService();
     
     // Calculate the date 90 days ago

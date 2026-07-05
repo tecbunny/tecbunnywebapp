@@ -1,10 +1,10 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getSessionWithRole } from "@tecbunny/core/auth/server-role";
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 const ADMIN_ROLES = new Set(['admin', 'manager', 'superadmin']);
 
@@ -38,7 +38,7 @@ const mapDiscount = (row: Record<string, any>) => ({
 
 const getSupabaseForRole = (authClient: SupabaseClient, role: string | null) => {
   if (role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured) {
-    return createServiceClient();
+    return createSupabaseServiceClient();
   }
   return authClient;
 };

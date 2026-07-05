@@ -1,4 +1,4 @@
-import type { User as CustomUser, UserRole } from './types';
+import type { User as CustomUser, UserRole } from '@tecbunny/core';
 import { EFFECTIVE_PERMISSIONS, ROLE_DISPLAY_NAME, isAtLeast } from './roles';
 
 // Client-side permission functions that work with our custom User type

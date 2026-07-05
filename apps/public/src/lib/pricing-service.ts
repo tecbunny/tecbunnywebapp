@@ -5,7 +5,7 @@ import { createClient } from "@tecbunny/core";
  */
 
 
-import type { Product, CustomerType, CustomerCategory, B2BCategory } from "@tecbunny/core/types";
+import type { Product, CustomerType, CustomerCategory, B2BCategory } from '@tecbunny/core';
 
 export interface PricingContext {
   customer_type: CustomerType;

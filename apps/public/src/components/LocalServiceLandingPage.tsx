@@ -5,7 +5,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { ArrowRight, Cctv, CheckCircle2, Clock3, Lock, MapPin, MessageSquare, PhoneCall, Shield, ShieldCheck, Wifi, type LucideIcon } from 'lucide-react';
 
 import { Button } from "@tecbunny/ui";
-import { useAnalytics } from '../hooks/use-analytics';
+import { useAnalytics } from '@tecbunny/core';
 
 interface FaqItem {
   question: string;

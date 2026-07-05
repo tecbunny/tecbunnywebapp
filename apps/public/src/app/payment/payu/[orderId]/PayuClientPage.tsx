@@ -15,7 +15,7 @@ import { Badge } from "@tecbunny/ui";
 import { Separator } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";
 import { formatOrderNumber } from "@tecbunny/core/order-utils";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 interface OrderRow {
   id: string;

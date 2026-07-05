@@ -16,9 +16,9 @@ const LEGACY_ANON_KEY_ENV = 'NEXT_PUBLIC_SUPABASE_ANON_KEY';
 const LEGACY_SERVICE_KEY_ENV = 'SUPABASE_SERVICE_ROLE_KEY';
 const SECRET_KEY_ENV = 'SUPABASE_SECRET_KEY';
 
-import { env } from '@/env';
+const env: Record<string, string | undefined> = typeof process !== 'undefined' ? process.env : {};
 
-const trimEnv = (name: string): string => ((env as any)[name] || process.env[name] || '').trim();
+const trimEnv = (name: string): string => ((env)[name] || '').trim();
 
 const isPlaceholder = (value: string): boolean =>
   !value ||

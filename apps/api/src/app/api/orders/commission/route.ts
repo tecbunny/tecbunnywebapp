@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { enhancedCommissionService } from "@tecbunny/core/enhanced-commission-service";
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 // export const dynamic = 'force-dynamic';
 

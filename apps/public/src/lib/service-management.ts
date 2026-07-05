@@ -11,9 +11,9 @@ import type {
   ServiceTicketStatus, 
   ServiceTicketPriority,
   ServiceEngineerSkillLevel
-} from "@tecbunny/core/types";
+} from '@tecbunny/core';
 
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 import { extractPincode, sendServiceTicketRoutingNotifications } from './area-notifications';
 import { checkServiceAreaAvailability } from './service-area-availability';
 

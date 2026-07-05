@@ -6,7 +6,7 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 import UserProfile from '@/components/profile/UserProfile';
 import { useAuth } from "@tecbunny/core/hooks";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 export default function ProfilePage() {
   const { supabase, loading: authLoading, user: authUser } = useAuth();

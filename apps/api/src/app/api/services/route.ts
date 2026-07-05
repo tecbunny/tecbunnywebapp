@@ -1,9 +1,10 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest } from 'next/server';
 
 
-import { logger } from "@tecbunny/core/logger";
-import { apiError, apiSuccess } from "@tecbunny/core/errors";
+import { logger } from "@tecbunny/core";
+import { apiError, apiSuccess } from "@tecbunny/core";
 import { getSessionWithRole } from "@tecbunny/core/auth/server-role";
 
 const ADMIN_ROLES = new Set(['superadmin']);
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
     }
 
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient ?? await createClient();
 
     // Get services with related data
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient ?? await createClient();
 
     const body = await request.json();

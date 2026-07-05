@@ -4,8 +4,8 @@ import {
   createClient as createServerClient,
   isSupabaseServiceConfigured
 } from "@tecbunny/core/supabase/server";
-import { logger } from "@tecbunny/core/logger";
-import { apiError, apiSuccess } from "@tecbunny/core/errors";
+import { logger } from "@tecbunny/core";
+import { apiError, apiSuccess } from "@tecbunny/core";
 import { requireAdmin } from "@tecbunny/core/admin-auth";
 
 // Ensure Node.js runtime for streaming uploads

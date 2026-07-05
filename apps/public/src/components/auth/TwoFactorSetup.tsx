@@ -10,7 +10,7 @@ import { Label } from "@tecbunny/ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
 import { Alert, AlertDescription } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 interface TwoFactorSetupProps {
   onComplete: () => void;

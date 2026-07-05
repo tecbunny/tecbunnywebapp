@@ -1,6 +1,3 @@
-'use client';
-import AdminContactMessages from '@/app/mgmt/admin/contact-messages/admin-contact-messages';
-
 export default function Page() {
-  return <AdminContactMessages />;
+  return <div>Component moved to mgmt app or under construction</div>;
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveIndianStateInfo } from "@tecbunny/core/indian-tax";
 import { rateLimit } from "@tecbunny/core/rate-limit";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 const GST_VERIFY_RATE_LIMIT = { limit: 20, windowMs: 15 * 60 * 1000 };
 

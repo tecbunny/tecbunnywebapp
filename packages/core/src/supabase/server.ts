@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
-import { requireSupabasePublicEnv, requireSupabaseServiceEnv } from './supabase/env';
+import { requireSupabasePublicEnv, requireSupabaseServiceEnv } from './env';
 
 // Determine if we're running locally to conditionally set the cookie domain
 const isLocal = process.env.NODE_ENV === 'development';

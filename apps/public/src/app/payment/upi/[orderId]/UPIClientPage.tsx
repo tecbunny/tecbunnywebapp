@@ -16,7 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecb
 import { Badge } from "@tecbunny/ui";
 import { Separator } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 import { formatOrderNumber } from "@tecbunny/core/order-utils";
 
 

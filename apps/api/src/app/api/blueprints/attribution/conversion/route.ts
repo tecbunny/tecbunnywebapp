@@ -1,7 +1,7 @@
-import { createServiceClient } from "@tecbunny/core";
+import { createSupabaseServiceClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 /**
  * Background query rule to trigger creator milestones
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing attribution context' }, { status: 400 });
     }
 
-    const supabase = createServiceClient();
+    const supabase = createSupabaseServiceClient();
 
     // 1. Fetch the original creator's profile
     const { data: blueprint, error: blueprintError } = await supabase

@@ -22,7 +22,7 @@ import {
 import { getProductDisplayImage } from "@tecbunny/core/image-utils";
 import { cn, revealDelayClass } from "@tecbunny/core/utils";
 import { OptimizedImage } from "@tecbunny/ui";
-import type { Product } from "@tecbunny/core/types";
+import type { Product } from '@tecbunny/core';
 import { BehavioralCouponPopup } from './BehavioralCouponPopup';
 import { RegionalTrustBanner } from './RegionalTrustBanner';
 

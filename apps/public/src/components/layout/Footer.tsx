@@ -10,8 +10,8 @@ import { Logo } from "@tecbunny/ui";
 import { Facebook, Twitter, Instagram, Linkedin, Youtube, Globe, FileText, Shield } from 'lucide-react';
 
 
-import { logger } from "@tecbunny/core/logger";
-import { useAnalytics } from '../../hooks/use-analytics';
+import { logger } from '@tecbunny/core';
+import { useAnalytics } from '@tecbunny/core';
 
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
     return (

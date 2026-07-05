@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { isValidImageUrl } from "@tecbunny/core/image-utils";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
 
 /**

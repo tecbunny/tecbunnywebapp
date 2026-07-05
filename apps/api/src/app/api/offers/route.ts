@@ -1,10 +1,11 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
 
 import { getSessionWithRole } from "@tecbunny/core/auth/server-role";
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 const ADMIN_ROLES = new Set(['admin', 'manager', 'superadmin']);
 
@@ -274,7 +275,7 @@ export async function GET(request: NextRequest) {
 
     const { supabase: authClient, role } = await getSessionWithRole(request);
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient ?? await createClient();
     const fetchResult = await supabase
       .from('offers')
@@ -343,7 +344,7 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient;
 
     const offerData = await request.json();
@@ -430,7 +431,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient;
 
     const { id, ...updateData } = await request.json();
@@ -536,7 +537,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient;
 
     const { searchParams } = new URL(request.url);

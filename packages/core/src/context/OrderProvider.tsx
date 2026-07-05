@@ -2,14 +2,14 @@
 
 import React, { createContext, useState, useCallback, useContext, useRef } from 'react';
 
-import type { CartItem, Order, OrderItem, OrderStatus } from '@/lib/types';
-import { createClient } from '@/lib/supabase/client';
+import type { CartItem, Order, OrderItem, OrderStatus } from '../types';
+import { createClient } from '../supabase/client';
 import { useToast } from "@tecbunny/ui";
-import { useCart } from '@/lib/hooks';
-import { useAuth } from '@/lib/hooks';
-import { logger } from '@/lib/logger';
-import { deserializeOrder, normalizeOrderStatus } from '@/lib/orders/normalizers';
-import { formatOrderNumber, calculateCartTotals } from '@/lib/order-utils';
+import { AuthContext } from './AuthProvider';
+import { useCartStore } from '../store/cartStore';
+import { logger } from '../logger';
+import { deserializeOrder, normalizeOrderStatus } from '../orders/normalizers';
+import { formatOrderNumber, calculateCartTotals } from '../order-utils';
 
 interface OrderContextType {
   orders: Order[];
@@ -29,8 +29,10 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
   const { toast } = useToast();
-  const { cartItems, clearCart } = useCart();
-  const { user } = useAuth();
+  const { cartItems, clearCart: storeClearCart } = useCartStore();
+  const authContext = useContext(AuthContext);
+  const user = authContext?.user;
+  const clearCart = useCallback(() => storeClearCart(user), [storeClearCart, user]);
   const supabase = createClient();
 
   const hydrateCartItemsWithProductData = useCallback(async (items: CartItem[]): Promise<CartItem[]> => {
@@ -71,7 +73,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
 
     const productLookup = new Map<string, any>();
-    data.forEach(record => {
+    data.forEach((record: any) => {
       if (record?.id) {
         productLookup.set(record.id, record);
       }

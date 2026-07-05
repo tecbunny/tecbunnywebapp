@@ -1,5 +1,5 @@
 import { createSupabaseClient } from "@tecbunny/core/supabase-server";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 export interface PageContent {
   id: string;

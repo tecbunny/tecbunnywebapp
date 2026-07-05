@@ -1,7 +1,7 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseClient as createPublicSupabaseClient } from "@tecbunny/core/supabase-server";
-import { logger } from "@tecbunny/core/logger";
+import { createSupabaseClient as createPublicSupabaseClient } from "@tecbunny/core/supabase/server";
+import { logger } from "@tecbunny/core";
 import PDFDocument from 'pdfkit';
 
 export async function GET(
@@ -15,7 +15,7 @@ export async function GET(
     }
 
     const supabase = isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : createPublicSupabaseClient();
 
     const { data: project, error } = await supabase

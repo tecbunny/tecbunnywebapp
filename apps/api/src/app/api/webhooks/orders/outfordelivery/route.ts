@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 import { sendWhatsAppNotification } from "@tecbunny/core/whatsapp-service";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 // Generic order out for delivery webhook handler
 export async function POST(request: NextRequest) {

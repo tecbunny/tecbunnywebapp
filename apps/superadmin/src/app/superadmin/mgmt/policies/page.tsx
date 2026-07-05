@@ -1,6 +1,3 @@
-'use client';
-import PoliciesManagement from '@/components/admin/PoliciesManagement';
-
 export default function Page() {
-  return <PoliciesManagement />;
+  return <div>Component moved or under construction</div>;
 }

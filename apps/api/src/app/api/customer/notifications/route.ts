@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 import { sendOrderNotification, sendOrderStatusUpdate, sendPaymentReminder } from "@tecbunny/core/whatsapp-service";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 // Customer signup integration with phone contact and WhatsApp notifications
 export async function POST(request: NextRequest) {

@@ -7,7 +7,7 @@ import { User, CheckCircle, XCircle, Clock, Users, Edit, Camera, Monitor, Bell, 
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 import { Button } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";

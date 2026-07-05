@@ -1,8 +1,9 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
 import { OTPManager, type OTPVerification } from "@tecbunny/core/otp-manager";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 import { requireApiRole } from "@tecbunny/core/server-role-guard";
 import { rateLimit } from "@tecbunny/core/rate-limit";
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Prefer service client for RLS bypass when looking up OTP/Order data
-    const serviceSupabase = isSupabaseServiceConfigured ? createServiceClient() : await createClient();
+    const serviceSupabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createClient();
 
     // Check if this is an agent order verification (using order_otp_verifications table)
     if (orderId && reqPhone && reqCode) {
@@ -263,7 +264,7 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      const supabase = isSupabaseServiceConfigured ? createServiceClient() : await createClient();
+      const supabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createClient();
 
       const { data: otpRecord } = await supabase
         .from('otp_verifications')

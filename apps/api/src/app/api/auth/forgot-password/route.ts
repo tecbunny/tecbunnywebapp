@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { User } from '@supabase/supabase-js';
 
 import { verifyCaptcha } from "@tecbunny/core/captcha/captcha-service";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { OTPManager, type OTPChannel } from "@tecbunny/core/otp-manager";
 
 // Rate limiting storage (in production, use Redis)

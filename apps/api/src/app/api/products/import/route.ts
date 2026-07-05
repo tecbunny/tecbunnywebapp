@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 import { ProductImportRow } from "@tecbunny/core/types/products";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import sanitizeHtml from "@tecbunny/core/sanitize-html";
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
 

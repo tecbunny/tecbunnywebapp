@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import type { User } from '@supabase/supabase-js';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { OTPManager } from "@tecbunny/core/otp-manager";
 
 // Rate limiting storage (in production, use Redis)

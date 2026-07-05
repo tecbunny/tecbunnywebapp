@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 import { sendOrderNotification, sendWhatsAppNotification } from "@tecbunny/core/whatsapp-service";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { validateWebhookSignature } from "@tecbunny/core/webhook-validator";
 import { logWebhookEvent } from "@tecbunny/core/webhook-logger";
 

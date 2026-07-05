@@ -1,8 +1,9 @@
-import { createClient, createClient as createServerClient, createServiceClient, isAtLeast, isSupabaseServiceConfigured, normalizeRole } from "@tecbunny/core";
+import { createClient, createClient as createServerClient, isAtLeast, normalizeRole } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 
 // export const dynamic = 'force-dynamic';
@@ -54,7 +55,7 @@ export async function POST(_request: NextRequest) {
       }
     }
 
-    const serviceClient = isSupabaseServiceConfigured ? createServiceClient() : await createClient();
+    const serviceClient = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createClient();
     const cutoffIso = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
     if (isSupabaseServiceConfigured) {

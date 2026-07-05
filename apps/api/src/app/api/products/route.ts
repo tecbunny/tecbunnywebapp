@@ -1,11 +1,12 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import crypto from 'crypto';
 
 import { NextRequest, NextResponse } from 'next/server';
 
 
 import { getSessionWithRole } from "@tecbunny/core/auth/server-role";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { getProductDisplayImage } from "@tecbunny/core/image-utils";
 import { filterPubliclyVisibleProducts, isPubliclyVisibleProduct } from "@tecbunny/core/product-visibility";
 import { classifyProductTax, TaxClassificationError, type ProductTaxClassification } from "@tecbunny/core/ai/tax-classification";
@@ -315,7 +316,7 @@ function taxErrorResponse(error: unknown, correlationId?: string) {
 
 async function ensureProductColumns(supabase: any): Promise<Set<string> | null> {
   try {
-    const adminClient = isSupabaseServiceConfigured ? createServiceClient() : supabase;
+    const adminClient = isSupabaseServiceConfigured ? createSupabaseServiceClient() : supabase;
 
     // 1. Try querying the public view products_columns_view
     const { data: viewData, error: viewError } = await adminClient
@@ -378,7 +379,7 @@ export async function GET(request: NextRequest) {
     const { supabase: authClient, role } = await getSessionWithRole(request);
     const isPrivilegedRequest = Boolean(role && ADMIN_ROLES.has(role));
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient ?? await createClient();
     const productColumns = await ensureProductColumns(supabase);
     const publicProductSelect = buildPublicProductSelect(productColumns);
@@ -712,7 +713,7 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient;
     const user = session.user;
     const auditUserId = getUuidAuditUserId(user.id);
@@ -1090,7 +1091,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient;
     const user = session.user;
     const auditUserId = getUuidAuditUserId(user.id);
@@ -1345,7 +1346,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient ?? await createClient();
 
     const { error } = await supabase

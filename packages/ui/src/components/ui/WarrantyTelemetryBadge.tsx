@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useWarrantyTelemetry } from "@/hooks/use-warranty-telemetry";
+import { useWarrantyTelemetry } from "@tecbunny/core/client";
 import { ShieldCheck } from "lucide-react";
 
 export function WarrantyTelemetryBadge() {

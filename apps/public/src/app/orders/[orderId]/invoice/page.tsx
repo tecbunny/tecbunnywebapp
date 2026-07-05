@@ -6,10 +6,10 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { InvoiceTemplate, type CompanySettings } from '@/components/invoices/InvoiceTemplate';
-import type { Order } from "@tecbunny/core/types";
+import type { Order } from '@tecbunny/core';
 
 import { deserializeOrder } from "@tecbunny/core/orders/normalizers";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 // export const dynamic = 'force-dynamic';
 

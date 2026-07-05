@@ -1,8 +1,9 @@
-import { createClient as createServerClient, createServiceClient, isAtLeast, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient as createServerClient, isAtLeast } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { envConfig } from "@tecbunny/core/environment-validator";
 import { 
   sendWhatsAppNotification, 
@@ -205,7 +206,7 @@ export async function POST(request: NextRequest) {
       ?? ((user.app_metadata as Record<string, unknown> | undefined)?.role as UserRole | undefined)
       ?? 'customer';
 
-    const serviceClient = isSupabaseServiceConfigured ? createServiceClient() : supabase;
+    const serviceClient = isSupabaseServiceConfigured ? createSupabaseServiceClient() : supabase;
     const { data: orderRecord, error: fetchError } = await serviceClient
       .from('orders')
       .select('id, type, payment_status, payment_method, status, customer_phone, customer_name, customer_email, total, customer_id, created_at, delivery_address')
@@ -346,7 +347,7 @@ export async function POST(request: NextRequest) {
 async function sendOrderStatusUpdateWhatsApp(phoneNumber: string, data: any) {
   
   try {
-    const supabase = isSupabaseServiceConfigured ? createServiceClient() : await createServerClient();
+    const supabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createServerClient();
     let message = '';
     const { orderId, status, customerName, amount, currency, cancelReason, pickupCode } = data;
     const namePrefix = customerName ? `Hi ${customerName}! ` : '';

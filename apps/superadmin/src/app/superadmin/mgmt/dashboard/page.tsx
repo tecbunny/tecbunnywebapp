@@ -1,4 +1,4 @@
-import { createServiceClient } from "@tecbunny/core";
+import { createSupabaseServiceClient } from "@tecbunny/core/server";
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
@@ -8,7 +8,7 @@ import {
   Globe, Building, Percent, Activity, Sliders
 } from 'lucide-react';
 
-import { verifySuperadminSessionToken } from "@tecbunny/core/auth/superadmin-session";
+import { verifySuperadminSessionToken } from "@tecbunny/core/server";
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +21,7 @@ export default async function SuperadminDashboard() {
     redirect('/superadmin/login');
   }
 
-  const supabase = createServiceClient();
+  const supabase = createSupabaseServiceClient();
 
   // Fetch telemetry counts from DB safely
   let userCount = 0;

@@ -20,7 +20,7 @@ import { z } from 'zod';
 
 import { generateGeminiText } from "@tecbunny/core/ai/gemini-service";
 import { requireRole } from "@tecbunny/core/auth/guard";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { getRedis } from "@tecbunny/core/redis";
 import { getSystemPrompt } from "@tecbunny/core/ai/prompts";
 

@@ -1,4 +1,5 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextResponse } from 'next/server'
 
 
@@ -40,7 +41,7 @@ function round2(n: number) { return Math.round(n * 100) / 100 }
 // Body: { customer: { email|mobile, name? }, items: OrderItem[], notes?, type?, referralCode?, configPayload? }
 export async function POST(request: Request) {
   const anon = await createClient()
-  const svc = isSupabaseServiceConfigured ? createServiceClient() : await createClient()
+  const svc = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createClient()
   const body = await request.json().catch(() => ({}))
   
   const referralCode: string | undefined = body?.referralCode
@@ -204,7 +205,7 @@ export async function POST(request: Request) {
   return response
 }
 
-async function ensureCustomerUser(svc: ReturnType<typeof createServiceClient>, c: CustomerInput): Promise<string | null> {
+async function ensureCustomerUser(svc: ReturnType<typeof createSupabaseServiceClient>, c: CustomerInput): Promise<string | null> {
   const normalizedMobile = c.mobile ? c.mobile.replace(/\D/g, '') : null;
   const mobileWithPrefix = normalizedMobile ? (normalizedMobile.startsWith('91') && normalizedMobile.length === 12 ? normalizedMobile : (normalizedMobile.length === 10 ? `91${normalizedMobile}` : normalizedMobile)) : null;
   const email = c.email ? c.email.trim().toLowerCase() : undefined;
@@ -250,7 +251,7 @@ async function ensureCustomerUser(svc: ReturnType<typeof createServiceClient>, c
 }
 
 async function awardCommissionForAgent(
-  svc: ReturnType<typeof createServiceClient>,
+  svc: ReturnType<typeof createSupabaseServiceClient>,
   agentId: string,
   orderId: string,
   orderTotal: number

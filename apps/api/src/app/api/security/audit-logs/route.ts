@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
 
 export async function GET(request: NextRequest) {

@@ -8,7 +8,7 @@ import sanitizeHtml from "@tecbunny/core/sanitize-html";
 
 import { usePageContent } from '../hooks/use-page-content';
 import { usePrefersReducedMotion } from '../hooks/use-prefers-reduced-motion';
-import type { HeroCarouselContent, HeroCarouselItem, HeroCarouselPageKey } from "@tecbunny/core/types";
+import type { HeroCarouselContent, HeroCarouselItem, HeroCarouselPageKey } from '@tecbunny/core';
 import { cn } from "@tecbunny/core/utils";
 
 interface HeroCarouselProps {

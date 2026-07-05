@@ -1,6 +1,3 @@
-'use client';
-import OffersManagement from '@/components/admin/OffersManagement';
-
 export default function Page() {
-  return <OffersManagement />;
+  return <div>Component moved or under construction</div>;
 }

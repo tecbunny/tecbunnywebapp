@@ -78,8 +78,8 @@ import {
   DropdownMenuTrigger,
 } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";
-import { logger } from "@tecbunny/core/logger";
-import type { Service } from "@tecbunny/core/types";
+import { logger } from "@tecbunny/core";
+import type { Service } from "@tecbunny/core";
 
 const iconOptions = [
   { value: 'Wrench', label: 'Wrench (Technical)' },

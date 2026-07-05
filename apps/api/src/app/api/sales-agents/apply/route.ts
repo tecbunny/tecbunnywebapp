@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { nanoid } from 'nanoid';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 // export const dynamic = 'force-dynamic';
 

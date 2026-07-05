@@ -3,7 +3,7 @@ import { NextRequest, NextResponse, after } from 'next/server';
 import crypto from 'crypto';
 
 import { sendWhatsAppNotification } from "@tecbunny/core/whatsapp-service";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { validateWebhookSignature, validateWebhookTimestamp } from "@tecbunny/core/webhook-validator";
 import { logWebhookEvent } from "@tecbunny/core/webhook-logger";
 import { getRedis } from "@tecbunny/core/redis";

@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { serviceManagementService } from "@tecbunny/core/service-management";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 /**
  * Update service ticket status or assign engineer
@@ -74,8 +74,8 @@ export async function PUT(
             const isLowerCapacity = checklist.bandwidth_capacity === 'low' || data.engineer_notes.toLowerCase().includes('low capacity');
 
             if (isSingleSwitch || isLowerCapacity) {
-              const { createServiceClient } = await import('@/lib/supabase/server');
-              const supabase = createServiceClient();
+              const { createSupabaseServiceClient } = await import('@/lib/supabase/server');
+              const supabase = createSupabaseServiceClient();
               
               const upgradeProposal = {
                 title: 'Infrastructure Upgrade Proposal: Enterprise Multi-Node Network',
@@ -121,8 +121,8 @@ export async function PUT(
       try {
         const ticketId = id;
         const improvedEmailService = (await import('@/lib/improved-email-service')).default;
-        const { createServiceClient } = await import('@/lib/supabase/server');
-        const supabase = createServiceClient();
+        const { createSupabaseServiceClient } = await import('@/lib/supabase/server');
+        const supabase = createSupabaseServiceClient();
 
         // 1. Fetch ticket details for context
         const { data: ticket } = await supabase

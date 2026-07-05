@@ -1,7 +1,7 @@
 // Supabase Storage Service - Simple approach using Supabase client
 import { createClient } from '@supabase/supabase-js';
 
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 import { isSupabaseServiceConfigured, requireSupabaseServiceEnv } from './supabase/env';
 import { optimizeImage, createOptimizeImageStream } from './image-processor';
 import { Readable } from 'stream';

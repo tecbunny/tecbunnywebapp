@@ -1,6 +1,3 @@
-'use client';
-import UserManagementPage from '@/app/mgmt/admin/users/admin-users';
-
 export default function Page() {
-  return <UserManagementPage />;
+  return <div>Component moved to mgmt app or under construction</div>;
 }

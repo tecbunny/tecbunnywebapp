@@ -17,7 +17,7 @@ import {
   LogOut,
 } from 'lucide-react';
 
-import { useAnalytics } from '../../hooks/use-analytics';
+import { useAnalytics } from '@tecbunny/core';
 import { useAuth, useCart } from "@tecbunny/core/hooks";
 import { hasRoleClient } from "@tecbunny/core/permissions-client";
 

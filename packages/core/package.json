@@ -5,17 +5,24 @@
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./server": "./src/server.ts",
+    "./client": "./src/client.ts",
     "./*": "./src/*",
     "./supabase/server": "./src/supabase/server.ts",
     "./supabase/client": "./src/supabase/client.ts",
     "./supabase/storage": "./src/supabase/storage.ts",
     "./store/*": "./src/store/*",
-    "./context/*": "./src/context/*"
+    "./store/wishlistStore": "./src/store/wishlistStore.ts",
+    "./store/cartStore": "./src/store/cartStore.ts",
+    "./context/*": "./src/context/*",
+    "./orders/normalizers": "./src/orders/normalizers.ts"
   },
   "types": "./src/index.ts",
   "dependencies": {
+    "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.39.3",
-    "@supabase/ssr": "^0.3.0"
+    "sharp": "^0.34.5",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "typescript": "^5.4.5"

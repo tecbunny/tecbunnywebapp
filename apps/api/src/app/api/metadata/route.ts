@@ -1,4 +1,5 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextResponse } from 'next/server';
 
 
@@ -9,7 +10,7 @@ const DEFAULT_PARTNER_BRANDS = '';
 export async function GET() {
   try {
     // Use service client to bypass RLS
-    const supabase = isSupabaseServiceConfigured ? createServiceClient() : await createClient();
+    const supabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createClient();
     
     // Get site settings
     const { data: settings, error } = await supabase

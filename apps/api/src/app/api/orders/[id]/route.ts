@@ -1,7 +1,8 @@
-import { createClient as createServerClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient as createServerClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 import { deserializeOrder } from "@tecbunny/core/orders/normalizers";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 export async function GET(
   request: NextRequest,
@@ -13,7 +14,7 @@ export async function GET(
       return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
     }
 
-    const supabase = isSupabaseServiceConfigured ? createServiceClient() : await createServerClient();
+    const supabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createServerClient();
     
     const { data: order, error } = await supabase
       .from('orders')

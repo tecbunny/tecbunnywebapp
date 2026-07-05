@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { requireApiRole, type RoleCheckOptions } from "@tecbunny/core/server-role-guard";
 
 const WALK_IN_ACCESS: RoleCheckOptions = {

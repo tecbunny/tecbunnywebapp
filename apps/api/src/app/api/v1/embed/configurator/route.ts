@@ -1,7 +1,7 @@
-import { createServiceClient } from "@tecbunny/core";
+import { createSupabaseServiceClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 /**
  * Public API for Whitelabel Embeddable Configurator
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const supabase = createServiceClient();
+    const supabase = createSupabaseServiceClient();
     
     // Validate Agent
     const { data: agent, error: agentError } = await supabase

@@ -5,7 +5,7 @@ import { Heart } from 'lucide-react';
 
 import { Button } from "@tecbunny/ui";
 import { useWishlist } from "@tecbunny/core/hooks";
-import type { Product } from "@tecbunny/core/types";
+import type { Product } from '@tecbunny/core';
 import { cn } from "@tecbunny/core/utils";
 
 interface WishlistButtonProps {

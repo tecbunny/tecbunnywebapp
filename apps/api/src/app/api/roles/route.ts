@@ -7,7 +7,7 @@ import {
   ROLE_DISPLAY_NAME,
   USER_ASSIGNABLE_ROLES,
 } from "@tecbunny/core/roles";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 // GET /api/roles - Return the canonical roles the current operator may assign.
 export async function GET(request: NextRequest) {

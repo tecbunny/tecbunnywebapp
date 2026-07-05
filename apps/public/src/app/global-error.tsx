@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 export default function GlobalError({
   error,

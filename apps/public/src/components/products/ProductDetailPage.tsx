@@ -13,12 +13,12 @@ import { AddToCartButton } from '@/components/cart/AddToCartButton';
 import { Button } from "@tecbunny/ui";
 import { Card, CardContent } from "@tecbunny/ui";
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 import { isPubliclyVisibleProduct } from "@tecbunny/core/product-visibility";
 import { getAllProductImages } from "@tecbunny/core/image-utils";
-import type { Product } from "@tecbunny/core/types";
-import { useAnalytics } from '../../hooks/use-analytics';
+import type { Product } from '@tecbunny/core';
+import { useAnalytics } from '@tecbunny/core';
 import { useToast } from "@tecbunny/ui";
 import { useBehavioralCRO } from '../../hooks/use-behavioral-cro';
 import { StarRating } from './StarRating';

@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID, randomInt, createHash } from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 import { getRedis } from './redis';
 import { WhatsAppService } from './whatsapp-service';
 import improvedEmailService from './improved-email-service';

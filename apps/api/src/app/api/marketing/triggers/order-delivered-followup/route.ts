@@ -1,8 +1,8 @@
-import { createServiceClient } from "@tecbunny/core";
+import { createSupabaseServiceClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
 
 import { WhatsAppService } from "@tecbunny/core/whatsapp-service";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 /**
  * Triggered after order delivery to send localized upsell offers
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
     }
 
-    const supabase = createServiceClient();
+    const supabase = createSupabaseServiceClient();
     const whatsapp = new WhatsAppService();
 
     // 1. Fetch order with items and customer details

@@ -13,7 +13,7 @@ import {
   Send,
 } from 'lucide-react';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 import { Button } from "@tecbunny/ui";
 import { Checkbox } from "@tecbunny/ui";
@@ -36,7 +36,7 @@ import {
   SelectValue,
 } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";
-import { useAnalytics } from '../hooks/use-analytics';
+import { useAnalytics } from '@tecbunny/core';
 
 const SUBJECT_OPTIONS = ['general', 'support', 'sales', 'billing', 'partnership', 'feedback', 'web_development'] as const;
 const SUBJECT_LABELS: Record<(typeof SUBJECT_OPTIONS)[number], string> = {

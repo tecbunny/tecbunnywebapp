@@ -32,7 +32,7 @@ import { Input } from "@tecbunny/ui";
 import { useAuth } from "@tecbunny/core/hooks";
 import { useToast } from "@tecbunny/ui";
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 import { useCartStore } from "@tecbunny/core/store/cartStore";
 import { useWishlistStore } from "@tecbunny/core/store/wishlistStore";

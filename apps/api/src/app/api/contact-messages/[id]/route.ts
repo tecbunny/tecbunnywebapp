@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import type { ContactMessage } from "@tecbunny/core/types";
 
 const updateMessageSchema = z.object({

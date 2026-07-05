@@ -1,4 +1,5 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
 import { requireAdmin } from "@tecbunny/core/admin-auth";
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Use service client for admin data fetching to bypass RLS
-  const adminDb = isSupabaseServiceConfigured ? createServiceClient() : await createClient();
+  const adminDb = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createClient();
 
   const { searchParams } = new URL(request.url);
   const range = searchParams.get('range') || '7d'; // 7d, 30d, all

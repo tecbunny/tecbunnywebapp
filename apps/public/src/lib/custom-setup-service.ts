@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 import { createClient, createServiceClient, isSupabaseServiceConfigured } from './supabase/server';
 import { getRedis } from './redis';
 

@@ -1,7 +1,7 @@
 import { createClient } from "@tecbunny/core";
 import { unstable_cache } from 'next/cache';
 import { z } from 'zod';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 export const AppSettingsSchema = z.object({
   max_quote_items: z.number().default(150),

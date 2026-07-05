@@ -1,4 +1,5 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
 
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Service unavailable.' }, { status: 500 });
     }
 
-    const service = createServiceClient();
+    const service = createSupabaseServiceClient();
     const { error } = await service
       .from('leads')
       .insert({

@@ -1,4 +1,4 @@
-import { Product } from "@tecbunny/core/types";
+import { Product } from '@tecbunny/core';
 import { stripHtmlToPlainText } from "@tecbunny/core/strings";
 import { envConfig } from "@tecbunny/core/environment-validator";
 

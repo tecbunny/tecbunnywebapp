@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 import { environmentValidator } from "@tecbunny/core/environment-validator";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 interface HealthCheck {
   service: string;

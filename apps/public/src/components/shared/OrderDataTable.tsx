@@ -13,7 +13,7 @@ import { Badge } from "@tecbunny/ui";
 import { Button } from "@tecbunny/ui";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@tecbunny/ui";
 import { Skeleton } from "@tecbunny/ui";
-import type { Order, OrderType, OrderStatus } from "@tecbunny/core/types";
+import type { Order, OrderType, OrderStatus } from '@tecbunny/core';
 import { useToast } from "@tecbunny/ui";
 import { OrderActions } from '../sales/OrderActions';
 import { formatOrderNumber } from "@tecbunny/core/order-utils";

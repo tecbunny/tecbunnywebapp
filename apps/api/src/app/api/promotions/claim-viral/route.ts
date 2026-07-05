@@ -1,10 +1,10 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 
 import { rateLimit } from "@tecbunny/core/rate-limit";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 const claimSchema = z.object({
   phone: z.string().min(10).max(15),
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Service unavailable." }, { status: 503 });
     }
 
-    const supabase = createServiceClient();
+    const supabase = createSupabaseServiceClient();
     const { error } = await supabase.from("customer_promotions").insert({
       phone_identifier: parsed.data.phone.replace(/\D/g, ""),
       trigger_source: parsed.data.serialNumber,

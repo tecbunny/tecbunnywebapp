@@ -1,6 +1,6 @@
 import PDFDocument from 'pdfkit';
 import { getGlobalConfig } from './config-service';
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 
 export interface CatalogueItem {
   id: string;

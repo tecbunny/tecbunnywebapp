@@ -1,14 +1,14 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { createSupabaseClient as createPublicSupabaseClient } from "@tecbunny/core/supabase-server";
-import { verifySuperadminSessionToken } from "@tecbunny/core/auth/superadmin-session";
-import { logger } from "@tecbunny/core/logger";
+import { createSupabaseClient as createPublicSupabaseClient } from "@tecbunny/core/supabase/server";
+import { verifySuperadminSessionToken } from "@tecbunny/core/server";
+import { logger } from "@tecbunny/core";
 
 export async function GET(request: NextRequest) {
   try {
     const supabase = isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : createPublicSupabaseClient();
 
     const { data, error } = await supabase
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : createPublicSupabaseClient();
 
     const insertData = {

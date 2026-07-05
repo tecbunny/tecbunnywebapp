@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 
 import { ShopPageContent } from '@/components/products/ShopPageContent';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 import { createPageMetadata } from "@tecbunny/core/metadata";
 import { filterPubliclyVisibleProducts } from "@tecbunny/core/product-visibility";
 

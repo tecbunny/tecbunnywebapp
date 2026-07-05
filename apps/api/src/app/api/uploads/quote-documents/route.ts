@@ -1,7 +1,7 @@
-import { createServiceClient } from "@tecbunny/core";
+import { createSupabaseServiceClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadToSupabase } from "@tecbunny/core/supabase-storage";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 import { verifyQuoteActionToken } from "@tecbunny/core/quotes/action-token";
 
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate quote_id exists in the database
-    const supabase = createServiceClient();
+    const supabase = createSupabaseServiceClient();
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(quoteId);
     let quoteQuery = supabase.from('quotes').select('id');
     quoteQuery = isUuid ? quoteQuery.eq('id', quoteId) : quoteQuery.eq('quote_number', quoteId);

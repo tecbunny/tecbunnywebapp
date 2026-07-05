@@ -1,9 +1,9 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { createSupabaseClient as createPublicSupabaseClient } from "@tecbunny/core/supabase-server";
-import { verifySuperadminSessionToken } from "@tecbunny/core/auth/superadmin-session";
-import { logger } from "@tecbunny/core/logger";
+import { createSupabaseClient as createPublicSupabaseClient } from "@tecbunny/core/supabase/server";
+import { verifySuperadminSessionToken } from "@tecbunny/core/server";
+import { logger } from "@tecbunny/core";
 
 export async function PUT(
   request: NextRequest,
@@ -35,7 +35,7 @@ export async function PUT(
     } = body;
 
     const supabase = isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : createPublicSupabaseClient();
 
     const updateData: Record<string, any> = {};
@@ -89,7 +89,7 @@ export async function DELETE(
     }
 
     const supabase = isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : createPublicSupabaseClient();
 
     const { error } = await supabase

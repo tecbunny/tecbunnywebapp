@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { sendWhatsAppNotification } from "@tecbunny/core/whatsapp-service";
 
 export async function POST(request: NextRequest) {

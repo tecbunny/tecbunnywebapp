@@ -1,12 +1,13 @@
-import { createClient as createServerClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient as createServerClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
 
 import { rateLimit } from "@tecbunny/core/rate-limit";
 import { resolveSiteUrl } from "@tecbunny/core/site-url";
 
-import { apiError, apiSuccess } from "@tecbunny/core/errors";
-import { logger } from "@tecbunny/core/logger";
+import { apiError, apiSuccess } from "@tecbunny/core";
+import { logger } from "@tecbunny/core";
 import { 
   sendOrderNotification,
   sendWhatsAppNotification
@@ -15,7 +16,7 @@ import { otpService } from "@tecbunny/core/otp-service";
 import { enhancedCommissionService } from "@tecbunny/core/enhanced-commission-service";
 import { checkoutEngine } from "@tecbunny/core/checkout-engine";
 import { formatPlaceOfSupply, resolveIndianStateFromText, resolveIndianStateInfo, TECBUNNY_REGISTERED_STATE } from "@tecbunny/core/indian-tax";
-import { verifySuperadminSessionToken } from "@tecbunny/core/auth/superadmin-session";
+import { verifySuperadminSessionToken } from "@tecbunny/core/server";
 import { extractPincode, sendOrderRoutingNotifications } from "@tecbunny/core/area-notifications";
 import { checkServiceAreaAvailability } from "@tecbunny/core/service-area-availability";
 import { deserializeOrder } from "@tecbunny/core/orders/normalizers";
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ orders: [] });
     }
 
-    const serviceSupabase = isSupabaseServiceConfigured ? createServiceClient() : supabase;
+    const serviceSupabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : supabase;
 
     // Fetch all orders matching customer_id, customer_email, or customer_phone
     const conditions = [`customer_id.eq.${user.id}`];
@@ -93,7 +94,7 @@ export async function POST(request: NextRequest) {
       user = cookieUser;
     }
 
-    const serviceSupabase = isSupabaseServiceConfigured ? createServiceClient() : await createServerClient();
+    const serviceSupabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createServerClient();
 
     const effectiveUserId = user?.id ?? null;
 

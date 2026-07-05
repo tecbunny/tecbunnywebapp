@@ -1,6 +1,3 @@
-'use client';
-import AnalyticsDashboard from '@/app/mgmt/admin/analytics/page';
-
 export default function Page() {
-  return <AnalyticsDashboard />;
+  return <div>Component moved to mgmt app or under construction</div>;
 }

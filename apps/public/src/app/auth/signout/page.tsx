@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 export default function SignOutPage() {
   const [isSigningOut, setIsSigningOut] = React.useState(true);
@@ -14,8 +14,8 @@ export default function SignOutPage() {
       if (typeof window !== 'undefined') {
         try {
           const [{ useWishlistStore }, { useCartStore }] = await Promise.all([
-            import('@/store/wishlistStore'),
-            import('@/store/cartStore'),
+            import('@tecbunny/core/store/wishlistStore'),
+            import('@tecbunny/core/store/cartStore'),
           ]);
           useWishlistStore.getState().clearWishlistMemory();
           useCartStore.getState().clearCartMemory();

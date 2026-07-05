@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 const PUBLIC_PAGE_CONTENT_CACHE_CONTROL = 'no-store, max-age=0';
 const PAGE_CONTENT_PUBLIC_SELECTS = {

@@ -4,13 +4,14 @@ import React, { createContext, useState, useEffect, useCallback, useMemo, useRef
 
 import type { SupabaseClient, User as SupabaseUser } from '@supabase/supabase-js';
 
-import type { User, UserRole } from '@/lib/types';
-import { createClient } from '@/lib/supabase/client';
-import { logger } from '@/lib/logger';
-import { SessionManager, SESSION_EXPIRED_EVENT } from '@/lib/session-manager';
+import type { UserRole } from '../roles';
+import type { User } from '../types';
+import { createClient } from '../supabase/client';
+import { logger } from '../logger';
+import { SessionManager, SESSION_EXPIRED_EVENT } from '../session-manager';
 import { useAnalytics } from '../hooks/use-analytics';
-import { normalizeRole } from '@/lib/roles';
-import { STAFF_PANEL_ROLES } from '@/lib/panel-routing';
+import { normalizeRole } from '../roles';
+import { STAFF_PANEL_ROLES } from '../panel-routing';
 
 const parseRole = (value: unknown): UserRole | null => {
   return normalizeRole(value) as UserRole | null;
@@ -118,7 +119,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (cartSyncLockRef.current) return;
     cartSyncLockRef.current = true;
     try {
-      const { useCartStore } = await import('@/store/cartStore');
+      const { useCartStore } = await import('../store/cartStore');
       if (abortSignal?.aborted) return;
       await useCartStore.getState().mergeGuestCartWithUserCart(userId, supabase);
     } catch (err) {
@@ -134,7 +135,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const setWishlistOwner = useCallback(async (ownerKey: string) => {
     try {
-      const { useWishlistStore } = await import('@/store/wishlistStore');
+      const { useWishlistStore } = await import('../store/wishlistStore');
       useWishlistStore.getState().setWishlistOwner(ownerKey);
     } catch (err) {
       logger.error('Failed to switch wishlist owner', { error: err });
@@ -144,8 +145,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const clearSessionScopedClientState = useCallback(async () => {
     try {
       const [{ useWishlistStore }, { useCartStore }] = await Promise.all([
-        import('@/store/wishlistStore'),
-        import('@/store/cartStore'),
+        import('../store/wishlistStore'),
+        import('../store/cartStore'),
       ]);
       useWishlistStore.getState().clearWishlistMemory();
       useCartStore.getState().clearCartMemory();
@@ -471,7 +472,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     getSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       if (!mounted) return;
       
       // If we are currently a superadmin, do not let standard Supabase auth state change overwrite our session
@@ -626,12 +627,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await clearSessionScopedClientState();
 
     const logoutTasks: Promise<any>[] = [
-      fetch('/api/auth/signout', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).catch(err => {
+      fetch('/api/auth/signout', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).catch((err: any) => {
         logger.error('Server signout error', { error: err });
       }),
-      supabase.auth.signOut().then(({ error }) => {
+      supabase.auth.signOut().then(({ error }: { error: any }) => {
         if (error) logger.error('Client signout error', { error });
-      }).catch(err => {
+      }).catch((err: any) => {
         logger.error('Supabase signout failure', { error: err });
       })
     ];

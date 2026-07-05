@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server';
 
 import { rateLimit } from "@tecbunny/core/rate-limit";
-import { apiError, apiSuccess } from "@tecbunny/core/errors";
-import { logger } from "@tecbunny/core/logger";
+import { apiError, apiSuccess } from "@tecbunny/core";
+import { logger } from "@tecbunny/core";
 import { OTPManager, type OTPChannel } from "@tecbunny/core/otp-manager";
 
 const LIMIT = 3; // 3 per 5 minutes

@@ -1,10 +1,10 @@
-import { createClient, createServiceClient } from "@tecbunny/core";
+import { createClient, createSupabaseServiceClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
 
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { getCustomSetupBlueprintSummary } from "@tecbunny/core/custom-setup-service";
 import { DEFAULT_CUSTOM_SETUP_TEMPLATE_SLUG } from "@tecbunny/core/custom-setup.constants";
 import {
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
       // Fetch accessory pricing overrides from settings
       let overrides = null;
       try {
-        const serviceSupabase = await createServiceClient();
+        const serviceSupabase = await createSupabaseServiceClient();
         const { data: settingData } = await serviceSupabase
           .from('settings')
           .select('*')
@@ -280,7 +280,7 @@ export async function POST(req: NextRequest) {
 
     const expiryAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
-    const serviceClient = createServiceClient();
+    const serviceClient = createSupabaseServiceClient();
     const insertResult = await serviceClient.from('quotes').insert({
       user_id: user?.id || null,
       customer_name: customerName,

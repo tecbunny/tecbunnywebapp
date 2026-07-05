@@ -11,11 +11,11 @@ import {
   Sparkles
 } from 'lucide-react';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 import { getProductDisplayImage } from "@tecbunny/core/image-utils";
 import { cn, revealDelayClass } from "@tecbunny/core/utils";
 
-import type { Product, AutoOffer } from "@tecbunny/core/types";
+import type { Product, AutoOffer } from '@tecbunny/core';
 import { Skeleton } from "@tecbunny/ui";
 import { Input } from "@tecbunny/ui";
 import { useCart } from "@tecbunny/core/hooks";

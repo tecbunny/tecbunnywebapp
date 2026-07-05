@@ -1,11 +1,11 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { OTPManager } from "@tecbunny/core/otp-manager";
 
 import { rateLimit } from "@tecbunny/core/rate-limit";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 const ACTIVATE_RATE_LIMIT = { limit: 8, windowMs: 15 * 60 * 1000 };
 
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Service unavailable. Please try again later.' }, { status: 503 });
     }
 
-    const supabase = createServiceClient();
+    const supabase = createSupabaseServiceClient();
 
     let deviceType = 'DEFAULT';
     let model = 'TecBunny Device';

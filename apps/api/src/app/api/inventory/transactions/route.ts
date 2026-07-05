@@ -1,4 +1,4 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 /**
  * Atomic Inventory Transaction Engine
  * POST   /api/inventory/transactions  – record a movement (warehouse receipt or sale)
@@ -24,7 +24,7 @@ import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { requireApiRole } from "@tecbunny/core/server-role-guard";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
   try {
     const access = await requireApiRole({ allowedRoles: ['sales', 'manager'], minimumRole: 'admin' });
     if ('error' in access) return access.error;
-    const supabase = isSupabaseServiceConfigured ? createServiceClient() : access.supabase;
+    const supabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : access.supabase;
 
     const body = await request.json().catch(() => ({}));
     const validation = movementSchema.safeParse(body);
@@ -280,7 +280,7 @@ export async function PUT(request: NextRequest) {
   try {
     const access = await requireApiRole({ allowedRoles: [], minimumRole: 'admin' });
     if ('error' in access) return access.error;
-    const supabase = isSupabaseServiceConfigured ? createServiceClient() : access.supabase;
+    const supabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : access.supabase;
 
     const { product_id, new_quantity, notes, reference_id } = await request.json().catch(() => ({}));
 

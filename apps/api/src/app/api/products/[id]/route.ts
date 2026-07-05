@@ -1,9 +1,10 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
 
 import { getSessionWithRole } from "@tecbunny/core/auth/server-role";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { getProductDisplayImage } from "@tecbunny/core/image-utils";
 import { isPubliclyVisibleProduct } from "@tecbunny/core/product-visibility";
 import { classifyProductTax, TaxClassificationError } from "@tecbunny/core/ai/tax-classification";
@@ -66,7 +67,7 @@ export async function PATCH(
     }
 
     // Use service client for admin operations
-    const supabase = isSupabaseServiceConfigured ? createServiceClient() : authClient;
+    const supabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : authClient;
     const auditUserId = getUuidAuditUserId(session.user.id);
 
     // Parse request body
@@ -246,7 +247,7 @@ export async function GET(
     const { supabase: authClient, role } = await getSessionWithRole(request);
     const isPrivilegedRequest = Boolean(role && ADMIN_ROLES.has(role));
     const supabase = role && ADMIN_ROLES.has(role) && isSupabaseServiceConfigured
-      ? createServiceClient()
+      ? createSupabaseServiceClient()
       : authClient ?? await createClient();
 
     // Get the product

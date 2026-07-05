@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import type { Product, CartItem, CustomerCategory, AutoOffer, Coupon } from '@/lib/types';
-import { toast } from '../hooks/use-toast';
-import { offerDiscountService } from '@/lib/offer-discount-service';
-import { logger } from '@/lib/logger';
+import type { Product, CartItem, CustomerCategory, AutoOffer, Coupon } from '../types';
+import { toast } from '@tecbunny/ui';
+import { offerDiscountService } from '../offer-discount-service';
+import { logger } from '../logger';
 
 export interface CartPricing {
   subtotal: number;

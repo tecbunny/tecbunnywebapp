@@ -2,9 +2,9 @@ import { createClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
 import { checkoutEngine } from "@tecbunny/core/checkout-engine";
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import type { CustomerCategory } from "@tecbunny/core/types";
-import { verifySuperadminSessionToken } from "@tecbunny/core/auth/superadmin-session";
+import { verifySuperadminSessionToken } from "@tecbunny/core/server";
 
 export async function POST(req: NextRequest) {
   try {

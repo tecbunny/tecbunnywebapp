@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 const VIRAL_ATTRIBUTION_KEY = 'tecbunny_viral_parent';
 const ATTRIBUTION_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 Days

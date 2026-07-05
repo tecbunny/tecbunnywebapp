@@ -1,4 +1,4 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 import { processAndUploadExternalImage } from "@tecbunny/core/image-processor";
 
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     const handle = `${baseSlug}-${randomSuffix}`;
 
     // 6. Insert Product using Service Role Client (bypasses RLS)
-    const supabase = createServiceClient();
+    const supabase = createSupabaseServiceClient();
 
     // 7. Process and Upload image to Supabase Storage
     let finalImageUrl = imageUrl || null;

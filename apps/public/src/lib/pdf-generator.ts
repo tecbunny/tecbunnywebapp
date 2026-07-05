@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { PDFDocument, rgb, StandardFonts, type Color } from 'pdf-lib';
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 import { getGlobalConfig } from './config-service';
 
 const REMOTE_ASSET_TIMEOUT_MS = 5000;

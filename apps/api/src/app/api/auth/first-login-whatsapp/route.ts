@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { sendWelcomeNotification, sendWhatsAppNotification } from "@tecbunny/core/whatsapp-service";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';

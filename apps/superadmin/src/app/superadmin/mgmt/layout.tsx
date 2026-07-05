@@ -2,8 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
-import { UnifiedPanelShell } from '@/components/mgmt/UnifiedPanelShell';
-import { verifySuperadminSessionToken } from "@tecbunny/core/auth/superadmin-session";
+import { verifySuperadminSessionToken } from "@tecbunny/core/server";
 
 export const dynamic = 'force-dynamic';
 
@@ -17,20 +16,8 @@ export default async function SuperadminLayout({ children }: { children: React.R
   }
 
   return (
-    <UnifiedPanelShell
-      role="superadmin"
-      user={{
-        name: 'Root Console',
-        email: 'system@tecbunny.com',
-        role: 'superadmin',
-      }}
-      authorized
-      mainId="superadmin-main"
-      workspaceLabel="Root Console"
-      statusLabel="System controls online"
-      logoutHref="/api/superadmin/logout"
-    >
+    <div id="superadmin-main">
       {children}
-    </UnifiedPanelShell>
+    </div>
   );
 }

@@ -1,7 +1,7 @@
-import { createServerClient, createServiceClient } from "@tecbunny/core";
+import { createServerClient, createSupabaseServiceClient } from "@tecbunny/core";
 import { NextResponse } from 'next/server';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { sendWhatsAppNotification } from "@tecbunny/core/whatsapp-service";
 
 import { z } from 'zod';
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   try {
     const supabase = await createServerClient();
     const { data: { session } } = await supabase.auth.getSession();
-    const serviceClient = createServiceClient();
+    const serviceClient = createSupabaseServiceClient();
     
     const json = await req.json();
     const validatedData = bidSchema.parse(json);

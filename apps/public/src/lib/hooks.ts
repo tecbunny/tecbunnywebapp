@@ -5,8 +5,8 @@ import { useContext, useEffect, useCallback, useMemo } from 'react';
 import { AuthContext } from "@tecbunny/core/context/AuthProvider";
 import { useWishlistStore } from "@tecbunny/core/store/wishlistStore";
 import { useCartStore } from "@tecbunny/core/store/cartStore";
-import { useAnalytics } from '../hooks/use-analytics';
-import { calculateCartTotals } from './order-utils';
+import { useAnalytics } from '@tecbunny/core';
+import { calculateCartTotals } from '@tecbunny/core';
 
 export const useWishlist = () => {
   const { wishlistItems, toggleWishlist, isInWishlist, wishlistCount, setWishlistOwner } = useWishlistStore();

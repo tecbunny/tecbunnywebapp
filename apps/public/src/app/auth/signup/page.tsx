@@ -14,7 +14,7 @@ import { Input } from "@tecbunny/ui";
 import { Label } from "@tecbunny/ui";
 
 import { useToast } from "@tecbunny/ui";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 import { cn } from "@tecbunny/core/utils";
 
 export default function SignUpPage() {

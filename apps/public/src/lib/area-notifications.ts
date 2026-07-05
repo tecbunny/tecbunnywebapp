@@ -2,7 +2,7 @@ import { createServiceClient, isSupabaseServiceConfigured } from './supabase/ser
 import { resolveSiteUrl } from './site-url';
 
 import improvedEmailService from './improved-email-service';
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 
 type ManagerRole = 'sales_manager' | 'service_manager';
 type RoutingStatus = 'assigned' | 'unassigned' | 'failed';

@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { toast } from 'react-hot-toast';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 
 type OTPChannel = 'whatsapp' | 'email';

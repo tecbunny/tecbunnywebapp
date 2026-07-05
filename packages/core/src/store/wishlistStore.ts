@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import type { Product } from '@/lib/types';
-import { toast } from '../hooks/use-toast';
+import type { Product } from '../types';
+import { toast } from '@tecbunny/ui';
 
 export interface WishlistState {
   wishlistItems: Product[];

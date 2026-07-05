@@ -1,5 +1,3 @@
-import UserAnalyticsClient from '@/app/mgmt/admin/users/[id]/analytics/UserAnalyticsClient';
-
 export default function Page() {
-  return <UserAnalyticsClient />;
+  return <div>Component moved to mgmt app or under construction</div>;
 }

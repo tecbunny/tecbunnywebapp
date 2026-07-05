@@ -2,7 +2,7 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand, ObjectCannedACL } from '@aws-sdk/client-s3';
 import { getSignedUrl as getPresignedUrl } from '@aws-sdk/s3-request-presigner';
 
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;

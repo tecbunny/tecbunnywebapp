@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { logger } from './logger';
+import { logger } from '@tecbunny/core';
 
 export type PayuEnvironment = 'test' | 'production';
 

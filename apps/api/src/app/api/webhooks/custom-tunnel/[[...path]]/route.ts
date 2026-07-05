@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

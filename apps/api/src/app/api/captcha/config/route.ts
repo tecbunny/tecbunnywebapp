@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { captchaService } from "@tecbunny/core/captcha/captcha-service";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 /**
  * GET /api/captcha/config

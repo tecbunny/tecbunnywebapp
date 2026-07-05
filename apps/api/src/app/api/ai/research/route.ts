@@ -8,7 +8,7 @@ import { getProductDisplayImage } from "@tecbunny/core/image-utils";
 import { getRedis } from "@tecbunny/core/redis";
 import { getSystemPrompt } from "@tecbunny/core/ai/prompts";
 import { rateLimit } from "@tecbunny/core/rate-limit";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 const MAX_SOURCES = 3;
 const MAX_SOURCE_CHARS = 3500;

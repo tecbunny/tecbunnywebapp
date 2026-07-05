@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from "@tecbunny/core/rate-limit";
 
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 export interface EmailHandlerConfig<T, R = { success: true }> {
   validate: (body: any) => { ok: true; data: T } | { ok: false; error: string };

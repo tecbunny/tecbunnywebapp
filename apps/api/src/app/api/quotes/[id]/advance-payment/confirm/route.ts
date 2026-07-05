@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { requireSupabaseServiceEnv } from "@tecbunny/core/supabase/env";
 import { verifyQuoteActionToken } from "@tecbunny/core/quotes/action-token";
 

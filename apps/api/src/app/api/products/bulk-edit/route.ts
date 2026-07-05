@@ -1,7 +1,7 @@
-import { createServiceClient } from "@tecbunny/core";
+import { createSupabaseServiceClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
 
 // Helper function to properly escape CSV values
@@ -48,7 +48,7 @@ function parseCSVLine(line: string): string[] {
   return result;
 }
 
-async function fetchProductColumns(supabase: ReturnType<typeof createServiceClient>) {
+async function fetchProductColumns(supabase: ReturnType<typeof createSupabaseServiceClient>) {
   try {
     const { data, error } = await supabase
       .from('information_schema.columns' as any)

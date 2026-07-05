@@ -2,13 +2,13 @@ import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core
 import { Metadata } from 'next';
 
 import ServicesPage from '@/components/services-page';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
 import { createSupabaseClient as createPublicSupabaseClient } from "@tecbunny/core/supabase-server";
 import { createPageMetadata } from "@tecbunny/core/metadata";
 import { BRAND_LOGO_URL } from "@tecbunny/ui";
 import { stripHtmlToPlainText } from "@tecbunny/core/strings";
-import type { Service } from "@tecbunny/core/types";
+import type { Service } from '@tecbunny/core';
 
 // Static metadata for better SEO and performance
 export async function generateMetadata(): Promise<Metadata> {

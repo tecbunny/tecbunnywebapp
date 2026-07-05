@@ -1,5 +1,5 @@
 import type { CategoryGstRates } from './utils';
-import type { UserRole, CustomerCategory } from './types';
+import type { UserRole, CustomerCategory } from '@tecbunny/core';
 import { 
   getGstRatesFromDb, 
   getRolePermissionsFromDb, 

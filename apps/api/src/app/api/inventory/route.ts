@@ -1,4 +1,4 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
 import { requireApiRole, type RoleCheckOptions } from "@tecbunny/core/server-role-guard";
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     if ('error' in access) {
       return access.error;
     }
-    const supabase = isSupabaseServiceConfigured ? createServiceClient() : access.supabase;
+    const supabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : access.supabase;
     const { product_id, movement_type, quantity, notes, reference_type } = await request.json();
 
     if (!product_id || !movement_type || quantity === undefined) {
@@ -154,7 +154,7 @@ export async function PUT(request: NextRequest) {
     if (!access.role || !['manager', 'admin', 'superadmin'].includes(access.role)) {
       return NextResponse.json({ error: 'Only managers and administrators can perform absolute stock adjustments' }, { status: 403 });
     }
-    const supabase = isSupabaseServiceConfigured ? createServiceClient() : access.supabase;
+    const supabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : access.supabase;
     const { product_id, new_quantity } = await request.json();
 
     if (!product_id || new_quantity === undefined) {

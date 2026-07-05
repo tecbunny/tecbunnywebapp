@@ -2,8 +2,8 @@ import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 import { OTPManager } from "@tecbunny/core/otp-manager";
-import { logger } from "@tecbunny/core/logger";
-import { apiError, apiSuccess } from "@tecbunny/core/errors";
+import { logger } from "@tecbunny/core";
+import { apiError, apiSuccess } from "@tecbunny/core";
 import { verifyCaptcha } from "@tecbunny/core/captcha/captcha-service";
 import { rateLimit } from "@tecbunny/core/rate-limit";
 import { requireSupabaseServiceEnv } from "@tecbunny/core/supabase/env";

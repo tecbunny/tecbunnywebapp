@@ -2,7 +2,7 @@ import { createClient } from "@tecbunny/core";
 import { NextRequest, NextResponse } from 'next/server';
 
 
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 // Get webhook statistics from the webhook_stats view
 export async function GET(request: NextRequest) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 export async function POST(request: NextRequest) {
   try {

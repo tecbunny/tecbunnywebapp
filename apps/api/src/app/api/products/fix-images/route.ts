@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 import { requireAdmin } from "@tecbunny/core/admin-auth";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { imageJobsQueue } from "@tecbunny/core/queue/image-jobs";
 
 function isValidOrigin(request: NextRequest): boolean {

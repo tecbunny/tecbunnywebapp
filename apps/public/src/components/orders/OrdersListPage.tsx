@@ -16,7 +16,7 @@ import { Button } from "@tecbunny/ui";
 import { Badge } from "@tecbunny/ui";
 import { Input } from "@tecbunny/ui";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@tecbunny/ui";
-import type { Order, OrderStatus } from "@tecbunny/core/types";
+import type { Order, OrderStatus } from '@tecbunny/core';
 
 export default function OrdersListPage() {
   const { user, loading: authLoading } = useAuth();

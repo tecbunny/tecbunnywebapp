@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@tecbunny/ui";
 import { Button } from "@tecbunny/ui";
 import { Badge } from "@tecbunny/ui";
 import { Separator } from "@tecbunny/ui";
-import type { Order } from "@tecbunny/core/types";
+import type { Order } from '@tecbunny/core';
 
 interface OrderConfirmationPageProps {
   orderId: string;

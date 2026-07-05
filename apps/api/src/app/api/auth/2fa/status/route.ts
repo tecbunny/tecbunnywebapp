@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 import { twoFactorManager } from "@tecbunny/core/two-factor-manager";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 
 // Force dynamic rendering for this route
 // export const dynamic = 'force-dynamic';

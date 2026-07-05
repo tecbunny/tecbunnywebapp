@@ -1,6 +1,6 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
 
 export async function POST(request: NextRequest) {
@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       logger.error('simple_import.supabase_configuration_missing');
       return NextResponse.json({ error: 'Service configuration error. Please contact support.' }, { status: 503 });
     }
-    const supabase = createServiceClient();
+    const supabase = createSupabaseServiceClient();
     let text = '';
     
     // Handle both FormData (file upload) and JSON (direct CSV data)

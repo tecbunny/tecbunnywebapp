@@ -10,12 +10,12 @@ import { ShoppingCart, CreditCard, MapPin, User, Wallet, Banknote, QrCode, Tag, 
 import { useCart, useAuth } from "@tecbunny/core/hooks";
 import { useOrder } from "@tecbunny/core/context/OrderProvider";
 import { usePaymentMethods } from '../../hooks/use-payment-methods';
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 import { Button } from "@tecbunny/ui";
 import { calculateCartTotals } from "@tecbunny/core/order-utils";
 import { LoginDialog } from '@/components/auth/LoginDialog';
 import { Badge } from "@tecbunny/ui";
-import type { OrderStatus, OrderType } from "@tecbunny/core/types";
+import type { OrderStatus, OrderType } from '@tecbunny/core';
 import { formatPlaceOfSupply, resolveIndianStateInfo, TECBUNNY_REGISTERED_STATE } from "@tecbunny/core/indian-tax";
 
 const PICKUP_STORES = [

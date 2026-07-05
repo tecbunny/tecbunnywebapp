@@ -1,11 +1,11 @@
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseClient as createClient } from './supabase/server';
 
-import type { User as CustomUser, UserRole } from './types';
+import type { User as CustomUser } from './types';
 import { logger } from './logger';
-import { EFFECTIVE_PERMISSIONS, isAtLeast, normalizeRole } from './roles';
+import { EFFECTIVE_PERMISSIONS, isAtLeast, normalizeRole, type UserRole } from './roles';
 import { verifySuperadminSessionToken } from './auth/superadmin-session';
 
 /**
@@ -144,39 +144,3 @@ export async function isServiceEngineer(user: SupabaseUser | null): Promise<bool
   return role === 'service_engineer';
 }
 
-// Get user role display name
-// Backwards compatibility wrapper returning string[] of permissions
-export function getRolePermissions(role: UserRole): string[] {
-  return Array.from(EFFECTIVE_PERMISSIONS[role]);
-}
-
-// Client-side permission functions that work with our custom User type
-// These are synchronous and work with the role that's already loaded in the user object
-
-export function isCustomerClient(user: CustomUser | null): boolean { return user?.role === 'customer'; }
-
-export function isSalesClient(user: CustomUser | null): boolean {
-  if (!user?.role) return false;
-  return isAtLeast(user.role, 'sales_executive');
-}
-
-export function isAccountsClient(user: CustomUser | null): boolean {
-  if (!user?.role) return false;
-  return isAtLeast(user.role, 'accounts');
-}
-
-export function isServiceEngineerClient(user: CustomUser | null): boolean { return user?.role === 'service_engineer'; }
-
-export function isManagerClient(user: CustomUser | null): boolean {
-  if (!user?.role) return false;
-  return isAtLeast(user.role, 'sales_manager') || isAtLeast(user.role, 'service_manager');
-}
-
-export function isAdminClient(user: CustomUser | null): boolean {
-  if (!user?.role) return false;
-  return isAtLeast(user.role, 'admin');
-}
-
-export function isSuperadminClient(user: CustomUser | null): boolean {
-  return user?.role === 'superadmin' && user?.id === 'superadmin-root-id';
-}

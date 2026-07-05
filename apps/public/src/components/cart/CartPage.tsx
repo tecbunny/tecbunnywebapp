@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Gift, ShoppingCart, Tag, ArrowRight, Lock } from "lucide-react";
 
 import { useCart } from "@tecbunny/core/hooks";
-import { logger } from "@tecbunny/core/logger";
-import type { Coupon } from "@tecbunny/core/types";
+import { logger } from '@tecbunny/core';
+import type { Coupon } from '@tecbunny/core';
 import { Button } from "@tecbunny/ui";
 import { Alert, AlertDescription, AlertTitle } from "@tecbunny/ui";
 import { Badge } from "@tecbunny/ui";

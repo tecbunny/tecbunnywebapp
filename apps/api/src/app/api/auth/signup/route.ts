@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 import { verifyCaptcha } from "@tecbunny/core/captcha/captcha-service";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from "@tecbunny/core";
 import { rateLimit } from "@tecbunny/core/rate-limit";
 import { OTPManager, type OTPChannel } from "@tecbunny/core/otp-manager";
 

@@ -19,9 +19,9 @@ import { Separator } from "@tecbunny/ui";
 import { Badge } from "@tecbunny/ui";
 import { useCart } from "@tecbunny/core/hooks";
 import { formatCurrency } from "@tecbunny/core/utils";
-import { logger } from "@tecbunny/core/logger";
+import { logger } from '@tecbunny/core';
 
-import type { Coupon } from "@tecbunny/core/types";
+import type { Coupon } from '@tecbunny/core';
 import { Input } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";
 

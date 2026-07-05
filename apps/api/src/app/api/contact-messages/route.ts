@@ -1,10 +1,11 @@
-import { createClient as createServerClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient as createServerClient } from "@tecbunny/core";
+import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { rateLimit } from "@tecbunny/core/rate-limit";
-import { logger } from "@tecbunny/core/logger";
-import { verifySuperadminSessionToken } from "@tecbunny/core/auth/superadmin-session";
+import { logger } from "@tecbunny/core";
+import { verifySuperadminSessionToken } from "@tecbunny/core/server";
 import { AdminAuthError, requireAdminContext } from "@tecbunny/core/auth/admin-guard";
 import type { ContactMessage, ContactMessageStatus } from "@tecbunny/core/types";
 
@@ -117,7 +118,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid input', details: parsed.error.flatten() }, { status: 400 });
     }
 
-    const serviceSupabase = isSupabaseServiceConfigured ? createServiceClient() : await createServerClient();
+    const serviceSupabase = isSupabaseServiceConfigured ? createSupabaseServiceClient() : await createServerClient();
     const referrerUrl = request.headers.get('referer');
     const classification = classifyInquiry({
       originPath: parsed.data.origin_path,
