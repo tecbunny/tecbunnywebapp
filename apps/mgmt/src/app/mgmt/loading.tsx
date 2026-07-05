@@ -1,4 +1,4 @@
-import { PageLoader } from '@/components/shared/LoadingSpinner';
+import { PageLoader } from '@tecbunny/admin-ui';
 
 export default function ManagementLoading() {
   return (

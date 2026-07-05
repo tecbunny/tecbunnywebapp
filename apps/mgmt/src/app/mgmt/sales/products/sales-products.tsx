@@ -44,7 +44,7 @@ import { Badge } from "@tecbunny/ui";
 
 
 import { useToast } from "@tecbunny/ui";
-import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
+import { ConfirmDialog } from '@tecbunny/admin-ui';
 
 
 

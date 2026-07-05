@@ -28,12 +28,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tecbunny/ui";
 import type { User, CustomerCategory } from "@tecbunny/core/types";
 import { Badge } from "@tecbunny/ui";
-import { AddUserDialog } from '@/components/admin/AddUserDialog';
-import { EditUserDialog } from '@/components/admin/EditUserDialog';
-import { DiscountOffersDialog } from '@/components/admin/DiscountOffersDialog';
-import { UniversalSearch, SearchFilter, SortOption } from '@/components/shared/UniversalSearch';
+import { AddUserDialog } from '@tecbunny/admin-ui';
+import { EditUserDialog } from '@tecbunny/admin-ui';
+import { DiscountOffersDialog } from '@tecbunny/admin-ui';
+import { UniversalSearch, SearchFilter, SortOption } from '@tecbunny/admin-ui';
 import { useToast } from "@tecbunny/ui";
-import { useDebounce } from '../../../../hooks/use-debounce';
+import { useDebounce } from '@tecbunny/core/hooks/use-debounce';
 
 const ROLE_SENTINEL_NONE = '__none__';
 

@@ -62,8 +62,8 @@ import {
   DropdownMenuTrigger,
 } from "@tecbunny/ui";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tecbunny/ui";
-import { CreateServiceDialog } from '@/components/admin/CreateServiceDialog';
-import { EditServiceDialog } from '@/components/admin/EditServiceDialog';
+import { CreateServiceDialog } from '@tecbunny/admin-ui';
+import { EditServiceDialog } from '@tecbunny/admin-ui';
 
 import { logger } from "@tecbunny/core/logger";
 

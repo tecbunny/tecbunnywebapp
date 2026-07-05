@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import PoliciesManagement from '@/components/admin/PoliciesManagement';
+import PoliciesManagement from '@tecbunny/admin-ui';
 
 export const metadata: Metadata = {
   title: 'Policies Management - Admin Panel | TecBunny Solutions',

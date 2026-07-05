@@ -1,5 +1,5 @@
 "use client";
-import UserManagementPage from './admin-users';
+import { Adminusers as UserManagementPage } from '@tecbunny/admin-ui';
 
 export default function Page() {
   return <UserManagementPage />;

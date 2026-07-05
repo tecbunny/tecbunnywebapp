@@ -45,8 +45,8 @@ import {
 } from "@tecbunny/ui";
 import { Badge } from "@tecbunny/ui";
 import { Checkbox } from "@tecbunny/ui";
-import { CreateProductDialog } from '@/components/admin/CreateProductDialog';
-import { EditProductDialog } from '@/components/admin/EditProductDialog';
+import { CreateProductDialog } from '@tecbunny/admin-ui';
+import { EditProductDialog } from '@tecbunny/admin-ui';
 
 export default function AdminProductsPage() {
   const pathname = usePathname();

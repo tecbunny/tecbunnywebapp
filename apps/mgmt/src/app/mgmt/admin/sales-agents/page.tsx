@@ -1,6 +1,6 @@
 'use client';
 
-import SalesAgentsManagement from '@/components/admin/SalesAgentsManagement';
+import SalesAgentsManagement from '@tecbunny/admin-ui';
 
 export default function SalesAgentsAdminPage() {
   return <SalesAgentsManagement initialApplications={[]} />;

@@ -1,5 +1,5 @@
 "use client";
-import AdminServicesPage from './admin-services';
+import { Adminservices as AdminServicesPage } from '@tecbunny/admin-ui';
 
 export default function Page() {
   return <AdminServicesPage />;

@@ -25,7 +25,7 @@ import { Button } from "@tecbunny/ui";
 import type { Coupon } from "@tecbunny/core/types";
 import { Badge } from "@tecbunny/ui";
 
-import { CreateDiscountDialog } from '@/components/admin/CreateDiscountDialog';
+import { CreateDiscountDialog } from '@tecbunny/admin-ui';
 import type { Discount } from "@tecbunny/core/types";
 import { useToast } from "@tecbunny/ui";
 import {

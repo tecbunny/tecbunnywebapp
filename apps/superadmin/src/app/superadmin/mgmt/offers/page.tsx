@@ -1,3 +1,6 @@
+"use client";
+import { OffersManagement } from '@tecbunny/admin-ui';
+
 export default function Page() {
-  return <div>Component moved or under construction</div>;
+  return <OffersManagement />;
 }

@@ -1,4 +1,4 @@
-import SecurityDashboard from '@/components/admin/security-dashboard';
+import SecurityDashboard from '@tecbunny/admin-ui';
 
 export default function SecurityDashboardPage() {
   return <SecurityDashboard />;
