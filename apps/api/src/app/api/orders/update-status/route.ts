@@ -1,4 +1,5 @@
-import { createClient as createServerClient, isAtLeast } from "@tecbunny/core";
+import { createClient as createServerClient } from "@tecbunny/core/supabase/server";
+import {  isAtLeast } from "@tecbunny/core";
 import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -18,7 +19,8 @@ import {
 } from "@tecbunny/core/whatsapp-service";
 import { otpService } from "@tecbunny/core/otp-service";
 
-import type { OrderStatus, UserRole } from "@tecbunny/core/types";
+import type { OrderStatus } from "@tecbunny/core/types";
+import type { UserRole } from "@tecbunny/core/roles";
 
 const STATUS_NORMALIZATION: Record<string, OrderStatus> = {
   pending: 'Pending',
@@ -319,7 +321,7 @@ export async function POST(request: NextRequest) {
       const emailRecipient = orderRecord.customer_email || (orderRecord as any).email || null;
       if (emailRecipient && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailRecipient)) {
         try {
-          const { emailHelpers } = await import('@/lib/email');
+          const { emailHelpers } = await import('@tecbunny/core/email');
           const emailOrderData = {
             id: orderRecord.id,
             customer_name: orderRecord.customer_name || 'Valued Customer',

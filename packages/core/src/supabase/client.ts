@@ -15,3 +15,12 @@ export function createClient(): BrowserSupabaseClient {
   }
   return browserClient;
 }
+
+export function isSupabasePublicConfigured(): boolean {
+  try {
+    const { url, publicKey } = requireSupabasePublicEnv();
+    return !!url && !!publicKey;
+  } catch (e) {
+    return false;
+  }
+}

@@ -1,4 +1,4 @@
-import { createClient } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/client";
 import { NextRequest, NextResponse } from 'next/server';
 
 
@@ -115,7 +115,7 @@ async function processOrderDelayed(supabase: any, data: any, source: string) {
 
       if (!promoError) {
         // 2. Inject mitigation alert into WhatsApp service layer
-        const whatsapp = (await import('@/lib/whatsapp-service')).WhatsAppService;
+        const whatsapp = (await import('@tecbunny/core/server')).WhatsAppService;
         const ws = new whatsapp();
         
         await ws.sendMessage(formattedPhone!, {

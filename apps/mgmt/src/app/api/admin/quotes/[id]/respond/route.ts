@@ -1,11 +1,11 @@
-import { createServerClient } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/server";
 import { NextResponse, NextRequest } from 'next/server';
 
 import { logger } from "@tecbunny/core/logger";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const supabase = await createServerClient();
+    const supabase = await createClient();
     const { data: { session } } = await supabase.auth.getSession();
     
     // Auth Check

@@ -1,5 +1,6 @@
 'use client';
-import { STAFF_PANEL_ROLES, createClient, getPanelHome, normalizeRole } from "@tecbunny/core";
+import { STAFF_PANEL_ROLES, getPanelHome, normalizeRole } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/client";
 
 
 

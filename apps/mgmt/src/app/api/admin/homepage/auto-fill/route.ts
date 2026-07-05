@@ -1,10 +1,12 @@
-import { createClient as createServerClient, createServiceClient, isAtLeast, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createClient as createServerClient, isAtLeast } from "@tecbunny/core";
+import { isSupabaseServiceConfigured } from "@tecbunny/core/server";
+import { createServiceClient } from "@tecbunny/core/server";
 import { NextRequest, NextResponse } from 'next/server';
 
 
 import { logger } from "@tecbunny/core/logger";
 
-import type { UserRole } from "@tecbunny/core/types";
+import type { UserRole } from "@tecbunny/core";
 // computeAutoFill is not used in this route; we compute inline for return.
 
 // export const dynamic = 'force-dynamic';

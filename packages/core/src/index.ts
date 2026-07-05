@@ -14,3 +14,4 @@ export * from './permissions.client';
 export * from './image-utils';
 export * from './product-visibility';
 export * from './indian-tax';
+export * from './hooks/use-analytics';

@@ -1,5 +1,5 @@
-import { stripHtmlToPlainText } from "@tecbunny/core/strings";
-import { getProductDisplayImage } from "@tecbunny/core/image-utils";
+import { stripHtmlToPlainText } from "./strings";
+import { getProductDisplayImage } from "./image-utils";
 
 function toPositiveNumber(value: unknown): number | null {
   if (typeof value === 'number') return Number.isFinite(value) && value > 0 ? value : null;

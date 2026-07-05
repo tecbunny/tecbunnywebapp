@@ -1,4 +1,5 @@
-import { USER_ASSIGNABLE_ROLES, createClient as createServerClient, normalizeRole, type AssignableRole } from "@tecbunny/core";
+import { createClient as createServerClient } from "@tecbunny/core/supabase/server";
+import { USER_ASSIGNABLE_ROLES, normalizeRole, type AssignableRole } from "@tecbunny/core";
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
@@ -459,7 +460,7 @@ export async function POST(request: NextRequest) {
 
     // Send credentials via email (no verification required)
     try {
-      const improvedEmailService = (await import('@/lib/improved-email-service')).default;
+      const improvedEmailService = (await import('@tecbunny/core/improved-email-service')).default;
       const siteUrl = resolveSiteUrl(request.headers.get('host') || undefined);
       const subject = 'Your Account Has Been Created - TecBunny Store';
       const html = `

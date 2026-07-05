@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
-import { verifySuperadminSessionToken } from '@/lib/auth/superadmin-session'
-import { requireSupabasePublicEnv } from '@/lib/supabase/env'
-import { isAtLeast } from '@/lib/roles'
+import { verifySuperadminSessionToken } from '@tecbunny/core/auth/superadmin-session'
+import { requireSupabasePublicEnv } from '@tecbunny/core/supabase/env'
+import { isAtLeast } from '@tecbunny/core/roles'
 
 // Helper to generate the CSP without strict nonce (to allow Next.js static pages to hydrate)
 function generateCSP() {

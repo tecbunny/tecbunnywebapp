@@ -1,4 +1,5 @@
-import { createClient as createServerClient } from "@tecbunny/core";
+import { createClient as createServerClient } from "@tecbunny/core/supabase/server";
+
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 import { buildPdf, loadCompanyInfo } from "@tecbunny/core/pdf-generator";

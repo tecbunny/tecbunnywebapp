@@ -9,5 +9,7 @@ export * from './rate-limit';
 export * from './captcha/captcha-service';
 export * from './checkout-engine';
 export * from './enhanced-commission-service';
+export * from './email';
+export * from './whatsapp-service';
 export * from './environment-validator';
 export * from './otp-service';

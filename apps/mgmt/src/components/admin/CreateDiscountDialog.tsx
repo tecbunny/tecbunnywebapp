@@ -1,6 +1,6 @@
-import { createClient } from "@tecbunny/core";
-
 'use client';
+import { createClient } from "@tecbunny/core/supabase/client";
+
 
 import * as React from 'react';
 import { useForm } from 'react-hook-form';

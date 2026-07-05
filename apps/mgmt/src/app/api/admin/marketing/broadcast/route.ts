@@ -1,4 +1,5 @@
-import { createServerClient, createServiceClient } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/server";
+import { createServiceClient } from "@tecbunny/core/server";
 ﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { WhatsAppService } from "@tecbunny/core/whatsapp-service";
@@ -27,7 +28,7 @@ function enforceIndianFormatting(phone: string): string {
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createServerClient();
+    const supabase = await createClient();
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session?.user) {

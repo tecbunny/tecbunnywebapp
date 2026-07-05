@@ -1,5 +1,6 @@
 'use client';
-import { createClient, normalizeRole } from "@tecbunny/core";
+import { normalizeRole } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/client";
 
 
 

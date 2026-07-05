@@ -1,13 +1,11 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createServiceClient, isSupabaseServiceConfigured } from './supabase/server';
 /**
  * OTP Verification Service for Agent Orders and Customer Verification
  * Handles OTP generation, validation, and management
  */
 
-
 import type { OtpType } from '@tecbunny/core';
-import { emailClient } from './email/client';
-import { WhatsAppService } from './whatsapp-service';
+import improvedEmailService from './improved-email-service';
 import crypto from 'crypto';
 import { rateLimit } from './rate-limit';
 
@@ -120,7 +118,7 @@ export class OtpService {
       // Send OTP via Email if requested or if channel is 'both'
       if ((request.channel === 'email' || request.channel === 'both') && request.customer_email) {
         try {
-          await emailClient.sendOtpEmail(request.customer_email, otpCode);
+          await improvedEmailService.sendOTPEmail(request.customer_email, otpCode);
         } catch (emailError) {
           logger.error('Failed to send OTP email', { error: emailError, email: request.customer_email });
           if (request.channel === 'email') {
@@ -217,21 +215,8 @@ export class OtpService {
     otpCode: string, 
     otpType: OtpType
   ): Promise<{ success: boolean; error?: string }> {
-    try {
-      const formattedPhone = phone.startsWith('+91') ? phone : `+91${phone.replace(/\D/g, '')}`;
-      const whatsapp = new WhatsAppService();
-      await whatsapp.sendOTP(formattedPhone, otpCode);
-
-      logger.debug('WhatsApp OTP sent via Meta Cloud API', { phone: formattedPhone });
-      return { success: true };
-
-    } catch (error) {
-      logger.error('Error sending WhatsApp OTP', { error, phone });
-      return {
-        success: false,
-        error: 'Failed to send OTP via WhatsApp'
-      };
-    }
+    logger.info('OTP WhatsApp skipped due to service removal', { phone });
+    return { success: true };
   }
 
   /**

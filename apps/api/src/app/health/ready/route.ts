@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 // @ts-ignore
-import { createSupabaseServiceClient } from '@tecbunny/database';
+import { createSupabaseServiceClient } from '@tecbunny/core/server';
 
 export async function GET() {
   try {

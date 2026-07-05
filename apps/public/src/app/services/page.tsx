@@ -1,4 +1,5 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { isSupabaseServiceConfigured } from "@tecbunny/core/server";
+import { createServiceClient } from "@tecbunny/core/server";
 import { Metadata } from 'next';
 
 import ServicesPage from '@/components/services-page';

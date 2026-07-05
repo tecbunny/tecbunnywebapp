@@ -1,4 +1,4 @@
-import { createClient } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/client";
 import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextResponse } from 'next/server'
 
@@ -101,8 +101,8 @@ export async function POST(request: Request) {
     
     if (isHighTier) {
       try {
-        const { WhatsAppService } = await import('@/lib/whatsapp-service');
-        const { logger } = await import('@/lib/logger');
+        const { WhatsAppService } = await import('@tecbunny/core/server');
+        const { logger } = await import('@tecbunny/core');
         const whatsapp = new WhatsAppService();
 
         // Fetch agent info for notification if not already in memory

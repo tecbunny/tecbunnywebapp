@@ -1,4 +1,4 @@
-import { createClient } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/client";
 import { NextRequest, NextResponse } from 'next/server';
 
 
@@ -110,7 +110,7 @@ async function handleOrderConfirmation(supabase: any, orderData: any) {
     const moreCount = Array.isArray(items) && items.length > 5 ? `\n...and ${items.length - 5} more` : '';
     const amountLine = amount ? `\n💰 Total: ₹${amount}` : '';
     const detailMsg = `📋 Order #${order_number} Details${amountLine}${itemLines ? `\n\n${itemLines}${moreCount}` : ''}`.trim();
-    await (await import('@/lib/whatsapp-service')).sendWhatsAppNotification(customer_phone, detailMsg);
+    await (await import('@tecbunny/core/server')).sendWhatsAppNotification(customer_phone, detailMsg);
   }
 
   // Log the notification
@@ -207,6 +207,6 @@ Thank you for joining our tech community! 🚀
 Happy shopping! 😊
   `.trim();
 
-  const { sendWhatsAppNotification } = await import('@/lib/whatsapp-service');
+  const { sendWhatsAppNotification } = await import('@tecbunny/core/server');
   return sendWhatsAppNotification(phone, welcomeMessage);
 }

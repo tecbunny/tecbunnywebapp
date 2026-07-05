@@ -1,4 +1,5 @@
-import { createClient, isSupabasePublicConfigured } from "@tecbunny/core";
+import { isSupabasePublicConfigured } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/client";
 import { NextRequest, NextResponse } from 'next/server';
 
 import { logger } from "@tecbunny/core";
@@ -158,7 +159,7 @@ export async function POST(request: NextRequest) {
     const clientId = getClientId(request, normalizedSessionId);
     let userId: string | null = null;
 
-    if (isSupabasePublicConfigured) {
+    if (isSupabasePublicConfigured()) {
       try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();

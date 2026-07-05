@@ -113,7 +113,7 @@ export async function POST(
         const paymentLink = `${siteUrl}/payment/upi/${id}`;
         
         try {
-          const improvedEmailService = (await import('@/lib/improved-email-service')).default;
+          const improvedEmailService = (await import('@tecbunny/core/improved-email-service')).default;
           await improvedEmailService.sendEmail({
             to: customerEmail,
             subject: `Pending Balance Payment Request for Order #${id}`,
@@ -182,7 +182,7 @@ export async function POST(
       const customerEmail = itemsPayload.customer_email || order.customer_email;
       if (customerEmail) {
         try {
-          const improvedEmailService = (await import('@/lib/improved-email-service')).default;
+          const improvedEmailService = (await import('@tecbunny/core/improved-email-service')).default;
           await improvedEmailService.sendEmail({
             to: customerEmail,
             subject: `Payment Confirmed - Order #${id}`,
@@ -240,7 +240,7 @@ export async function POST(
       const customerEmail = itemsPayload.customer_email || order.customer_email;
       if (customerEmail) {
         try {
-          const improvedEmailService = (await import('@/lib/improved-email-service')).default;
+          const improvedEmailService = (await import('@tecbunny/core/improved-email-service')).default;
           await improvedEmailService.sendEmail({
             to: customerEmail,
             subject: `Invoice for your Order #${id} - TecBunny Store`,

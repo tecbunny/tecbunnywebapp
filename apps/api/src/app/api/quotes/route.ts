@@ -1,4 +1,5 @@
-import { createClient, createSupabaseServiceClient } from "@tecbunny/core";
+import { createSupabaseClient as createClient } from "@tecbunny/core/supabase/server";
+import { createSupabaseServiceClient } from "@tecbunny/core/server";
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
@@ -245,7 +246,7 @@ export async function POST(req: NextRequest) {
 
     let company: Record<string, any> = {};
     try {
-      const { loadCompanyInfo } = await import('@/lib/pdf-generator');
+      const { loadCompanyInfo } = await import('@tecbunny/core/pdf-generator');
       company = await loadCompanyInfo();
     } catch (error) {
       logger.error('quotes.load_company_info_failed', { error, userId: user?.id });
@@ -260,7 +261,7 @@ export async function POST(req: NextRequest) {
 
     let pdfBuffer: Buffer;
     try {
-      const { buildPdf } = await import('@/lib/pdf-generator');
+      const { buildPdf } = await import('@tecbunny/core/pdf-generator');
       pdfBuffer = await buildPdf({
         company,
         customerName: safeCustomerName,

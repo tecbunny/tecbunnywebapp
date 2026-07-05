@@ -26,7 +26,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tecbunny/ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";
 import { logger } from "@tecbunny/core/logger";
-import type { User, UserRole, CustomerCategory } from "@tecbunny/core/types";
+import type { User, CustomerCategory } from "@tecbunny/core/types";
+import type { UserRole } from "@tecbunny/core";
 import {
   EFFECTIVE_PERMISSIONS,
   ROLE_DESCRIPTION,

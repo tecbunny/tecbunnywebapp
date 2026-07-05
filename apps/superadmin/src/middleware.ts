@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 // @ts-ignore
-import { createClient } from '@tecbunny/core';
+import { createClient } from "@tecbunny/core/supabase/client";
 
 export async function middleware(request: NextRequest) {
   const supabase = await createClient();

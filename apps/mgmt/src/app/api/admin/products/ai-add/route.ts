@@ -1,4 +1,6 @@
-import { createClient, createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { isSupabaseServiceConfigured } from "@tecbunny/core/server";
+import { createClient } from "@tecbunny/core/supabase/client";
+import { createServiceClient } from "@tecbunny/core/server";
 /**
  * AI-Powered Product Ingestion Pool
  * POST /api/admin/products/ai-add
@@ -254,7 +256,7 @@ export async function POST(request: NextRequest) {
 
     let aiRawOutput: string;
     try {
-      const { generateGeminiText } = await import('@/lib/ai/gemini-service');
+      const { generateGeminiText } = await import('@tecbunny/core/ai/gemini-service');
       aiRawOutput = await generateGeminiText({
         prompt,
         temperature: 0.2,     // Low temperature for deterministic extraction
@@ -315,7 +317,7 @@ export async function POST(request: NextRequest) {
 
     // ── 8. Strip any AI hallucinated columns not in the live schema ───────────
     try {
-      const { classifyProductTax } = await import('@/lib/ai/tax-classification');
+      const { classifyProductTax } = await import('@tecbunny/core/ai/tax-classification');
       const taxClassification = await classifyProductTax({
         title: payload.title ?? payload.name,
         description: payload.description,

@@ -1,10 +1,14 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import { createClient } from '@supabase/supabase-js';
+import { createClient as supabaseCreateClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
-import { requireSupabasePublicEnv, requireSupabaseServiceEnv } from './env';
+import { requireSupabasePublicEnv, requireSupabaseServiceEnv, isSupabaseServiceConfigured } from './env';
+
+export { isSupabaseServiceConfigured };
 
 // Determine if we're running locally to conditionally set the cookie domain
 const isLocal = process.env.NODE_ENV === 'development';
+
+export const createClient = createSupabaseClient;
 
 export async function createSupabaseClient() {
   const { url, publicKey } = requireSupabasePublicEnv();
@@ -51,5 +55,7 @@ export async function createSupabaseClient() {
 export function createSupabaseServiceClient() {
   const { url, serviceKey } = requireSupabaseServiceEnv();
   // Using standard client for service operations since it doesn't represent a browser user session
-  return createClient(url, serviceKey);
+  return supabaseCreateClient(url, serviceKey);
 }
+
+export const createServiceClient = createSupabaseServiceClient;

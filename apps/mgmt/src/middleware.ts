@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 // @ts-ignore
-import { createClient } from '@tecbunny/core';
+import { createClient } from "@tecbunny/core/supabase/client";
 
 // Allowed staff roles for the mgmt dashboard
 const ALLOWED_ROLES = ['admin', 'sales_manager', 'service_manager', 'sales_executive', 'store_executive', 'superadmin'];

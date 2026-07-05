@@ -1,4 +1,4 @@
-import { createClient } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/client";
 import { createSupabaseServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";;
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
       if (agentOtpRecord) {
         // Run verify via otpService
-        const { otpService } = await import('@/lib/otp-service');
+        const { otpService } = await import('@tecbunny/core/server');
         const verifyResult = await otpService.verifyOtp({
           order_id: orderId,
           customer_phone: reqPhone,
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
         // Process commission award immediately on success
         if (agentOtpRecord.agent_id) {
           try {
-            const { enhancedCommissionService } = await import('@/lib/enhanced-commission-service');
+            const { enhancedCommissionService } = await import('@tecbunny/core/server');
             const commissionResult = await enhancedCommissionService.calculateOrderCommission(
               orderId,
               agentOtpRecord.agent_id

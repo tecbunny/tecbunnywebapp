@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { logger } from "@tecbunny/core/logger";
 
-import type { UserRole } from "@tecbunny/core/types";
+import type { UserRole } from "@tecbunny/core";
 import { computeAutoFill } from "@tecbunny/core/homepage-auto-fill";
 
 // export const dynamic = 'force-dynamic';

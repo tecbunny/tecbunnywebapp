@@ -16,7 +16,7 @@ export async function GET(
 
     const supabase = isSupabaseServiceConfigured
       ? createSupabaseServiceClient()
-      : createPublicSupabaseClient();
+      : await createPublicSupabaseClient();
 
     const { data: project, error } = await supabase
       .from('upcoming_projects')

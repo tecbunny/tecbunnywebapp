@@ -1,4 +1,4 @@
-import { createServiceClient } from "@tecbunny/core";
+import { createServiceClient } from "@tecbunny/core/server";
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
@@ -170,7 +170,7 @@ async function loadCompanySettings(): Promise<CompanySettings> {
 
 export async function generateMetadata({ params }: InvoicePageProps): Promise<Metadata> {
   // Import the utility function dynamically since this is a server component
-  const { formatOrderNumber } = await import('@/lib/order-utils');
+  const { formatOrderNumber } = await import('@tecbunny/core/order-utils');
   const { orderId } = await params;
   const shortId = orderId ? formatOrderNumber(orderId) : 'Invoice';
   return {

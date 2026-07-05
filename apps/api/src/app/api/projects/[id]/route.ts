@@ -36,7 +36,7 @@ export async function PUT(
 
     const supabase = isSupabaseServiceConfigured
       ? createSupabaseServiceClient()
-      : createPublicSupabaseClient();
+      : await createPublicSupabaseClient();
 
     const updateData: Record<string, any> = {};
     if (name !== undefined) updateData.name = name;
@@ -90,7 +90,7 @@ export async function DELETE(
 
     const supabase = isSupabaseServiceConfigured
       ? createSupabaseServiceClient()
-      : createPublicSupabaseClient();
+      : await createPublicSupabaseClient();
 
     const { error } = await supabase
       .from('upcoming_projects')

@@ -1,4 +1,4 @@
-import { createClient } from "@tecbunny/core";
+import { createClient } from "@tecbunny/core/supabase/client";
 import { Suspense } from 'react';
 
 import type { Metadata } from 'next';

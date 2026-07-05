@@ -1,6 +1,6 @@
+'use client';
 import { ROLE_DISPLAY_NAME } from "@tecbunny/core";
 
-'use client';
 
 import * as React from 'react';
 import Link from 'next/link';

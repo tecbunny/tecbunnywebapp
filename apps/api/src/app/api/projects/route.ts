@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = isSupabaseServiceConfigured
       ? createSupabaseServiceClient()
-      : createPublicSupabaseClient();
+      : await createPublicSupabaseClient();
 
     const { data, error } = await supabase
       .from('upcoming_projects')
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = isSupabaseServiceConfigured
       ? createSupabaseServiceClient()
-      : createPublicSupabaseClient();
+      : await createPublicSupabaseClient();
 
     const insertData = {
       name,

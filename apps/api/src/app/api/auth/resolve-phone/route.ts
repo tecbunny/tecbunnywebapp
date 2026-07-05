@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const ip = getClientIp(request);
     
     // Use dynamic import for rateLimit since this is a serverless function and we want the async version
-    const { rateLimit } = await import('@/lib/rate-limit');
+    const { rateLimit } = await import('@tecbunny/core/server');
     
     const rl = await rateLimit(`resolve-phone:${ip}`, 5, 15 * 60 * 1000);
     if (!rl.allowed) {

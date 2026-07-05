@@ -1,54 +1,39 @@
 const fs = require('fs');
 const path = require('path');
 
-const srcDir = path.join(__dirname, 'apps/public/src');
+function processDir(dir) {
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    const fullPath = path.join(dir, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      processDir(fullPath);
+    } else if (fullPath.endsWith('.ts') || fullPath.endsWith('.tsx')) {
+      let content = fs.readFileSync(fullPath, 'utf8');
+      
+      // Look for createClient as createServerClient in @tecbunny/core
+      const importRegex = /import\s+{[^}]*createClient\s+as\s+createServerClient[^}]*}\s+from\s+["']@tecbunny\/core["'];?/g;
+      
+      content = content.replace(importRegex, (match) => {
+        // Remove createClient as createServerClient from the core import
+        let newMatch = match.replace(/,\s*createClient\s+as\s+createServerClient/g, '')
+                            .replace(/createClient\s+as\s+createServerClient\s*,/g, '')
+                            .replace(/{\s*createClient\s+as\s+createServerClient\s*}/g, '{}');
+                            
+        // If the core import is now empty, remove it completely
+        if (newMatch.includes('{}')) {
+            newMatch = '';
+        }
 
-function walk(dir) {
-  let results = [];
-  const list = fs.readdirSync(dir);
-  list.forEach(file => {
-    const filePath = path.join(dir, file);
-    const stat = fs.statSync(filePath);
-    if (stat && stat.isDirectory()) {
-      results = results.concat(walk(filePath));
-    } else if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) {
-      results.push(filePath);
+        // Add the new import
+        const newImport = "import { createClient as createServerClient } from \"@tecbunny/core/supabase/server\";\n";
+        
+        return newImport + newMatch;
+      });
+
+      fs.writeFileSync(fullPath, content);
     }
-  });
-  return results;
+  }
 }
 
-const files = walk(srcDir);
-let changedCount = 0;
-
-files.forEach(file => {
-  let content = fs.readFileSync(file, 'utf8');
-  let original = content;
-
-  // Replace relative imports to moved lib files
-  // e.g. import { logger } from '../../lib/logger';
-  // => import { logger } from '@tecbunny/core';
-  content = content.replace(/from\s+['"](?:\.\.\/)+lib\/(logger|session-manager|panel-routing|offer-discount-service|types|order-utils)['"]/g, "from '@tecbunny/core'");
-  content = content.replace(/from\s+['"]\.\/logger['"]/g, "from '@tecbunny/core'");
-  content = content.replace(/from\s+['"]\.\/types['"]/g, "from '@tecbunny/core'");
-  content = content.replace(/from\s+['"]\.\/session-manager['"]/g, "from '@tecbunny/core'");
-  content = content.replace(/from\s+['"]\.\/order-utils['"]/g, "from '@tecbunny/core'");
-  
-  // Also replace @/lib/ variants
-  content = content.replace(/from\s+['"]@\/lib\/(logger|session-manager|panel-routing|offer-discount-service|types|order-utils)['"]/g, "from '@tecbunny/core'");
-
-  // Replace @tecbunny/core/logger with @tecbunny/core
-  content = content.replace(/from\s+['"]@tecbunny\/core\/logger['"]/g, "from '@tecbunny/core'");
-  content = content.replace(/from\s+['"]@tecbunny\/core\/types['"]/g, "from '@tecbunny/core'");
-  content = content.replace(/from\s+['"]@tecbunny\/core\/session-manager['"]/g, "from '@tecbunny/core'");
-
-  // Fix orders/normalizers
-  content = content.replace(/from\s+['"](?:@\/lib\/|(?:\.\.\/)+lib\/)orders\/normalizers['"]/g, "from '@tecbunny/core/orders/normalizers'");
-
-  if (content !== original) {
-    fs.writeFileSync(file, content, 'utf8');
-    changedCount++;
-  }
-});
-
-console.log(`Updated ${changedCount} files.`);
+processDir('./apps/api/src/app/api');
+console.log('Fixed createServerClient imports');

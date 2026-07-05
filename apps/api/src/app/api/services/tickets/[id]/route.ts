@@ -74,7 +74,7 @@ export async function PUT(
             const isLowerCapacity = checklist.bandwidth_capacity === 'low' || data.engineer_notes.toLowerCase().includes('low capacity');
 
             if (isSingleSwitch || isLowerCapacity) {
-              const { createSupabaseServiceClient } = await import('@/lib/supabase/server');
+              const { createSupabaseServiceClient } = await import('@tecbunny/core/server');
               const supabase = createSupabaseServiceClient();
               
               const upgradeProposal = {
@@ -120,8 +120,8 @@ export async function PUT(
     if (action === 'complete' && result.success) {
       try {
         const ticketId = id;
-        const improvedEmailService = (await import('@/lib/improved-email-service')).default;
-        const { createSupabaseServiceClient } = await import('@/lib/supabase/server');
+        const improvedEmailService = (await import('@tecbunny/core/improved-email-service')).default;
+        const { createSupabaseServiceClient } = await import('@tecbunny/core/server');
         const supabase = createSupabaseServiceClient();
 
         // 1. Fetch ticket details for context

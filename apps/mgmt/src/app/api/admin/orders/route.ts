@@ -1,4 +1,5 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { isSupabaseServiceConfigured } from "@tecbunny/core/server";
+import { createServiceClient } from "@tecbunny/core/server";
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getSessionWithRole } from "@tecbunny/core/auth/server-role";

@@ -1,4 +1,4 @@
-import { createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core";
+import { createSupabaseServiceClient as createServiceClient, isSupabaseServiceConfigured } from "@tecbunny/core/server";
 /**
  * Enhanced Commission Service
  * Handles agent commission calculation with product-specific rules and pre-tax calculations
@@ -10,7 +10,6 @@ import type {
 } from '@tecbunny/core';
 
 import { logger } from '@tecbunny/core';
-import { WhatsAppService } from './whatsapp-service';
 
 export interface CommissionCalculation {
   order_id: string;
@@ -259,16 +258,8 @@ export class EnhancedCommissionService {
         logger.warn('agent-commission.whatsapp_skipped.missing_agent_details', { agentId: calculation.agent_id });
         return;
       }
-
-      const whatsapp = new WhatsAppService();
-      await whatsapp.sendAgentCommissionNotification(agent.mobile, {
-        agentName: agent.full_name || 'Partner',
-        orderNumber: calculation.order_id.split('-')[0].toUpperCase(), // Short ID
-        amount: calculation.commission_amount.toLocaleString('en-IN'),
-        nextTier: 'Gold', // Dynamic logic can be added here
-        differenceToNextTier: '15,000' // Dynamic logic can be added here
-      });
-
+      
+      logger.info('agent-commission.whatsapp_notification_skipped', { agentId: calculation.agent_id, reason: 'whatsapp service removed' });
     } catch (err) {
       logger.error('agent-commission.whatsapp_trigger_failed', { error: err });
     }
