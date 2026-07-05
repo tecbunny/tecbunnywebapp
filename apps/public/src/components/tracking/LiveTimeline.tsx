@@ -2,7 +2,7 @@
 
 import { useLiveOrder } from "@/hooks/useLiveOrder";
 import { Check, Package, Clock, Wrench, CheckCircle2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@tecbunny/ui";
 
 const TIMELINE_STEPS = [
   { id: "placed", title: "Order Placed", icon: Package },

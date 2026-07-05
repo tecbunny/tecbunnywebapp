@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { AlertTriangle, CalendarDays, MapPin, RefreshCw, Wrench } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 import { createClient } from '@/lib/supabase/client';
 import type { ServiceTicket } from '@/lib/types';
 

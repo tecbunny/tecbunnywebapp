@@ -18,9 +18,9 @@ import {
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
 import { useAuth } from '@/lib/hooks';
 import {
   Dialog,
@@ -29,7 +29,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter
-} from '@/components/ui/dialog';
+} from "@tecbunny/ui";
 
 interface Project {
   id: string;

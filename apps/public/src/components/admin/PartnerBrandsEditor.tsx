@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import { Trash, Plus, Upload } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import { Input } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
 import { useToast } from '@/hooks/use-toast';
 
 export const parsePartnerBrands = (raw: string | undefined): Array<{ name: string; logoUrl: string }> => {

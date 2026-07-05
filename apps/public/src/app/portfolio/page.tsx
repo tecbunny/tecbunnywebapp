@@ -15,7 +15,7 @@ import {
   Workflow
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 import { createPageMetadata } from '@/lib/metadata';
 
 export async function generateMetadata(): Promise<Metadata> {

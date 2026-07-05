@@ -8,7 +8,7 @@ import { useCart } from '@/lib/hooks';
 import { formatCurrency } from '@/lib/utils';
 import type { CartItem } from '@/lib/types';
 
-import { BRAND_LOGO_URL } from '@/components/ui/logo';
+import { BRAND_LOGO_URL } from "@tecbunny/ui";
 
 interface CartItemCardProps {
   item: CartItem;

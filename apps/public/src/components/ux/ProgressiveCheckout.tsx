@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@tecbunny/ui";
 import { Check, CreditCard, Lock } from "lucide-react";
 
 export function ProgressiveCheckout() {

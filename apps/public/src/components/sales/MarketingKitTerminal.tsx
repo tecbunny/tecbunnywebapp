@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { Copy, Check, ExternalLink, Code, BarChart3, Globe, MousePointer2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tecbunny/ui";
 
 interface MarketingKitTerminalProps {
   referralCode: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@tecbunny/ui";
 import { Search, Monitor, Zap, Sparkles, Wrench } from "lucide-react";
 import { useFuzzySearch } from "@/hooks/useFuzzySearch";
 

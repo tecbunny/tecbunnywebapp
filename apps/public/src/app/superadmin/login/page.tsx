@@ -4,8 +4,8 @@ import { useState, useEffect, Suspense, useMemo } from 'react';
 import NextDynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import { User, Lock, Eye, EyeOff, AlertCircle, ShieldAlert, Terminal } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Input } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
 import { useToast } from '@/hooks/use-toast';
 
 const Turnstile = NextDynamic(() => import('react-turnstile').then(m => m.default), {

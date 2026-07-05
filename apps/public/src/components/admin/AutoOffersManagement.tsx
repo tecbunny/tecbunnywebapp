@@ -10,7 +10,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@tecbunny/ui";
 import {
   Table,
   TableBody,
@@ -18,9 +18,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+} from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
 import type { AutoOffer } from '@/lib/types';
 import { createClient } from '@/lib/supabase/client';
 

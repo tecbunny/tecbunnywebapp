@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
+import { Separator } from "@tecbunny/ui";
 import { Loader2, Check, X, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -16,7 +16,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@tecbunny/ui";
 
 export default function QuoteDetailPage() {
   const params = useParams();

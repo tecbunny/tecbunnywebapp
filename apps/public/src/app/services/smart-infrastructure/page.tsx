@@ -18,8 +18,8 @@ import {
   Network
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from "@tecbunny/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
 import { createPageMetadata } from '@/lib/metadata';
 import { InfrastructureLeadForm } from '@/components/InfrastructureLeadForm';
 

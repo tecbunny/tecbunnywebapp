@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { cleanMetadataDescription, cleanMetadataTitle, createPageMetadata } from '@/lib/metadata';
 import { createServiceClient, isSupabaseServiceConfigured } from '@/lib/supabase/server';
 import { createSupabaseClient as createPublicSupabaseClient } from '@/lib/supabase-server';
-import { BRAND_LOGO_URL } from '@/components/ui/logo';
+import { BRAND_LOGO_URL } from "@tecbunny/ui";
 import { stripHtmlToPlainText } from '@/lib/strings';
 import { isPubliclyVisibleProduct } from '@/lib/product-visibility';
 import { notFound } from 'next/navigation';

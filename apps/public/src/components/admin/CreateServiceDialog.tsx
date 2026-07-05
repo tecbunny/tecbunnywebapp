@@ -13,11 +13,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+} from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
+import { Switch } from "@tecbunny/ui";
 import {
   Form,
   FormControl,
@@ -26,18 +26,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@tecbunny/ui";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@tecbunny/ui";
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '../../hooks/use-toast';
 import { logger } from '@/lib/logger';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from "@tecbunny/ui";
 
 const serviceSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),

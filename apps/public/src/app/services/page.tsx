@@ -5,7 +5,7 @@ import { logger } from '@/lib/logger';
 import { createServiceClient, isSupabaseServiceConfigured } from '@/lib/supabase/server';
 import { createSupabaseClient as createPublicSupabaseClient } from '@/lib/supabase-server';
 import { createPageMetadata } from '@/lib/metadata';
-import { BRAND_LOGO_URL } from '@/components/ui/logo';
+import { BRAND_LOGO_URL } from "@tecbunny/ui";
 import { stripHtmlToPlainText } from '@/lib/strings';
 import type { Service } from '@/lib/types';
 

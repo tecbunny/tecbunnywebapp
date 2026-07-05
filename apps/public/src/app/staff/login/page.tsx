@@ -9,8 +9,8 @@ import { Mail, Lock, Eye, EyeOff, AlertCircle, ShieldCheck, Users } from 'lucide
 import { createClient } from '@/lib/supabase/client';
 import { normalizeRole } from '@/lib/roles';
 import { getPanelHome, STAFF_PANEL_ROLES } from '@/lib/panel-routing';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Input } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
 import { useToast } from '../../../hooks/use-toast';
 import { TwoFactorVerification } from '@/components/auth/TwoFactorVerification';
 

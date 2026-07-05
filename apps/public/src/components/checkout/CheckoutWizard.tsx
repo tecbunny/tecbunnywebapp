@@ -1,8 +1,8 @@
 "use client";
 
 import { useCheckoutMachine } from "@/hooks/useCheckoutMachine";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
 import { Check, Calendar, CreditCard, MapPin, Lock } from "lucide-react";
 import { InstantIdentity } from "@/components/auth/InstantIdentity";
 

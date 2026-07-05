@@ -11,7 +11,7 @@ import { useCart, useAuth } from '@/lib/hooks';
 import { useOrder } from '../../context/OrderProvider';
 import { usePaymentMethods } from '../../hooks/use-payment-methods';
 import { logger } from '@/lib/logger';
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 import { calculateCartTotals } from '@/lib/order-utils';
 import { LoginDialog } from '@/components/auth/LoginDialog';
 import { Badge } from '../ui/badge';

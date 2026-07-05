@@ -15,7 +15,7 @@ import {
   HeartHandshake
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 import { createPageMetadata } from '@/lib/metadata';
 import { InfrastructureLeadForm } from '@/components/InfrastructureLeadForm';
 

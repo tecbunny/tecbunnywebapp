@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
 import { Github, Chrome } from "lucide-react";
 
 export function MinimalAuth() {

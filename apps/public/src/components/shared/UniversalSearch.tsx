@@ -4,23 +4,23 @@ import * as React from 'react';
 
 import { Search, X, Filter, SortAsc, SortDesc } from 'lucide-react';
 
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
+} from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
+} from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
+import { Checkbox } from "@tecbunny/ui";
 
 export interface SearchFilter {
   id: string;

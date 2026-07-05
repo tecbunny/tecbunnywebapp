@@ -12,17 +12,17 @@ import {
   SheetTitle,
   SheetTrigger,
   SheetFooter,
-} from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
+} from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { ScrollArea } from "@tecbunny/ui";
+import { Separator } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
 import { useCart } from '@/lib/hooks';
 import { formatCurrency } from '@/lib/utils';
 import { logger } from '@/lib/logger';
 
 import type { Coupon } from '@/lib/types';
-import { Input } from '@/components/ui/input';
+import { Input } from "@tecbunny/ui";
 import { useToast } from '../../hooks/use-toast';
 
 import { CartItemCard } from './CartItemCard';

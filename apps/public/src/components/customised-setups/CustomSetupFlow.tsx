@@ -3,21 +3,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Checkbox } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
+import { RadioGroup, RadioGroupItem } from "@tecbunny/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@tecbunny/ui";
 import { useToast } from '@/hooks/use-toast';
 import type { CustomSetupBlueprintComponentSummary, CustomSetupBlueprintSummary } from '@/lib/custom-setup-service';
 import { useAuth, useCart } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
 import { ROICostEfficiencyBanner } from './ROICostEfficiencyBanner';
 import { useLeadCaptureTrigger } from '@/hooks/use-lead-capture-trigger';
-import { FreeInstallationOfferBanner } from '@/components/ui/FreeInstallationOfferBanner';
+import { FreeInstallationOfferBanner } from "@tecbunny/ui";
 import { Share2, Sparkles } from 'lucide-react';
 
 export interface CustomSetupFlowProps {

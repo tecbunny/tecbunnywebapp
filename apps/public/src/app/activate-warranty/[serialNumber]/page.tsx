@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { ViralWarrantyModal } from "@/components/ui/ViralWarrantyModal";
+import { ViralWarrantyModal } from "@tecbunny/ui";
 
 function normalizeMobile(value: string) {
   return value.replace(/\D/g, "");

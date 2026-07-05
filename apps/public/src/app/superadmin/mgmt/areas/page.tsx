@@ -3,14 +3,14 @@
 import * as React from 'react';
 import { MapPin, Plus, RefreshCcw, Save, Trash2, Users } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
+import { Badge } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Checkbox } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@tecbunny/ui";
+import { Switch } from "@tecbunny/ui";
 import { useToast } from '@/hooks/use-toast';
 
 type Staff = {

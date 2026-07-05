@@ -11,20 +11,20 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+} from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
+} from "@tecbunny/ui";
+import { Switch } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
 import type { AutoOffer, OfferType, CustomerCategory } from '@/lib/types';
 import { createClient } from '@/lib/supabase/client';
 import { logger } from '@/lib/logger';

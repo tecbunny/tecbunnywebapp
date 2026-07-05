@@ -8,8 +8,8 @@ import { Mail, RefreshCw, ArrowLeft, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 
 import { createClient } from '@/lib/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
 
 export default function EmailVerificationContent() {
   const [isResending, setIsResending] = useState(false);

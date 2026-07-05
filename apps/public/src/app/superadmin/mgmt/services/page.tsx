@@ -32,7 +32,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@tecbunny/ui";
 import {
   Table,
   TableBody,
@@ -40,12 +40,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+} from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
+import { Switch } from "@tecbunny/ui";
 import {
   Form,
   FormControl,
@@ -54,21 +54,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@tecbunny/ui";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@tecbunny/ui";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@tecbunny/ui";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -76,7 +76,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@tecbunny/ui";
 import { useToast } from '@/hooks/use-toast';
 import { logger } from '@/lib/logger';
 import type { Service } from '@/lib/types';

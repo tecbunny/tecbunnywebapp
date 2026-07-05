@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { ShoppingCart } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 import { useCart } from '@/lib/hooks';
 import type { Product } from '@/lib/types';
 

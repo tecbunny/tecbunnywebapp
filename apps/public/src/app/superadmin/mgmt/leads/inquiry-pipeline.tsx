@@ -3,12 +3,12 @@
 import * as React from 'react';
 import { BriefcaseBusiness, Loader2, RefreshCw, Search, Wrench } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@tecbunny/ui";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@tecbunny/ui";
 import { useToast } from '@/hooks/use-toast';
 import type { ContactMessage, ContactMessageStatus, InquiryCategory } from '@/lib/types';
 

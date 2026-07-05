@@ -1,7 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { Shield, Zap, TrendingUp, Users, Wallet, Rocket, CheckCircle2, MessageSquare } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 import Link from 'next/link';
 
 export const metadata: Metadata = {

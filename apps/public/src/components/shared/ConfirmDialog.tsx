@@ -13,7 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from "@tecbunny/ui";
 
 interface ConfirmDialogProps {
   trigger: React.ReactNode;

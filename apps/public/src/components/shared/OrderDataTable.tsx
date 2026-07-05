@@ -4,12 +4,12 @@ import * as React from 'react';
 
 import { RefreshCw } from 'lucide-react';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@tecbunny/ui";
+import { Skeleton } from "@tecbunny/ui";
 import type { Order, OrderType, OrderStatus } from '@/lib/types';
 import { useToast } from '../../hooks/use-toast';
 import { OrderActions } from '../sales/OrderActions';

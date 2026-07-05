@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
 import { useToast } from '@/hooks/use-toast';
 
 export function InfrastructureLeadForm() {

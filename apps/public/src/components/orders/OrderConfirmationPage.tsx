@@ -7,10 +7,10 @@ import { CheckCircle, Package, MapPin, Phone, Mail, Calendar, Hash, CreditCard, 
 import { formatOrderNumber } from '@/lib/order-utils';
 
 import { useOrder } from '../../context/OrderProvider';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
+import { Separator } from "@tecbunny/ui";
 import type { Order } from '@/lib/types';
 
 interface OrderConfirmationPageProps {

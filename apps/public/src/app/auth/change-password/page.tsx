@@ -8,7 +8,7 @@ import * as z from 'zod';
 import { Eye, EyeOff, Lock, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 import {
   Form,
   FormControl,
@@ -16,9 +16,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+} from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
 import { useToast } from '../../../hooks/use-toast';
 import { useAuth } from '@/lib/hooks';
 

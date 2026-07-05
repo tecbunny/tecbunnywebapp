@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@tecbunny/ui";
 import { Search, Sparkles, Wrench, Monitor, Zap } from "lucide-react";
 
 const SERVICES = [

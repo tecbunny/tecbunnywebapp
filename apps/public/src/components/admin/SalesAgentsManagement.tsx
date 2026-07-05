@@ -12,7 +12,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@tecbunny/ui";
 import {
   Table,
   TableBody,
@@ -20,9 +20,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge, type BadgeProps } from '@/components/ui/badge';
+} from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Badge, type BadgeProps } from "@tecbunny/ui";
 import { useToast } from '../../hooks/use-toast';
 import { logger } from '@/lib/logger';
 

@@ -6,10 +6,10 @@ import * as React from 'react';
 import type { Product, InventoryItem } from '@/lib/types';
 
 import { logger } from '@/lib/logger';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from "@tecbunny/ui";
+import { Checkbox } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
+import { ScrollArea } from "@tecbunny/ui";
 import { useToast } from '../../hooks/use-toast';
 
 import { createClient } from '@/lib/supabase/client';

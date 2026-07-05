@@ -23,11 +23,11 @@ import {
   Wrench,
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tecbunny/ui";
 import { useToast } from '@/hooks/use-toast';
 import { PartnerBrandsEditor } from '@/components/admin/PartnerBrandsEditor';
 import { SingleImageUploader } from '@/components/admin/SingleImageUploader';

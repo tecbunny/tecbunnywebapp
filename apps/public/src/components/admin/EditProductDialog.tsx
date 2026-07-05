@@ -13,10 +13,10 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+} from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
 import {
   Form,
   FormControl,
@@ -25,14 +25,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@tecbunny/ui";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@tecbunny/ui";
 import { useToast } from '../../hooks/use-toast';
 import { logger } from '@/lib/logger';
 import type { Product } from '@/lib/types';

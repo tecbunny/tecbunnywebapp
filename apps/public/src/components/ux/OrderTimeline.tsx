@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Clock, Package, Wrench, CheckCircle2, MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@tecbunny/ui";
 
 const STEPS = [
   { id: 1, title: "Order Placed", description: "We've received your request.", status: "completed", icon: Package },

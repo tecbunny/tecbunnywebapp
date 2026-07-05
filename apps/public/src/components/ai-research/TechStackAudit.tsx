@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Shield, Server, Cpu, Globe, CheckCircle2, ChevronRight, Lock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 
 interface TechStackAuditProps {
   onComplete: (data: any) => void;

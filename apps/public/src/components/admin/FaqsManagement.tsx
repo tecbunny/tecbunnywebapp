@@ -7,10 +7,10 @@ import * as z from 'zod';
 import { Pencil, Trash2, Plus, Loader2 } from 'lucide-react';
 
 import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
+import { Switch } from "@tecbunny/ui";
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import {
   Table,
@@ -19,7 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@tecbunny/ui";
 import {
   Dialog,
   DialogContent,
@@ -27,7 +27,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@tecbunny/ui";
 import {
   Form,
   FormControl,
@@ -35,7 +35,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@tecbunny/ui";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,7 +45,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@tecbunny/ui";
 
 const formSchema = z.object({
   category: z.string().min(1, 'Category is required'),

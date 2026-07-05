@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 import { ShieldCheck, Wrench } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 import { RefreshButton } from '@/components/customised-setups/RefreshButton';
 import { QuoteCTA } from '@/components/customised-setups/QuoteCTA';
 import { QuotationStatusLookup } from '@/components/customised-setups/QuotationStatusLookup';

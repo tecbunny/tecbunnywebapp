@@ -11,14 +11,14 @@ import {
   Activity
 } from 'lucide-react';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
+import { Switch } from "@tecbunny/ui";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
+import { Alert, AlertDescription } from "@tecbunny/ui";
 
 interface SecuritySetting {
   value: string;

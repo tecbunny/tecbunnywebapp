@@ -14,10 +14,10 @@ import {
   X,
 } from 'lucide-react';
 
-import { Logo } from '@/components/ui/logo';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Toaster } from '@/components/ui/toaster';
+import { Logo } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@tecbunny/ui";
+import { Toaster } from "@tecbunny/ui";
 import { cn } from '@/lib/utils';
 import { ROLE_DISPLAY_NAME, type UserRole } from '@/lib/roles';
 import type { User as TecbunnyUser } from '@/lib/types';

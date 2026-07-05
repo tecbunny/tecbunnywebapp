@@ -5,8 +5,8 @@ import * as React from 'react';
 
 import type { Product } from '@/lib/types';
 
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from "@tecbunny/ui";
+import { ScrollArea } from "@tecbunny/ui";
 
 import Modal from '../ui/modal';
 

@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import FaqsClient from '@/components/FaqsClient';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from "@tecbunny/ui";
 
 export const revalidate = 60; // Revalidate at most once every minute
 

@@ -11,11 +11,11 @@ import { getOrderStatusFlow, getServiceOrderStatusFlow } from '@/lib/data';
 import { useAuth } from '@/lib/hooks';
 import { useRouter } from 'next/navigation';
 import { useOrder } from '../../context/OrderProvider';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@tecbunny/ui";
 import type { Order, OrderStatus } from '@/lib/types';
 
 export default function OrdersListPage() {

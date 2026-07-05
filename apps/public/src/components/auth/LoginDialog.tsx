@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import NextDynamic from 'next/dynamic';
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@tecbunny/ui";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@tecbunny/ui";
 import {
   Form,
   FormControl,
@@ -24,8 +24,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
 import { useAuth } from '@/lib/hooks';
 import { useToast } from '../../hooks/use-toast';
 import { createClient } from '@/lib/supabase/client';

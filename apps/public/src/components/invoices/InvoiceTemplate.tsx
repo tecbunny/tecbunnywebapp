@@ -6,11 +6,11 @@ import * as React from 'react';
 import { Printer } from 'lucide-react';
 
 import type { Order } from '@/lib/types';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { Logo } from '@/components/ui/logo';
+import { Card, CardContent, CardFooter, CardHeader } from "@tecbunny/ui";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@tecbunny/ui";
+import { Separator } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Logo } from "@tecbunny/ui";
 import { formatInvoiceDate, formatOrderNumber } from '@/lib/order-utils';
 import { formatPlaceOfSupply, resolveIndianStateFromText, resolveIndianStateInfo, TECBUNNY_REGISTERED_STATE } from '@/lib/indian-tax';
 import sanitizeHtml from '@/lib/sanitize-html';

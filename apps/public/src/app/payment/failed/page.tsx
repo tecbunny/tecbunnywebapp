@@ -9,8 +9,8 @@ import * as React from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { XCircle } from 'lucide-react';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
 
 function PaymentFailedContent() {
   const searchParams = useSearchParams();

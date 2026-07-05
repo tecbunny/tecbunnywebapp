@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { Share2, Zap, Shield, Cpu, Network, CheckCircle2 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
 import { useViralAttribution } from '@/hooks/use-viral-attribution';
 import { toast } from '@/hooks/use-toast';
 import { InteractiveTopologyDiagram } from './InteractiveTopologyDiagram';

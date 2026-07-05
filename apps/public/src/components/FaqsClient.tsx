@@ -7,8 +7,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Input } from '@/components/ui/input';
+} from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
 
 interface FAQ {
   id: string;

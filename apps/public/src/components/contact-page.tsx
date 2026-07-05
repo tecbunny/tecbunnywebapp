@@ -15,10 +15,10 @@ import {
 
 import { logger } from '@/lib/logger';
 
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from "@tecbunny/ui";
+import { Checkbox } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
 import { usePageContent } from '../hooks/use-page-content';
 import {
   Form,
@@ -27,14 +27,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@tecbunny/ui";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@tecbunny/ui";
 import { useToast } from '../hooks/use-toast';
 import { useAnalytics } from '../hooks/use-analytics';
 

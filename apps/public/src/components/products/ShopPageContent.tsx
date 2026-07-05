@@ -16,8 +16,8 @@ import { getProductDisplayImage } from '@/lib/image-utils';
 import { cn, revealDelayClass } from '@/lib/utils';
 
 import type { Product, AutoOffer } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Input } from '@/components/ui/input';
+import { Skeleton } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
 import { useCart } from '@/lib/hooks';
 import { useRevealSections } from '../../hooks/use-reveal-sections';
 

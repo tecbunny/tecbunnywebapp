@@ -18,8 +18,8 @@ import {
 import { logger } from '@/lib/logger';
 import { formatOrderNumber } from '@/lib/order-utils';
 
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from "@tecbunny/ui";
+import { Badge } from "@tecbunny/ui";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +27,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@tecbunny/ui";
 import {
   Dialog,
   DialogContent,
@@ -35,10 +35,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+} from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
+import { Textarea } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
 import { useToast } from '../../hooks/use-toast';
 import { useAuth } from '@/lib/hooks';
 import { isManagerClient, isSalesClient } from '@/lib/permissions-client';

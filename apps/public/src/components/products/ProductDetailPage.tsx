@@ -7,8 +7,8 @@ import Image from 'next/image';
 import { sanitizeHtml } from '@/lib/sanitize-html';
 
 import { AddToCartButton } from '@/components/cart/AddToCartButton';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from "@tecbunny/ui";
+import { Card, CardContent } from "@tecbunny/ui";
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
 import { logger } from '@/lib/logger';
 import { createClient } from '@/lib/supabase/client';

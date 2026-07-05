@@ -7,8 +7,8 @@ import { CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 
 import Link from 'next/link';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Button } from "@tecbunny/ui";
 
 function VerificationSuccessContent() {
   const [countdown, setCountdown] = useState(5);

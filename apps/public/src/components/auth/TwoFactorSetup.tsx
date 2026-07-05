@@ -4,11 +4,11 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { Shield, QrCode, Copy, CheckCircle, AlertCircle, Download } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
+import { Label } from "@tecbunny/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@tecbunny/ui";
+import { Alert, AlertDescription } from "@tecbunny/ui";
 import { useToast } from '../../hooks/use-toast';
 import { logger } from '@/lib/logger';
 

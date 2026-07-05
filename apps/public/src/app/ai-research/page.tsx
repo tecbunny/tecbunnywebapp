@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { Send, Bot, User, Loader2, Sparkles, Lock, ShieldCheck } from 'lucide-react';
-import { MarkdownRenderer } from '@/components/ui/markdown-renderer';
+import { MarkdownRenderer } from "@tecbunny/ui";
 import { TechStackAudit } from '@/components/ai-research/TechStackAudit';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from "@tecbunny/ui";
+import { Input } from "@tecbunny/ui";
 
 type ProductResult = {
   id: string;
