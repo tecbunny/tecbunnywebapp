@@ -65,6 +65,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - auth/login (the login page itself to prevent redirect loops)
      */
-    '/((?!_next/static|_next/image|favicon.ico|auth/login).*)',
+    '/((?!_next/static|_next/image|favicon.ico|auth/login|api/).*)',
   ],
 };
