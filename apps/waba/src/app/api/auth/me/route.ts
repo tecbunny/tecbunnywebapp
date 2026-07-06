@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { createSupabaseClient } from '@tecbunny/core/supabase-server';
 import { supabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
@@ -9,17 +10,34 @@ export async function GET(req: Request) {
     const match = cookieHeader.match(/waba_agent_id=([^;]+)/);
     const agentId = match ? match[1] : null;
 
-    if (!agentId) {
-      return NextResponse.json({ user: null }, { status: 200 });
+    if (agentId === 'superadmin-id') {
+      return NextResponse.json({ user: { id: 'superadmin-id', name: 'Super Admin', email: 'superadmin', role: 'SUPERADMIN' } });
     }
 
-    const { data: user } = await supabase.from('User').select('*').eq('id', agentId).single();
-
-    if (!user) {
-      return NextResponse.json({ user: null }, { status: 200 });
+    if (agentId) {
+      // Legacy check in case some users still have this cookie
+      const { data: user } = await supabase.from('User').select('*').eq('id', agentId).maybeSingle();
+      if (user) {
+        return NextResponse.json({ user });
+      }
     }
 
-    return NextResponse.json({ user });
+    // Check actual Supabase session
+    const supabaseClient = await createSupabaseClient();
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    if (user) {
+      return NextResponse.json({ 
+        user: { 
+          id: user.id, 
+          name: user.user_metadata?.first_name || user.email?.split('@')[0] || 'Agent', 
+          email: user.email, 
+          role: user.user_metadata?.role || 'AGENT' 
+        } 
+      });
+    }
+
+    return NextResponse.json({ user: null }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

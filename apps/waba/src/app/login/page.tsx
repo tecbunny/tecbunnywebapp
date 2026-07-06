@@ -19,6 +19,24 @@ export default function LoginPage() {
     setError("");
     
     try {
+      if (email === 'superadmin' || email === process.env.NEXT_PUBLIC_SUPERADMIN_USER_ID) {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: 'superadmin', password, isSuperadmin: true })
+        });
+        
+        if (res.ok) {
+          window.location.href = "/";
+          return;
+        } else {
+          const data = await res.json();
+          setError(data.error || "Invalid superadmin credentials");
+          setLoading(false);
+          return;
+        }
+      }
+
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -31,13 +49,6 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // Set the legacy waba_agent_id cookie for existing WABA api routes if needed
-        await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: data.user.email, name: data.user.user_metadata?.first_name || 'Agent', id: data.user.id })
-        });
-        
         window.location.href = "/";
       }
     } catch (err: any) {

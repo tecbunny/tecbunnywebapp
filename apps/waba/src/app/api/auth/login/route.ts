@@ -1,37 +1,30 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 
 export async function POST(req: Request) {
   try {
-    const { email, name, id } = await req.json();
+    const { email, password, isSuperadmin } = await req.json();
 
-    if (!email) {
-      return NextResponse.json({ error: 'Missing email' }, { status: 400 });
+    if (isSuperadmin) {
+      const expectedUserId = process.env.SUPERADMIN_USER_ID;
+      const expectedPassword = process.env.SUPERADMIN_PASSWORD;
+
+      if (expectedUserId && expectedPassword && password === expectedPassword) {
+        const response = NextResponse.json({ success: true, user: { id: 'superadmin-id', email: 'superadmin' } });
+        
+        response.cookies.set({
+          name: 'waba_agent_id',
+          value: 'superadmin-id',
+          httpOnly: true,
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7 // 1 week
+        });
+
+        return response;
+      }
+      return NextResponse.json({ error: 'Invalid superadmin credentials' }, { status: 401 });
     }
 
-    // Check if user exists in DB
-    let { data: user } = await supabase.from('User').select('*').eq('email', email).maybeSingle();
-
-    if (!user) {
-      // Create new user (or link to Supabase ID if provided)
-      const newId = id || crypto.randomUUID();
-      const { data: newUser, error } = await supabase.from('User').insert({ id: newId, email, name: name || 'Agent' }).select().single();
-      if (error) throw error;
-      user = newUser;
-    }
-
-    // Create a simple response and set an HTTP-only cookie for the MVP Auth
-    const response = NextResponse.json({ success: true, user });
-    
-    response.cookies.set({
-      name: 'waba_agent_id',
-      value: user.id,
-      httpOnly: true,
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7 // 1 week
-    });
-
-    return response;
+    return NextResponse.json({ error: 'Staff should use Supabase auth directly' }, { status: 400 });
   } catch (error: any) {
     console.error('Login error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
