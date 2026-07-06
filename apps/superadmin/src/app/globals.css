@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@source "../../../packages/ui";
-@source "../../../packages/admin-ui";
+@source "../../../../packages/ui";
+@source "../../../../packages/admin-ui";
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
