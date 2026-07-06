@@ -77,7 +77,7 @@ export default function LoginPage() {
           <div className="crm-field">
             <label>Email Address</label>
             <input 
-              type="email" 
+              type="text" 
               className="crm-input" 
               value={email} 
               onChange={e => setEmail(e.target.value)}

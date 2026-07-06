@@ -1,5 +1,5 @@
 import { BaseAgent } from './BaseAgent';
-import { PrismaClient, Role, DomainType } from '../generated/client';
+import { PrismaClient, Role, DomainType } from '@/generated/client';
 import { TriagedPayload } from './InboundTriageAgent';
 
 const prisma = new PrismaClient();
