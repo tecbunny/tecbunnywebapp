@@ -31,7 +31,7 @@ export default async function SuperadminLayout({ children }: { children: React.R
     <div className="flex min-h-[100dvh] w-full overflow-x-hidden bg-zinc-950 text-zinc-100 font-sans">
       <aside className="sticky top-0 hidden h-[100dvh] w-64 shrink-0 border-r border-zinc-800 xl:flex flex-col bg-zinc-950 text-zinc-200">
         <div className="flex h-16 items-center gap-3 border-b border-zinc-800 px-4">
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-white p-1">
+          <span className="flex h-10 w-10 items-center justify-center rounded-lg p-1">
             <Logo width={28} height={28} />
           </span>
           <div className="min-w-0">

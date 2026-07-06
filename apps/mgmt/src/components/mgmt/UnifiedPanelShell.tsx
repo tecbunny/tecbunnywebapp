@@ -107,7 +107,7 @@ function SidebarContent({
   return (
     <div className="flex h-full flex-col bg-zinc-950 text-zinc-200">
       <div className="flex h-16 items-center gap-3 border-b border-zinc-800 px-4">
-        <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-white p-1">
+        <span className="flex h-10 w-10 items-center justify-center rounded-lg p-1">
           <Logo width={28} height={28} />
         </span>
         <div className="min-w-0">
