@@ -19,7 +19,7 @@ export default function LoginPage() {
     setError("");
     
     try {
-      if (email === 'superadmin' || email === process.env.NEXT_PUBLIC_SUPERADMIN_USER_ID) {
+      if (email === 'superadmin' || email === 'Shubham6010' || email === process.env.NEXT_PUBLIC_SUPERADMIN_USER_ID) {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
