@@ -11,6 +11,8 @@ import * as z from 'zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import NextDynamic from 'next/dynamic';
+const Turnstile = NextDynamic(() => import('react-turnstile').then(m => m.default), { ssr: false }) as unknown as React.ComponentType<any>;
+
 
 import { Button } from "@tecbunny/ui";
 import {
@@ -57,10 +59,7 @@ export function LoginDialog({ children }: { children: React.ReactNode }) {
   const turnstileSiteKey = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() : undefined;
 
   
-  const Turnstile = React.useMemo(
-    () => NextDynamic(() => import('react-turnstile').then(m => m.default), { ssr: false }) as unknown as React.ComponentType<any>,
-    []
-  );
+  
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),

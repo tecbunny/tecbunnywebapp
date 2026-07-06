@@ -113,6 +113,10 @@ export class CheckoutEngine {
         if (item.quantity > availableStock) {
           throw new Error(`Insufficient stock for "${dbProduct.title || item.id}". Only ${availableStock} units available.`);
         }
+        
+        // NOTE: This is a pre-flight check. The actual atomic stock reservation 
+        // is handled securely via the 'allocate_order_inventory_atomic' RPC during order placement
+        // to prevent race conditions.
 
         return {
           product: {

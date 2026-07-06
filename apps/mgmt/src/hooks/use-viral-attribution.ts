@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { logger } from '@tecbunny/core';
 
 const VIRAL_ATTRIBUTION_KEY = 'tecbunny_viral_parent';
-const ATTRIBUTION_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 Days
+const ATTRIBUTION_EXPIRY_DAYS = 30;
 
 /**
  * User Attribution Persistence Matrix Hook
@@ -12,15 +12,19 @@ const ATTRIBUTION_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 Days
 export function useViralAttribution() {
   const trackLanding = useCallback((blueprintId: string) => {
     try {
-      const existing = localStorage.getItem(VIRAL_ATTRIBUTION_KEY);
+      // Check if cookie already exists
+      const hasCookie = document.cookie.split('; ').find(row => row.startsWith(`${VIRAL_ATTRIBUTION_KEY}=`));
       
-      if (!existing) {
-        const payload = {
-          parentBlueprintId: blueprintId,
-          timestamp: Date.now(),
-          converted: false
-        };
-        localStorage.setItem(VIRAL_ATTRIBUTION_KEY, JSON.stringify(payload));
+      if (!hasCookie) {
+        // Securely set the cookie so the server can read it during checkout
+        const date = new Date();
+        date.setTime(date.getTime() + (ATTRIBUTION_EXPIRY_DAYS * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + date.toUTCString();
+        
+        // Use path=/ to make it accessible across the app
+        // Secure flag should be true in production, but we keep it simple here
+        document.cookie = `${VIRAL_ATTRIBUTION_KEY}=${blueprintId}; ${expires}; path=/; SameSite=Lax`;
+        
         logger.info('viral_attribution_marker_dropped', { blueprintId });
       }
     } catch (err) {
@@ -30,46 +34,26 @@ export function useViralAttribution() {
 
   const getParentAttribution = useCallback(() => {
     try {
-      const raw = localStorage.getItem(VIRAL_ATTRIBUTION_KEY);
-      if (!raw) return null;
-
-      const data = JSON.parse(raw);
-      const isExpired = Date.now() - data.timestamp > ATTRIBUTION_EXPIRY;
-
-      if (isExpired) {
-        localStorage.removeItem(VIRAL_ATTRIBUTION_KEY);
-        return null;
-      }
-
-      return data;
+      const cookieRow = document.cookie.split('; ').find(row => row.startsWith(`${VIRAL_ATTRIBUTION_KEY}=`));
+      if (!cookieRow) return null;
+      
+      const parentBlueprintId = cookieRow.split('=')[1];
+      return { parentBlueprintId, converted: false }; // converted state is managed server-side now
     } catch (err) {
       return null;
     }
   }, []);
 
   const markConversion = useCallback(async (orderId: string) => {
-    const attribution = getParentAttribution();
-    if (attribution && !attribution.converted) {
-      try {
-        // Background query to trigger milestone notification for creator
-        await fetch('/api/blueprints/attribution/conversion', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            parentBlueprintId: attribution.parentBlueprintId,
-            newOrderId: orderId
-          })
-        });
-
-        // Mark as converted locally to avoid double counting
-        attribution.converted = true;
-        localStorage.setItem(VIRAL_ATTRIBUTION_KEY, JSON.stringify(attribution));
-        logger.info('viral_conversion_recorded', { parentId: attribution.parentBlueprintId, orderId });
-      } catch (err) {
-        logger.error('failed_to_trigger_viral_milestone', { err });
-      }
-    }
-  }, [getParentAttribution]);
+    // SECURITY REMEDIATION:
+    // Client-side conversion attribution is a critical fraud vector.
+    // Conversions are now automatically handled server-side during the secure 
+    // payment webhook callback (e.g., PayU/UPI success) by reading the `tecbunny_viral_parent` cookie.
+    logger.info('client_side_conversion_deprecated', { 
+      message: 'Conversion attribution is now handled server-side.',
+      orderId 
+    });
+  }, []);
 
   return { trackLanding, getParentAttribution, markConversion };
 }

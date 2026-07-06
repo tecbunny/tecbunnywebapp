@@ -34,6 +34,10 @@ const ROLE_LABELS: Record<string, string> = {
   accounts: 'Accounts',
 };
 
+const Turnstile = NextDynamic(() => import('react-turnstile').then(m => m.default), {
+  ssr: false,
+}) as unknown as React.ComponentType<any>;
+
 function StaffSignInForm() {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -47,13 +51,6 @@ function StaffSignInForm() {
   const [twoFactorUser, setTwoFactorUser] = useState<any>(null);
 
   const turnstileSiteKey = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY : undefined;
-  const Turnstile = useMemo(
-    () =>
-      NextDynamic(() => import('react-turnstile').then(m => m.default), {
-        ssr: false,
-      }) as unknown as React.ComponentType<any>,
-    []
-  );
 
   const searchParams = useSearchParams();
   const { toast } = useToast();

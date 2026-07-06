@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import NextDynamic from 'next/dynamic';
+const Turnstile = NextDynamic(() => import('react-turnstile').then(m => m.default), { ssr: false }) as unknown as React.ComponentType<any>;
+
 import { useRouter } from 'next/navigation';
 
 // Force dynamic rendering for auth page
@@ -36,10 +38,7 @@ export default function SignUpPage() {
   const [dispatchedChannel, setDispatchedChannel] = useState<'email' | 'whatsapp' | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const turnstileSiteKey = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY : undefined;
-  const Turnstile = useMemo(
-    () => NextDynamic(() => import('react-turnstile').then(m => m.default), { ssr: false }) as unknown as React.ComponentType<any>,
-    []
-  );
+  
   const getVerificationPrompt = (channel?: string) => {
     switch (channel) {
       case 'whatsapp':

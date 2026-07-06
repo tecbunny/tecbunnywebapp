@@ -120,6 +120,18 @@ export async function POST(req: Request) {
 
       if (!senderNumber || !messageId) continue;
 
+      // Idempotency check: Skip duplicate payloads from Infobip retries
+      const { data: existingMessage } = await supabase
+        .from('Message')
+        .select('id')
+        .eq('message_id', messageId)
+        .maybeSingle();
+
+      if (existingMessage) {
+        console.log(`Duplicate payload detected for message_id: ${messageId}. Skipping.`);
+        continue;
+      }
+
       // Extract Ad Attribution if present
       let adSource = null;
       if (msg.context?.referral?.headline) {
@@ -184,18 +196,22 @@ export async function POST(req: Request) {
           if (hoursSinceLastMessage > 24) {
             // Firing Meta-approved template because window was closed
             const templateMsg = `Hello ${existingConv?.contact_name || ''}, we saw you're back. Would you like to continue where we left off? Reply YES to resume.`;
-            await sendWhatsAppMessage(senderNumber, templateMsg);
-            
-            // Mark as sent by Admin/System
-            await supabase.from('Message').insert({
-              id: crypto.randomUUID(),
-              sender_number: senderNumber,
-              direction: 'OUTBOUND',
-              message_content: templateMsg,
-              timestamp: new Date().toISOString(),
-              status: 'SENT',
-              sent_by: 'ADMIN' // Treat system template as ADMIN or SYSTEM
-            });
+            try {
+              await sendWhatsAppMessage(senderNumber, templateMsg);
+              
+              // Mark as sent by Admin/System
+              await supabase.from('Message').insert({
+                id: crypto.randomUUID(),
+                sender_number: senderNumber,
+                direction: 'OUTBOUND',
+                message_content: templateMsg,
+                timestamp: new Date().toISOString(),
+                status: 'SENT',
+                sent_by: 'ADMIN' // Treat system template as ADMIN or SYSTEM
+              });
+            } catch (err) {
+              console.error('Failed to send WABA template', { err, messageId });
+            }
           } else {
             // Window is open. Fetch last 5 messages for context
             const { data: historyData } = await supabase
@@ -220,11 +236,15 @@ export async function POST(req: Request) {
               // Pause AI and acknowledge
               await supabase.from('Conversation').update({ ai_active: false }).eq('sender_number', senderNumber);
               const optOutMsg = "Understood. I will pause automated messages. Let me know if you need anything else.";
-              await sendWhatsAppMessage(senderNumber, optOutMsg);
-              await supabase.from('Message').insert({
-                id: crypto.randomUUID(), sender_number: senderNumber, direction: 'OUTBOUND',
-                message_content: optOutMsg, timestamp: new Date().toISOString(), status: 'SENT', sent_by: 'ADMIN'
-              });
+              try {
+                await sendWhatsAppMessage(senderNumber, optOutMsg);
+                await supabase.from('Message').insert({
+                  id: crypto.randomUUID(), sender_number: senderNumber, direction: 'OUTBOUND',
+                  message_content: optOutMsg, timestamp: new Date().toISOString(), status: 'SENT', sent_by: 'ADMIN'
+                });
+              } catch (err) {
+                console.error('Failed to send WABA opt-out', { err, messageId });
+              }
               continue; // Move to next message
             } else if (intent === 'PROPERTY_INQUIRY') {
               currentFlow = 'Property Inquiry Flow';
@@ -246,18 +266,31 @@ export async function POST(req: Request) {
             );
             
             if (autoReply) {
-              await sendWhatsAppMessage(senderNumber, autoReply);
-              
-              // Ensure we log the AI's response in the DB
-              await supabase.from('Message').insert({
-                id: crypto.randomUUID(),
-                sender_number: senderNumber,
-                direction: 'OUTBOUND',
-                message_content: autoReply,
-                timestamp: new Date().toISOString(),
-                status: 'SENT',
-                sent_by: 'AI'
-              });
+              try {
+                await sendWhatsAppMessage(senderNumber, autoReply);
+                
+                // Ensure we log the AI's response in the DB
+                await supabase.from('Message').insert({
+                  id: crypto.randomUUID(),
+                  sender_number: senderNumber,
+                  direction: 'OUTBOUND',
+                  message_content: autoReply,
+                  timestamp: new Date().toISOString(),
+                  status: 'SENT',
+                  sent_by: 'AI'
+                });
+              } catch (err) {
+                console.error('Failed to send WABA auto-reply', { err, messageId });
+                await supabase.from('Message').insert({
+                  id: crypto.randomUUID(),
+                  sender_number: senderNumber,
+                  direction: 'OUTBOUND',
+                  message_content: autoReply,
+                  timestamp: new Date().toISOString(),
+                  status: 'FAILED',
+                  sent_by: 'AI'
+                });
+              }
             }
           }
         }

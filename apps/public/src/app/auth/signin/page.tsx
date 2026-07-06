@@ -6,6 +6,8 @@ import { createClient } from "@tecbunny/core/supabase/client";
 
 import { useState, useEffect, Suspense, useMemo } from 'react';
 import NextDynamic from 'next/dynamic';
+const Turnstile = NextDynamic(() => import('react-turnstile').then(m => m.default), { ssr: false }) as unknown as React.ComponentType<any>;
+
 import { useSearchParams, useRouter } from 'next/navigation';
 
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, Mail } from 'lucide-react';
@@ -36,10 +38,7 @@ function SignInForm() {
   const [twoFactorUser, setTwoFactorUser] = useState<any>(null);
 
   const turnstileSiteKey = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY : undefined;
-  const Turnstile = useMemo(
-    () => NextDynamic(() => import('react-turnstile').then(m => m.default), { ssr: false }) as unknown as React.ComponentType<any>,
-    []
-  );
+  
 
   const searchParams = useSearchParams();
   const router = useRouter();
