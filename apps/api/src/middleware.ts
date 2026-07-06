@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { verifySuperadminSessionToken } from '@tecbunny/core/src/auth/superadmin-session';
+import { verifySuperadminSessionToken } from '@tecbunny/core/auth/superadmin-session';
 
 const allowedOrigins = [
   'https://tecbunny.com',
