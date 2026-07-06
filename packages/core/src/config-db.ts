@@ -1,12 +1,12 @@
 import { unstable_cache } from 'next/cache';
-import { createSupabaseClient } from './supabase-server';
+import { createServiceClient } from './server';
 
 /**
  * Fetch settings from DB with cache
  */
 export const getAppSettings = unstable_cache(
   async () => {
-    const supabase = await createSupabaseClient();
+    const supabase = createServiceClient();
     const { data } = await supabase.from('app_settings').select('key, value');
     const settings: Record<string, any> = {};
     if (data) {
@@ -25,7 +25,7 @@ export const getAppSettings = unstable_cache(
  */
 export const getGstRatesFromDb = unstable_cache(
   async () => {
-    const supabase = await createSupabaseClient();
+    const supabase = createServiceClient();
     const { data } = await supabase.from('gst_rates').select('category, rate');
     const rates: Record<string, number> = {};
     if (data) {
@@ -44,7 +44,7 @@ export const getGstRatesFromDb = unstable_cache(
  */
 export const getRolePermissionsFromDb = unstable_cache(
   async () => {
-    const supabase = await createSupabaseClient();
+    const supabase = createServiceClient();
     const { data } = await supabase.from('roles_permissions').select('role, permissions');
     const perms: Record<string, Record<string, boolean>> = {};
     if (data) {
@@ -63,7 +63,7 @@ export const getRolePermissionsFromDb = unstable_cache(
  */
 export const getCustomerCategoriesFromDb = unstable_cache(
   async () => {
-    const supabase = await createSupabaseClient();
+    const supabase = createServiceClient();
     const { data } = await supabase.from('customer_categories').select('*');
     return data || [];
   },
@@ -76,7 +76,7 @@ export const getCustomerCategoriesFromDb = unstable_cache(
  */
 export const getCustomSetupConstantsFromDb = unstable_cache(
   async () => {
-    const supabase = await createSupabaseClient();
+    const supabase = createServiceClient();
     const { data } = await supabase.from('custom_setup_constants').select('key, value');
     const constants: Record<string, number> = {};
     if (data) {
@@ -95,7 +95,7 @@ export const getCustomSetupConstantsFromDb = unstable_cache(
  */
 export const getCustomSetupInventoryFromDb = unstable_cache(
   async () => {
-    const supabase = await createSupabaseClient();
+    const supabase = createServiceClient();
     const { data } = await supabase.from('custom_setup_inventory').select('*').eq('is_active', true);
     return data || [];
   },

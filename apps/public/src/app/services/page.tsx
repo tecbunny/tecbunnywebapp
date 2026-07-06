@@ -107,8 +107,8 @@ export default async function Page() {
 
   try {
     const supabase = isSupabaseServiceConfigured
-      ? createServiceClient()
-      : createPublicSupabaseClient();
+      ? await createServiceClient()
+      : await createPublicSupabaseClient();
 
     // Select the row shape Supabase exposes and normalize defensively below.
     const { data, error } = await supabase
