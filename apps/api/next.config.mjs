@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['pdfkit', 'fontkit'],
+  serverExternalPackages: ['pdfkit', 'fontkit', 'sharp', '@aws-sdk/client-s3'],
   experimental: {
     instrumentationHook: true,
   },
