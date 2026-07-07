@@ -18,6 +18,7 @@ export interface TriagedPayload {
   is_actionable: boolean;
   escalate_to_human: boolean;
   follow_up_question: string | null;
+  notes: string | null;
   
   // Metadata for downstream processing
   messageId: string;
@@ -114,7 +115,7 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
         const history = (historyData || []).reverse();
         
         // Extract structured JSON payload using Gemini
-        const triageResult = await this.extractStructuredIntent(textContent, history, existingConv?.contact_name || null);
+        const triageResult = await this.extractStructuredIntent(textContent, history, existingConv?.contact_name || null, senderNumber);
         
         // Inject metadata
         const fullPayload: TriagedPayload = {
@@ -146,9 +147,10 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
   private async extractStructuredIntent(
     userMessage: string,
     history: { direction: string; message_content: string }[],
-    contactName: string | null
-  ): Promise<Omit<TriagedPayload, 'messageId' | 'senderNumber' | 'history'>> {
-    const defaultFallback: Omit<TriagedPayload, 'messageId' | 'senderNumber' | 'history'> = {
+    contactName: string | null,
+    senderNumber: string
+  ): Promise<Omit<TriagedPayload, 'messageId' | 'senderNumber' | 'history'> & { notes: string | null }> {
+    const defaultFallback: Omit<TriagedPayload, 'messageId' | 'senderNumber' | 'history'> & { notes: string | null } = {
       customer_name: null,
       pincode: null,
       address: null,
@@ -156,13 +158,14 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
       sub_category: 'OTHER',
       is_actionable: false,
       escalate_to_human: true,
+      notes: null,
       follow_up_question: "Oops, I didn't quite catch that! I'm transferring you to a human manager to assist you further."
     };
 
     if (!genAI) return defaultFallback;
 
     try {
-      // Fetch live pricing context from the database
+      // 1. Fetch live pricing context from the database
       const pricingCatalog = await buildPricingCatalog(null);
       const simplifiedPricing = {
         analog_camera_2_4mp: pricingCatalog.analog.camera['2.4mp']?.standard?.sale || 1500,
@@ -175,6 +178,19 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
         installation_fee_per_camera: pricingCatalog.installationOption?.sale || 500,
         cable_fee_per_meter: pricingCatalog.analog.cable[0]?.salePerUnit || 25,
       };
+
+      // 2. Fetch Customer File (Memory)
+      const { data: existingLead } = await supabase
+        .from('Lead')
+        .select('address, pincode')
+        .eq('sender_number', senderNumber)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const memoryContext = existingLead && (existingLead.address || existingLead.pincode) 
+        ? `[CUSTOMER FILE MEMORY]\nWe ALREADY HAVE the following details for this customer on file:\nAddress: ${existingLead.address || 'Unknown'}\nPincode: ${existingLead.pincode || 'Unknown'}\nDO NOT ASK THE CUSTOMER FOR THESE DETAILS AGAIN. YOU ALREADY HAVE THEM.`
+        : `[CUSTOMER FILE MEMORY]\nWe DO NOT have this customer's address or pincode on file yet. You MUST ask for their full address before processing their request.`;
 
       const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash",
@@ -194,6 +210,7 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
                 type: SchemaType.STRING, 
                 description: "Must be exactly one of: 'CCTV', 'COMPUTERS', 'NETWORKING', 'WEB_DEV', 'HARDWARE_SALES', 'OTHER'"
               },
+              notes: { type: SchemaType.STRING, nullable: true, description: "A brief summary of the customer's request for our CRM dashboard." },
               is_actionable: { type: SchemaType.BOOLEAN, description: "Set to true ONLY if you are done processing the user or need to escalate to human." },
               escalate_to_human: { type: SchemaType.BOOLEAN, description: "Set to true if you are confused, the customer is angry, or they ask for something not in the knowledge base." },
               follow_up_question: { type: SchemaType.STRING, nullable: true, description: "Your response to the customer." },
@@ -222,9 +239,10 @@ ${JSON.stringify(simplifiedPricing, null, 2)}
 (Remember to include the DVR/NVR, a 1TB Hard Drive, Installation fee per camera, and roughly 90 meters of cable).
 4. Present the quotation to the customer in a beautifully formatted message.
 
-## General Operations
+## General Operations & Memory
 - To register a service request or order, we ALWAYS need their full address.
-- Ask for their FULL address (do not ask for pincode upfront).
+${memoryContext}
+- If we do NOT have their address on file, ask for their FULL address (do not ask for pincode upfront).
 - If they gave an address without a 6-digit Indian pincode, ask for the pincode.
 
 ## Escalation Protocol (escalate_to_human)
@@ -250,12 +268,13 @@ Latest Message:
       
       return {
         customer_name: parsed.customer_name || contactName || null,
-        pincode: parsed.pincode || null,
-        address: parsed.address || null,
+        pincode: parsed.pincode || existingLead?.pincode || null,
+        address: parsed.address || existingLead?.address || null,
         domain: parsed.domain || 'UNKNOWN',
         sub_category: parsed.sub_category || 'OTHER',
         is_actionable: typeof parsed.is_actionable === 'boolean' ? parsed.is_actionable : false,
         escalate_to_human: typeof parsed.escalate_to_human === 'boolean' ? parsed.escalate_to_human : false,
+        notes: parsed.notes || null,
         follow_up_question: parsed.follow_up_question || null
       };
 

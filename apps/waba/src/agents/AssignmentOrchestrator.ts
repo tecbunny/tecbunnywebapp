@@ -79,6 +79,18 @@ export class AssignmentOrchestrator extends BaseAgent<TriagedPayload, void> {
         updated_at: new Date().toISOString()
       });
 
+    // Update Conversation with CRM details
+    await supabase
+      .from('Conversation')
+      .update({
+        contact_name: data.customer_name || undefined,
+        department: data.domain === 'PRODUCT_SALES' ? 'SALES' : 'SUPPORT',
+        notes: data.notes || undefined,
+        status: data.escalate_to_human ? 'NEW' : 'LEAD',
+        assigned_to: assignedUserId || undefined
+      })
+      .eq('sender_number', data.senderNumber);
+
     if (error) {
       console.error(`[AssignmentOrchestrator] Failed to save lead:`, error);
     } else {
