@@ -84,7 +84,7 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
       }
 
       // Insert incoming message
-      await supabase
+      const { error: msgError } = await supabase
         .from('Message')
         .insert({
           id: crypto.randomUUID(),
@@ -94,6 +94,10 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
           message_content: textContent,
           timestamp: new Date().toISOString()
         });
+        
+      if (msgError) {
+        console.error(`[InboundTriageAgent] FATAL Supabase Insert Error:`, msgError);
+      }
 
       if (textContent) {
         // Fetch history for context
@@ -163,13 +167,11 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
               pincode: { type: SchemaType.STRING, nullable: true },
               domain: { 
                 type: SchemaType.STRING, 
-                enum: ['TECHNICAL_SERVICE', 'PRODUCT_SALES', 'UNKNOWN'],
-                format: 'enum'
+                enum: ['TECHNICAL_SERVICE', 'PRODUCT_SALES', 'UNKNOWN']
               },
               sub_category: { 
                 type: SchemaType.STRING, 
-                enum: ['CCTV', 'COMPUTERS', 'NETWORKING', 'WEB_DEV', 'HARDWARE_SALES', 'OTHER'],
-                format: 'enum'
+                enum: ['CCTV', 'COMPUTERS', 'NETWORKING', 'WEB_DEV', 'HARDWARE_SALES', 'OTHER']
               },
               is_actionable: { type: SchemaType.BOOLEAN },
               follow_up_question: { type: SchemaType.STRING, nullable: true },
