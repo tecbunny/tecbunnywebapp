@@ -239,6 +239,7 @@ ${JSON.stringify(simplifiedPricing, null, 2)}
 - To register a service request or order, we ALWAYS need their full address.
 ${memoryContext}
 - CRITICAL EXCEPTION: If the user is asking for a quotation, give them the quotation FIRST. Only ask for their address AFTER you have provided the price and they show interest in proceeding.
+- IMPORTANT INTENT RULE: If the user's latest message is JUST a pincode or address, LOOK at the older messages in the Previous Context to remember what they wanted (e.g. if they asked for a quotation earlier, give them the quotation now!). Do NOT say "how can I help you today" if they already told you!
 
 ## Actionable & Escalation Rules
 - Set \`is_actionable: true\` ONLY IF the customer has agreed to purchase/proceed AND you have their full address. Otherwise, keep it false.
