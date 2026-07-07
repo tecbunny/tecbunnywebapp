@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { sendWhatsAppMessage, sendWhatsAppLocation } from '@/services/infobipService';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const dynamic = 'force-dynamic';
+
+const apiKey = process.env.GEMINI_API_KEY || "";
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
 export async function GET(req: Request) {
   try {
@@ -66,7 +70,31 @@ export async function POST(req: Request) {
     if (location) {
       result = await sendWhatsAppLocation(to, location.latitude, location.longitude, location.name, location.address);
     } else if (text) {
-      result = await sendWhatsAppMessage(to, text);
+      let finalMessage = text;
+      
+      // Auto-Draft / Rewrite Feature using Gemini
+      if (genAI) {
+        try {
+          const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+          const prompt = `You are an expert AI editor for TecBunny's sales and support managers. 
+The manager has written a draft message to a customer. Your job is to rewrite it to be extremely professional, warm, polite, and grammatically perfect.
+- Do NOT change the factual meaning, prices, or details.
+- Make it sound like a premium enterprise IT services company.
+- Use a warm, human-like tone with occasional natural emojis.
+- Output ONLY the rewritten message. Do not include any quotes, intro text, or extra commentary.
+
+Manager's Draft:
+"${text}"
+`;
+          const aiResult = await model.generateContent(prompt);
+          finalMessage = aiResult.response.text().trim();
+          console.log(`[AI Draft] Original: ${text} | Rewritten: ${finalMessage}`);
+        } catch (err) {
+          console.error("AI Draft Rewrite failed, falling back to original message:", err);
+        }
+      }
+
+      result = await sendWhatsAppMessage(to, finalMessage);
     } else {
       return NextResponse.json({ error: 'Missing "text" or "location"' }, { status: 400 });
     }
