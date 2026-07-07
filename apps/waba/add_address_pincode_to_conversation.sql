@@ -1,0 +1,2 @@
+ALTER TABLE "Conversation" ADD COLUMN IF NOT EXISTS "address" TEXT;
+ALTER TABLE "Conversation" ADD COLUMN IF NOT EXISTS "pincode" TEXT;
