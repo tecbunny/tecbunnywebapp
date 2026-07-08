@@ -9,14 +9,18 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1024.0",
     "@tecbunny/core": "*",
     "@tecbunny/domain": "*",
-    "@tecbunny/rpc": "*",
     "@tecbunny/infra": "*",
+    "@tecbunny/rpc": "*",
     "@tecbunny/types": "*",
+    "fontkit": "^2.0.4",
     "next": "15.0.0-rc.0",
+    "pdfkit": "^0.15.0",
     "react": "19.0.0-rc-f994737d14-20240522",
     "react-dom": "19.0.0-rc-f994737d14-20240522",
+    "sharp": "^0.35.3",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
@@ -30,5 +34,3 @@
     "typescript": "^5"
   }
 }
-
-
