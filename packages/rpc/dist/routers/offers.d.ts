@@ -1,4 +1,4 @@
-interface NormalizedOffer {
+export interface NormalizedOffer {
     id: string;
     title: string;
     description: string;
@@ -228,5 +228,4 @@ export declare const offersRouter: import("@trpc/server").CreateRouterInner<impo
         message: string;
     }>;
 }>;
-export {};
 //# sourceMappingURL=offers.d.ts.map
