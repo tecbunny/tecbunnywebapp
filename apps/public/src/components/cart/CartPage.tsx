@@ -13,6 +13,7 @@ import { Badge } from "@tecbunny/ui";
 import { Input } from "@tecbunny/ui";
 
 import { useToast } from "@tecbunny/ui";
+import { trpc } from "@/components/providers/TRPCProvider";
 
 import { CartItemCard } from "./CartItemCard";
 
@@ -35,20 +36,17 @@ export default function CartPage() {
   const [couponCode, setCouponCode] = React.useState("");
   const [applyingCode, setApplyingCode] = React.useState(false);
   const { toast } = useToast();
+  const utils = trpc.useUtils();
 
   const fetchCouponByCode = React.useCallback(async (code: string): Promise<Coupon | null> => {
     try {
-      const response = await fetch(`/api/coupons?code=${encodeURIComponent(code)}`, { cache: "no-store" });
-      if (!response.ok) {
-        return null;
-      }
-      const data = await response.json();
-      return data as Coupon;
+      const data = await utils.coupons.getByCode.fetch({ code });
+      return data?.coupon as unknown as Coupon;
     } catch (error) {
       logger.error("cart_fetch_coupon_failed", { error, code });
       return null;
     }
-  }, []);
+  }, [utils]);
 
   React.useEffect(() => {
     void refreshPricing();

@@ -24,6 +24,7 @@ import { logger } from '@tecbunny/core';
 import type { Coupon } from '@tecbunny/core';
 import { Input } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";
+import { trpc } from "@/components/providers/TRPCProvider";
 
 import { CartItemCard } from './CartItemCard';
 
@@ -49,19 +50,16 @@ export function EnhancedCartSheet({ children }: EnhancedCartSheetProps) {
   const [couponCode, setCouponCode] = React.useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = React.useState(false);
 
+  const utils = trpc.useUtils();
   const fetchCouponByCode = React.useCallback(async (code: string): Promise<Coupon | null> => {
     try {
-      const response = await fetch(`/api/coupons?code=${encodeURIComponent(code)}`, { cache: 'no-store' });
-      if (!response.ok) {
-        return null;
-      }
-      const data = await response.json();
-      return data as Coupon;
+      const data = await utils.coupons.getByCode.fetch({ code });
+      return data?.coupon as unknown as Coupon;
     } catch (error) {
       logger.error('cart_fetch_coupon_failed', { error, code });
       return null;
     }
-  }, []);
+  }, [utils]);
 
   const availableCoupons = React.useMemo(
     () => pricing?.availableCoupons ?? [],

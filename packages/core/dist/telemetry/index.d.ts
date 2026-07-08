@@ -17,4 +17,12 @@ export declare const telemetry: {
      */
     getTracer: (name?: string) => import("@opentelemetry/api").Tracer;
 };
+/**
+ * A wrapper to execute a function within a new OpenTelemetry span.
+ *
+ * @param spanName The name of the span to create
+ * @param fn The function to execute within the span
+ * @param attributes Optional attributes to add to the span
+ */
+export declare function withTelemetry<T>(spanName: string, fn: () => Promise<T> | T, attributes?: Record<string, any>): Promise<T>;
 //# sourceMappingURL=index.d.ts.map

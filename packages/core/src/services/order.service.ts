@@ -10,6 +10,8 @@ import { deserializeOrder } from '../orders/normalizers';
 import { enhancedCommissionService } from '../enhanced-commission-service';
 import { otpService } from '../otp-service';
 
+import { withTelemetry } from '../telemetry';
+
 export class OrderService implements IOrderService {
   constructor(
     private readonly orderRepo: IOrderRepository,
@@ -17,14 +19,17 @@ export class OrderService implements IOrderService {
   ) {}
 
   async getCustomerOrders(userId: string, userEmail?: string, userPhone?: string): Promise<any[]> {
-    const rawOrders = await this.orderRepo.getCustomerOrders(userId, userEmail, userPhone);
-    return rawOrders.map(deserializeOrder);
+    return withTelemetry('OrderService.getCustomerOrders', async () => {
+      const rawOrders = await this.orderRepo.getCustomerOrders(userId, userEmail, userPhone);
+      return rawOrders.map(deserializeOrder);
+    }, { userId, userEmail, userPhone });
   }
 
   async createOrder(params: CreateOrderParams): Promise<any> {
-    const { effectiveUserId, orderData } = params;
+    return withTelemetry('OrderService.createOrder', async () => {
+      const { effectiveUserId, orderData } = params;
 
-    logger.info('order_create_attempt', { userId: effectiveUserId });
+      logger.info('order_create_attempt', { userId: effectiveUserId });
 
     if (!orderData.customer_name || !orderData.customer_email || !orderData.customer_phone) {
       throw new Error('Missing required customer information');
@@ -263,5 +268,6 @@ export class OrderService implements IOrderService {
     }
 
     return fullOrder;
+    }, { effectiveUserId: params.effectiveUserId });
   }
 }

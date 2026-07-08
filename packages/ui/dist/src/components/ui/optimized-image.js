@@ -3,7 +3,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import * as React from 'react';
 import Image from 'next/image';
 import { cn } from '../../lib/utils';
-import { logger } from '@tecbunny/core';
+import { logger } from '@tecbunny/core/logger';
 // Check if the image is from Supabase Storage
 const isSupabaseUrl = (url) => {
     if (!url || typeof url !== 'string')

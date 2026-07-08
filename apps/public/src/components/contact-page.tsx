@@ -37,6 +37,7 @@ import {
 } from "@tecbunny/ui";
 import { useToast } from "@tecbunny/ui";
 import { useAnalytics } from '@tecbunny/core';
+import { trpc } from '@/components/providers/TRPCProvider';
 
 const SUBJECT_OPTIONS = ['general', 'support', 'sales', 'billing', 'partnership', 'feedback', 'web_development'] as const;
 const SUBJECT_LABELS: Record<(typeof SUBJECT_OPTIONS)[number], string> = {
@@ -133,6 +134,8 @@ export default function ContactPage() {
     });
   }, [form, messageParam]);
 
+  const { mutateAsync: submitContactMessage } = trpc.contactMessages.submit.useMutation();
+
   const onSubmit = async (values: ContactFormValues) => {
     setIsSubmitting(true);
     try {
@@ -158,28 +161,7 @@ export default function ContactPage() {
         utm_campaign: searchParams.get('utm_campaign') ?? undefined,
       };
 
-      const response = await fetch('/api/contact-messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        let errorMessage = 'We could not send your message. Please try again later.';
-        try {
-          const data = await response.json();
-          if (typeof data?.error === 'string' && data.error.length > 0) {
-            errorMessage = data.error;
-          }
-        } catch (parseError) {
-          logger.warn('contact_message_response_parse_failed', {
-            error: parseError instanceof Error ? parseError.message : String(parseError),
-          });
-        }
-        throw new Error(errorMessage);
-      }
+      await submitContactMessage(payload);
 
       toast({
         title: 'Message sent!',

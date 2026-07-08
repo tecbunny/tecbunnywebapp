@@ -8,6 +8,7 @@ import { logger } from '@tecbunny/core';
 import sanitizeHtml from "@tecbunny/core/sanitize-html";
 
 import { useToast } from "@tecbunny/ui";
+import { trpc } from "@/components/providers/TRPCProvider";
 
 interface Offer {
   id: string;
@@ -47,23 +48,21 @@ export default function OffersPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const { toast } = useToast();
 
+  const utils = trpc.useUtils();
+
   useEffect(() => {
     fetchOffers();
-  }, []);
+  }, [utils]);
 
   const fetchOffers = async () => {
     try {
       setLoading(true);
       
-      // Fetch all active offers
-      const offersResponse = await fetch('/api/offers?active=true&homepage=true');
-      const offersData = await offersResponse.json();
+      const offersData = await utils.offers.getAll.fetch({ activeOnly: true, homepageOnly: true });
       
-      if (offersResponse.ok) {
-        const allOffers = offersData.offers || [];
-        setOffers(allOffers);
-        setFeaturedOffers(allOffers.filter((offer: Offer) => offer.is_featured));
-      }
+      const allOffers = (offersData?.offers as unknown as Offer[]) || [];
+      setOffers(allOffers);
+      setFeaturedOffers(allOffers.filter((offer: Offer) => offer.is_featured));
     } catch (error) {
       logger.error('Error fetching offers:', { error });
     } finally {
