@@ -63,6 +63,7 @@ async function startWorker() {
 }
 
 startWorker().catch((error) => {
+  console.error('RAW FATAL ERROR:', error);
   logger.error('waba_worker_fatal_error', { error: error.message });
   process.exit(1);
 });

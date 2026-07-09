@@ -1,10 +1,35 @@
 import { unstable_cache } from 'next/cache';
 import { createServiceClient } from './server';
 
+// Safe wrapper for Next.js cache that falls back to direct execution in workers
+function safeCache<T extends (...args: any[]) => Promise<any>>(
+  fn: T,
+  keyParts: string[],
+  options?: { revalidate?: number; tags?: string[] }
+): T {
+  let cachedFn: T;
+  try {
+    cachedFn = unstable_cache(fn, keyParts, options) as T;
+  } catch (e) {
+    cachedFn = fn;
+  }
+  
+  return (async (...args: Parameters<T>) => {
+    try {
+      return await cachedFn(...args);
+    } catch (e: any) {
+      if (e && e.message && e.message.includes('incrementalCache missing')) {
+        return await fn(...args);
+      }
+      throw e;
+    }
+  }) as T;
+}
+
 /**
  * Fetch settings from DB with cache
  */
-export const getAppSettings = unstable_cache(
+export const getAppSettings = safeCache(
   async () => {
     const supabase = createServiceClient();
     const { data } = await supabase.from('app_settings').select('key, value');
@@ -23,7 +48,7 @@ export const getAppSettings = unstable_cache(
 /**
  * Fetch GST rates
  */
-export const getGstRatesFromDb = unstable_cache(
+export const getGstRatesFromDb = safeCache(
   async () => {
     const supabase = createServiceClient();
     const { data } = await supabase.from('gst_rates').select('category, rate');
@@ -42,7 +67,7 @@ export const getGstRatesFromDb = unstable_cache(
 /**
  * Fetch Role Permissions
  */
-export const getRolePermissionsFromDb = unstable_cache(
+export const getRolePermissionsFromDb = safeCache(
   async () => {
     const supabase = createServiceClient();
     const { data } = await supabase.from('roles_permissions').select('role, permissions');
@@ -61,7 +86,7 @@ export const getRolePermissionsFromDb = unstable_cache(
 /**
  * Fetch Customer Categories
  */
-export const getCustomerCategoriesFromDb = unstable_cache(
+export const getCustomerCategoriesFromDb = safeCache(
   async () => {
     const supabase = createServiceClient();
     const { data } = await supabase.from('customer_categories').select('*');
@@ -74,7 +99,7 @@ export const getCustomerCategoriesFromDb = unstable_cache(
 /**
  * Fetch Custom Setup Constants
  */
-export const getCustomSetupConstantsFromDb = unstable_cache(
+export const getCustomSetupConstantsFromDb = safeCache(
   async () => {
     const supabase = createServiceClient();
     const { data } = await supabase.from('custom_setup_constants').select('key, value');
@@ -93,7 +118,7 @@ export const getCustomSetupConstantsFromDb = unstable_cache(
 /**
  * Fetch Custom Setup Inventory
  */
-export const getCustomSetupInventoryFromDb = unstable_cache(
+export const getCustomSetupInventoryFromDb = safeCache(
   async () => {
     const supabase = createServiceClient();
     const { data } = await supabase.from('custom_setup_inventory').select('*').eq('is_active', true);

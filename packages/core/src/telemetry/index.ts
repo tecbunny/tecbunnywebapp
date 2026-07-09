@@ -1,4 +1,3 @@
-import { registerOTel } from '@vercel/otel';
 import { trace, context, SpanStatusCode } from '@opentelemetry/api';
 
 /**
@@ -7,8 +6,13 @@ import { trace, context, SpanStatusCode } from '@opentelemetry/api';
  * @param serviceName The name of the service (e.g., 'api' or 'waba')
  */
 export function registerTelemetry(serviceName: string) {
-  registerOTel({
-    serviceName,
+  // Use dynamic import to prevent TSX / CommonJS worker crashes
+  import('@vercel/otel').then(({ registerOTel }) => {
+    registerOTel({
+      serviceName,
+    });
+  }).catch((err) => {
+    console.error('Failed to initialize telemetry:', err);
   });
 }
 
