@@ -228,7 +228,7 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
       if (hasAddressData) {
         memoryContext = `[CUSTOMER FILE MEMORY]\nWe ALREADY HAVE the following details for this customer on file:\n${memoryContext}\nDO NOT ASK THE CUSTOMER FOR THESE DETAILS AGAIN. YOU ALREADY HAVE THEM.`;
       } else {
-        memoryContext = `[CUSTOMER FILE MEMORY]\nWe DO NOT have this customer's address or pincode on file yet. You MUST ask for their full address before processing their request (UNLESS they ask for a quotation, in which case give quotation first).`;
+        memoryContext = `[CUSTOMER FILE MEMORY]\nWe currently lack this customer's location. If you need it for pricing or site visits, politely ask for their location or pincode. If they already provided a partial location in the chat, accept it and do NOT repeatedly ask for a 'full' address.`;
       }
 
       if (orders.length > 0) {
@@ -265,7 +265,7 @@ export class InboundTriageAgent extends BaseAgent<any, TriagedPayload | null> {
             type: SchemaType.OBJECT,
             properties: {
               customer_name: { type: SchemaType.STRING, nullable: true },
-              address: { type: SchemaType.STRING, nullable: true, description: "The customer's full address" },
+              address: { type: SchemaType.STRING, nullable: true, description: "The customer's address or general location (even if partial)" },
               pincode: { type: SchemaType.STRING, nullable: true, description: "6-digit Indian pincode" },
               domain: { 
                 type: SchemaType.STRING, 
