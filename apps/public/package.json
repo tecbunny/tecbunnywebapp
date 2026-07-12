@@ -25,17 +25,11 @@
     "lint:check": "echo 'Skipping lint:check - ESLint config not present'"
   },
   "dependencies": {
-    "@tecbunny/core": "*",
-    "@tecbunny/config": "*",
-    "@tecbunny/rpc": "*",
-    "@trpc/client": "^10.45.2",
-    "@trpc/react-query": "^10.45.2",
-    "@tanstack/react-query": "^4.36.1",
-    "superjson": "^2.2.1",
     "@aws-sdk/client-s3": "3.1024.0",
     "@aws-sdk/s3-request-presigner": "3.1024.0",
     "@google/genai": "^2.10.0",
     "@hookform/resolvers": "5.2.1",
+    "@prisma/client": "^5.22.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "1.1.15",
     "@radix-ui/react-avatar": "1.1.10",
@@ -54,7 +48,13 @@
     "@radix-ui/react-toast": "1.2.15",
     "@supabase/ssr": "0.7.0",
     "@supabase/supabase-js": "2.57.0",
+    "@tanstack/react-query": "^4.36.1",
+    "@tecbunny/config": "*",
+    "@tecbunny/core": "*",
+    "@tecbunny/rpc": "*",
     "@tecbunny/ui": "*",
+    "@trpc/client": "^10.45.2",
+    "@trpc/react-query": "^10.45.2",
     "@vercel/analytics": "^2.0.1",
     "bcryptjs": "^3.0.3",
     "bullmq": "^5.77.6",
@@ -84,6 +84,7 @@
     "react-turnstile": "1.1.4",
     "sharp": "^0.34.5",
     "speakeasy": "2.0.0",
+    "superjson": "^2.2.1",
     "tailwind-merge": "3.3.1",
     "tailwindcss-animate": "1.0.7",
     "zod": "4.1.5",
@@ -172,5 +173,3 @@
     "npm": ">=10.2.0"
   }
 }
-
-
