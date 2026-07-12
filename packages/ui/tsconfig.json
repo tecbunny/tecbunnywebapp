@@ -5,7 +5,9 @@
     "rootDir": ".",
     "composite": true,
     "jsx": "react-jsx",
-    "tsBuildInfoFile": "dist/.tsbuildinfo"
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true
   },
   "include": ["src/**/*", "index.tsx", "theme.ts"],
   "exclude": ["node_modules", "dist"]
