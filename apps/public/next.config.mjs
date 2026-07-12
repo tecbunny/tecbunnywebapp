@@ -32,7 +32,7 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
   },
-  serverExternalPackages: ['pdfkit', 'nodemailer', 'bullmq', 'ioredis'],
+  serverExternalPackages: ['pdfkit', 'nodemailer', 'bullmq', 'ioredis', 'pino', 'pino-pretty', 'thread-stream'],
   poweredByHeader: false,
   images: {
     unoptimized: isStaticExport,

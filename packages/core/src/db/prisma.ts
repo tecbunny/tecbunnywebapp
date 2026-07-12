@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@tecbunny/types';
 import { logger } from '../logger';
 
 // PrismaClient is attached to the `global` object in development to prevent

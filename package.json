@@ -13,6 +13,8 @@
     "lint": "turbo run lint",
     "clean": "turbo run clean",
     "prepare": "husky",
+    "postinstall": "npm run db:generate",
+    "db:generate": "npx prisma generate --schema=./packages/types/prisma/schema.prisma",
     "reset-db": "npm run reset-db --workspace=@tecbunny/infra"
   },
   "devDependencies": {
