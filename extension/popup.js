@@ -95,14 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Navigation functions
   function checkCredentials() {
-    chrome.storage.local.get(['superadminUser', 'superadminPass'], (data) => {
-      if (!data.superadminUser || !data.superadminPass) {
+    chrome.storage.local.get(['superadminUser', 'superadminPass', 'accessToken'], (data) => {
+      if (!data.superadminUser || !data.superadminPass || !data.accessToken) {
         // First-time or reset credentials setup
-        superadminUser.value = '';
+        superadminUser.value = data.superadminUser || '';
         superadminPass.value = '';
         backBtn.style.display = 'none'; // Force save
         scraperScreen.classList.remove('active');
         settingsScreen.classList.add('active');
+        showSettingsStatus('Please sign in to generate a secure session token.', 'info');
       } else {
         // Normal scrape screen
         superadminUser.value = data.superadminUser;
