@@ -60,6 +60,32 @@ export async function updateSession(
     return response;
   }
 
+  // Check for Custom Superadmin Bearer Token
+  const authHeader = request.headers.get('authorization');
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    if (token.startsWith('v1.') || token.startsWith('v2.')) {
+      const { verifySuperadminSessionToken } = await import('../auth/superadmin-session');
+      const ip = request.headers.get('x-forwarded-for') || 'unknown';
+      const ua = request.headers.get('user-agent') || 'unknown';
+      const superadminPayload = await verifySuperadminSessionToken(token, ip, ua);
+      
+      if (superadminPayload) {
+        // Token is a valid Superadmin session. Inject role and bypass Supabase Auth check.
+        const userRole: UserRole = 'superadmin';
+        
+        if (options && (options.allowedRoles || options.minimumRole)) {
+          if (!roleMatches(userRole, { allowedRoles: options.allowedRoles, minimumRole: options.minimumRole })) {
+            if (options?.onForbidden) return options.onForbidden(request);
+            return new NextResponse(`Forbidden: Insufficient Privileges. Role '${userRole}' is not authorized.`, { status: 403 });
+          }
+        }
+        
+        return response; // Authorize the request
+      }
+    }
+  }
+
   // IMPORTANT: Avoid using getSession() due to security risks. getUser() verifies the token with the Supabase API.
   const { data: { user }, error } = await supabase.auth.getUser();
 

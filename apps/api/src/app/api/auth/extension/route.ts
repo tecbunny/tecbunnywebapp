@@ -23,9 +23,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check for hardcoded Root Console credentials first
+    const expectedUserId = process.env.SUPERADMIN_USER_ID;
+    const expectedPassword = process.env.SUPERADMIN_PASSWORD;
+
+    if (expectedUserId && expectedPassword && email === expectedUserId && password === expectedPassword) {
+      const { createSuperadminSessionToken } = await import('@tecbunny/core/auth/superadmin-session');
+      const token = await createSuperadminSessionToken(email, request);
+      
+      return NextResponse.json(
+        {
+          success: true,
+          access_token: token,
+          user: {
+            id: 'superadmin-root-id',
+            email: email,
+            role: 'superadmin'
+          }
+        },
+        { status: 200, headers: corsHeaders }
+      );
+    }
+
     const supabase = await createClient();
     
-    // Authenticate with Supabase
+    // Fallback: Authenticate with Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,

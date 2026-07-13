@@ -80,19 +80,29 @@ export interface ServerAuthState {
 
 export async function getServerAuthState(): Promise<ServerAuthState> {
   try {
-    const { cookies } = await import('next/headers');
+    const { cookies, headers } = await import('next/headers');
     const cookieStore = await cookies();
-    const superadminCookie = cookieStore.get('superadmin-session')?.value;
+    const headersList = await headers();
+    let superadminToken = cookieStore.get('superadmin-session')?.value;
+
+    if (!superadminToken) {
+      const authHeader = headersList.get('authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        if (token.startsWith('v1.') || token.startsWith('v2.')) {
+          superadminToken = token;
+        }
+      }
+    }
+
     let isSuperadmin = false;
-    if (superadminCookie) {
+    if (superadminToken) {
       try {
         const { verifySuperadminSessionToken } = await import('./auth/superadmin-session');
-        const { headers } = await import('next/headers');
-        const headersList = await headers();
         const ip = headersList.get('x-forwarded-for') || 'unknown';
         const ua = headersList.get('user-agent') || 'unknown';
         
-        isSuperadmin = Boolean(await verifySuperadminSessionToken(superadminCookie, ip, ua));
+        isSuperadmin = Boolean(await verifySuperadminSessionToken(superadminToken, ip, ua));
       } catch {
         // Ignored
       }
