@@ -638,13 +638,33 @@ export default function CheckoutPage() {
             </button>
           </div>
 
-          <div className="hidden md:flex justify-center mb-16">
-            <div className="flex items-center gap-4 text-xs tracking-wider uppercase font-semibold text-muted-foreground">
-              <span className="text-muted-foreground">01 Cart</span>
-              <span className="text-border">/</span>
-              <span className="text-foreground border-b border-foreground pb-0.5 font-bold">02 Details</span>
-              <span className="text-border">/</span>
-              <span className="text-muted-foreground">03 Done</span>
+          <div className="hidden md:flex justify-center mb-16 w-full max-w-2xl mx-auto">
+            <div className="flex items-center justify-between w-full relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[2px] bg-border -z-10"></div>
+              
+              {/* Step 1: Cart (Completed) */}
+              <div className="flex flex-col items-center gap-2 bg-background px-4">
+                <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20 ring-4 ring-background">
+                  <CheckCircle className="w-4 h-4" />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Cart</span>
+              </div>
+              
+              {/* Step 2: Shipping/Details (Current) */}
+              <div className="flex flex-col items-center gap-2 bg-background px-4">
+                <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/50 ring-4 ring-background">
+                  <span className="text-xs font-bold">2</span>
+                </div>
+                <span className="text-xs font-bold uppercase tracking-wider text-foreground">Details & Shipping</span>
+              </div>
+              
+              {/* Step 3: Payment (Pending) */}
+              <div className="flex flex-col items-center gap-2 bg-background px-4">
+                <div className="w-8 h-8 rounded-full bg-muted/20 text-muted-foreground flex items-center justify-center border border-border ring-4 ring-background">
+                  <span className="text-xs font-bold">3</span>
+                </div>
+                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Payment</span>
+              </div>
             </div>
           </div>
 

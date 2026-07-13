@@ -3,6 +3,8 @@ import { logger } from "@tecbunny/core";
 import { BaseSupabaseClient, SupabaseUserRepository } from "@tecbunny/infra";
 import { verifySuperadminSessionToken } from "@tecbunny/core/server";
 import { UserService } from "@tecbunny/core/server";
+import { z } from "zod";
+import { withValidation } from "@tecbunny/core/api/with-validation";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
@@ -132,8 +134,17 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// User Creation Schema
+const CreateUserSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(2),
+  role: z.string().optional(),
+  mobile: z.string().optional(),
+  password: z.string().min(6).optional()
+});
+
 // POST /api/users - Create new user (admin only)
-export async function POST(request: NextRequest) {
+export const POST = withValidation(CreateUserSchema, async (request: NextRequest, body: z.infer<typeof CreateUserSchema>) => {
   try {
     if (!isSupabaseConfigured()) {
       return NextResponse.json({ error: 'Service configuration error' }, { status: 503 });
@@ -147,8 +158,6 @@ export async function POST(request: NextRequest) {
     if (!role || !['admin', 'manager', 'superadmin'].includes(role)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-
-    const body = await request.json();
 
     const baseClient = getAdminBaseClient();
     const userRepository = new SupabaseUserRepository(baseClient);
@@ -176,7 +185,7 @@ export async function POST(request: NextRequest) {
     logger.error('Error in POST /api/users:', { error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-}
+});
 
 // PUT /api/users - Update user (admin only)
 export async function PUT(request: NextRequest) {

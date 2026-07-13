@@ -105,10 +105,12 @@ async function setDistributedOTP(id: string, record: InMemoryOTPRecord) {
     if (redis) {
       await redis.set(`otp_verification:${id}`, JSON.stringify(record), 'EX', 600); // 10 min TTL
     } else {
+      if (process.env.NODE_ENV === 'production') throw new Error('In-memory OTP storage disabled in production');
       inMemoryOTPStore.set(id, record);
     }
   } catch (err) {
     logger.error('Failed to set distributed OTP', { error: err });
+    if (process.env.NODE_ENV === 'production') throw new Error('In-memory OTP storage disabled in production');
     inMemoryOTPStore.set(id, record);
   }
 }

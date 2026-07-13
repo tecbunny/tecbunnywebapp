@@ -75,6 +75,34 @@ export async function executeUnifiedPolicyMiddleware(
     }
   }
 
+  // Extract IP for rate limiting and logging
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+
+  // Global Edge-compatible Rate Limiting (Isolate-level memory fallback)
+  // Protects against volumetric abuse per edge instance
+  const isGlobalRateLimited = (ip: string) => {
+    const globalStore = (globalThis as any).__edgeRateLimit || new Map<string, {count: number, first: number}>();
+    if (!(globalThis as any).__edgeRateLimit) (globalThis as any).__edgeRateLimit = globalStore;
+    
+    const now = Date.now();
+    const windowMs = 60000;
+    const limit = 1000; // 1000 req/min/ip per isolate
+    
+    const rec = globalStore.get(ip);
+    if (!rec || now - rec.first > windowMs) {
+      globalStore.set(ip, { count: 1, first: now });
+      return false; // not limited
+    }
+    
+    if (rec.count >= limit) return true; // limited
+    rec.count += 1;
+    return false;
+  };
+
+  if (isGlobalRateLimited(ip)) {
+    return new NextResponse('Too Many Requests', { status: 429, headers: { 'Retry-After': '60' } });
+  }
+
   // Defer to updateSession for token validation and role checking
   const sessionResponse = await updateSession(request, {
     allowedRoles: undefined, // Role enforcement is now handled by Prisma Extension and Route Guards
@@ -145,6 +173,18 @@ export async function executeUnifiedPolicyMiddleware(
       return NextResponse.redirect(mfaSetupUrl);
     }
   });
+
+  // Basic Mutation Audit Logging for API
+  if (appType === 'api' && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)) {
+     try {
+        const { logger } = require('@tecbunny/core/logger');
+        // Extracting user info from cookies would require decoding JWT, 
+        // relying on telemetry for now.
+        logger.info('api_mutation_audit', { method: request.method, pathname, ip });
+     } catch (e) {
+        // Silent catch for logger missing
+     }
+  }
 
   // Apply security headers to the response
   sessionResponse.headers.set('Content-Security-Policy', generateCSP());

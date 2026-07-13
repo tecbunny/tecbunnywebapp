@@ -278,14 +278,18 @@ export class PaymentService {
             customerMessage = `📄 Payment Status Update\n\n💰 Amount: ₹${amount}\n📋 Order ID: ${orderId}\n📊 Status: ${status}\n📅 Date: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`;
         }
 
+        const notificationPromises: Promise<any>[] = [];
+
         if (status === 'success') {
-          await sendPaymentConfirmationNotification(formattedPhone, {
-            orderNumber: orderId,
-            amount: `₹${amount}`,
-            customerName: order.customer_name
-          });
+          notificationPromises.push(
+            sendPaymentConfirmationNotification(formattedPhone, {
+              orderNumber: orderId,
+              amount: `₹${amount}`,
+              customerName: order.customer_name
+            })
+          );
         } else {
-          await sendWhatsAppNotification(formattedPhone, customerMessage);
+          notificationPromises.push(sendWhatsAppNotification(formattedPhone, customerMessage));
         }
 
         const adminPhone = process.env.ADMIN_WHATSAPP_NUMBER;
@@ -294,14 +298,16 @@ export class PaymentService {
           if (status === 'failed' && failureReason) {
             adminMessage += `\n❌ Reason: ${failureReason}`;
           }
-          await sendWhatsAppNotification(adminPhone, adminMessage);
+          notificationPromises.push(sendWhatsAppNotification(adminPhone, adminMessage));
         }
 
         const managerPhone = process.env.MANAGER_WHATSAPP_NUMBER;
         if (managerPhone && managerPhone !== adminPhone) {
           const managerMessage = `💳 Payment ${status.toUpperCase()}\n📋 Order: ${orderId}\n💰 ₹${amount}\n👤 ${order.customer_name}\n⏰ ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`;
-          await sendWhatsAppNotification(managerPhone, managerMessage);
+          notificationPromises.push(sendWhatsAppNotification(managerPhone, managerMessage));
         }
+
+        await Promise.allSettled(notificationPromises);
       } catch (whatsappError) {
         logger.warn('payment_whatsapp_failure', { orderId, error: whatsappError instanceof Error ? whatsappError.message : 'unknown', correlationId });
       }

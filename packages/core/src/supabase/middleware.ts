@@ -106,9 +106,8 @@ export async function updateSession(
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Extract role primarily from app_metadata (secure) and fallback to user_metadata (less secure, depends on app design)
-  // This logic mimics the robust server-role-guard.ts extraction.
-  const rawRole = user.app_metadata?.role || user.user_metadata?.role;
+  // Extract role strictly from app_metadata (secure). Do not fallback to user_metadata which is client-modifiable.
+  const rawRole = user.app_metadata?.role;
   const userRole = normalizeRole(rawRole);
 
   if (!userRole) {

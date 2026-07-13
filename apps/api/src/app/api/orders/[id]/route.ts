@@ -32,6 +32,20 @@ export async function GET(
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
+    // IDOR Protection: Enforce ownership
+    const { data: { user } } = await (await createServerClient()).auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const userRole = user.app_metadata?.role || 'customer';
+    
+    // Lazy import of requireOwnership to avoid edge/node circular dependency issues if any
+    const { requireOwnership } = await import('@tecbunny/core/auth/ownership-guard');
+    const isOwner = await requireOwnership(user.id, userRole, order.user_id, 'order');
+    if (!isOwner) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const normalized = deserializeOrder(order);
     return NextResponse.json({ success: true, order: normalized });
   } catch (error: any) {
