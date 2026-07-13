@@ -9,7 +9,7 @@ import { ShoppingCart, CreditCard, MapPin, User, Wallet, Banknote, QrCode, Tag, 
 
 import { useCart, useAuth } from "@tecbunny/core/hooks";
 import { useOrder } from "@tecbunny/core/context/OrderProvider";
-import { usePaymentMethods } from '../../hooks/use-payment-methods';
+import { usePaymentMethods } from '@tecbunny/core/hooks';
 import { logger } from '@tecbunny/core';
 import { Button, useFeatureFlags } from "@tecbunny/ui";
 import { calculateCartTotals } from "@tecbunny/core/order-utils";
@@ -619,7 +619,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-foreground">
+    <main className="min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-foreground" aria-busy={paymentLoading || isProcessingOrder}>
       <section className="pt-32 pb-24 relative">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.15] pointer-events-none"></div>
 
@@ -639,12 +639,12 @@ export default function CheckoutPage() {
           </div>
 
           <div className="hidden md:flex justify-center mb-16">
-            <div className="flex items-center gap-4 text-[10px] tracking-wider uppercase font-semibold text-muted-foreground">
+            <div className="flex items-center gap-4 text-xs tracking-wider uppercase font-semibold text-muted-foreground">
               <span className="text-muted-foreground">01 Cart</span>
               <span className="text-border">/</span>
               <span className="text-foreground border-b border-foreground pb-0.5 font-bold">02 Details</span>
               <span className="text-border">/</span>
-              <span className="text-muted-foreground/50">03 Done</span>
+              <span className="text-muted-foreground">03 Done</span>
             </div>
           </div>
 
@@ -663,56 +663,65 @@ export default function CheckoutPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="name" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Full Name</label>
+                    <label htmlFor="name" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Full Name</label>
                     <input
                       type="text"
                       id="name"
+                      autoComplete="name"
                       required
                       value={customerInfo.name}
                       onChange={(event) => handleInputChange('name', event.target.value)}
                       onBlur={(event) => handleInputBlur('name', event.target.value)}
-                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${fieldErrors.name ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
+                      aria-invalid={!!fieldErrors.name}
+                      aria-describedby={fieldErrors.name ? "name-error" : undefined}
+                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground ${fieldErrors.name ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
                       placeholder="John Doe"
                     />
                     {fieldErrors.name && (
-                      <span className="text-[10px] text-red-400 mt-1 block pl-1">{fieldErrors.name}</span>
+                      <span id="name-error" role="alert" aria-live="polite" className="text-xs text-red-400 mt-1 block pl-1">{fieldErrors.name}</span>
                     )}
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="phone" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Phone Number</label>
+                    <label htmlFor="phone" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Phone Number</label>
                     <input
                       type="tel"
                       id="phone"
+                      autoComplete="tel"
                       required
                       value={customerInfo.phone}
                       onChange={(event) => handleInputChange('phone', event.target.value)}
                       onBlur={(event) => handleInputBlur('phone', event.target.value)}
-                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${fieldErrors.phone ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
+                      aria-invalid={!!fieldErrors.phone}
+                      aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
+                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground ${fieldErrors.phone ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
                       placeholder="e.g. 9876543210"
                     />
                     {fieldErrors.phone && (
-                      <span className="text-[10px] text-red-400 mt-1 block pl-1">{fieldErrors.phone}</span>
+                      <span id="phone-error" role="alert" aria-live="polite" className="text-xs text-red-400 mt-1 block pl-1">{fieldErrors.phone}</span>
                     )}
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Email Address</label>
+                    <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Email Address</label>
                     <input
                       type="email"
                       id="email"
+                      autoComplete="email"
                       required
                       value={customerInfo.email}
                       onChange={(event) => handleInputChange('email', event.target.value)}
                       onBlur={(event) => handleInputBlur('email', event.target.value)}
-                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${fieldErrors.email ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
+                      aria-invalid={!!fieldErrors.email}
+                      aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground ${fieldErrors.email ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
                       placeholder="john@example.com"
                     />
                     {fieldErrors.email && (
-                      <span className="text-[10px] text-red-400 mt-1 block pl-1">{fieldErrors.email}</span>
+                      <span id="email-error" role="alert" aria-live="polite" className="text-xs text-red-400 mt-1 block pl-1">{fieldErrors.email}</span>
                     )}
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center gap-2">
-                      <label htmlFor="company_gstin" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Company GSTIN (Optional)</label>
+                      <label htmlFor="company_gstin" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Company GSTIN (Optional)</label>
                       {isFetchingGst && <span className="h-3 w-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>}
                     </div>
                     <input
@@ -722,11 +731,13 @@ export default function CheckoutPage() {
                       value={customerInfo.company_gstin}
                       onChange={(event) => handleInputChange('company_gstin', event.target.value.toUpperCase())}
                       onBlur={(event) => handleInputBlur('company_gstin', event.target.value)}
-                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${gstError || fieldErrors.company_gstin ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
+                      aria-invalid={!!(gstError || fieldErrors.company_gstin)}
+                      aria-describedby={(gstError || fieldErrors.company_gstin) ? "gstin-error" : undefined}
+                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground ${gstError || fieldErrors.company_gstin ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
                       placeholder="15-character GSTIN"
                     />
                     {(gstError || fieldErrors.company_gstin) && (
-                      <span className="text-[10px] text-red-400 mt-1 block pl-1">{gstError || fieldErrors.company_gstin}</span>
+                      <span id="gstin-error" role="alert" aria-live="polite" className="text-xs text-red-400 mt-1 block pl-1">{gstError || fieldErrors.company_gstin}</span>
                     )}
                   </div>
                 </div>
@@ -741,38 +752,41 @@ export default function CheckoutPage() {
                 </div>
                 <div className="space-y-6">
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="address" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    <label htmlFor="address" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       {hasServiceItem ? 'Installation / Service Address' : (!!quote ? 'Installation Address (Goa)' : 'Complete Delivery Address')}
                     </label>
                     <textarea
                       id="address"
+                      autoComplete="street-address"
                       rows={3}
                       required={orderType === 'Delivery'}
                       value={customerInfo.address}
                       onChange={(event) => handleInputChange('address', event.target.value)}
                       onBlur={(event) => handleInputBlur('address', event.target.value)}
-                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${fieldErrors.address ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
+                      aria-invalid={!!fieldErrors.address}
+                      aria-describedby={fieldErrors.address ? "address-error" : undefined}
+                      className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground ${fieldErrors.address ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
                       placeholder="Apartment, suite, unit, building, street address"
                     ></textarea>
                     {fieldErrors.address && (
-                      <span className="text-[10px] text-red-400 mt-1 block pl-1">{fieldErrors.address}</span>
+                      <span id="address-error" role="alert" aria-live="polite" className="text-xs text-red-400 mt-1 block pl-1">{fieldErrors.address}</span>
                     )}
                   </div>
 
                   {!!quote && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="flex flex-col gap-1.5">
-                        <label htmlFor="date" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Preferred Install Date</label>
+                        <label htmlFor="date" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Preferred Install Date</label>
                         <input
                            type="date"
                            id="date"
                            value={customerInfo.installDate}
                            onChange={(event) => handleInputChange('installDate', event.target.value)}
-                           className="w-full bg-muted/10 border border-border rounded-lg px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground/50"
+                           className="w-full bg-muted/10 border border-border rounded-lg px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground"
                         />
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label htmlFor="readiness" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Site Status</label>
+                        <label htmlFor="readiness" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Site Status</label>
                         <div className="relative">
                           <select
                             id="readiness"
@@ -793,68 +807,77 @@ export default function CheckoutPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="flex flex-col gap-1.5">
-                      <label htmlFor="city" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">City</label>
+                      <label htmlFor="city" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">City</label>
                       <input
                         type="text"
                         id="city"
+                        autoComplete="address-level2"
                         required={orderType === 'Delivery'}
                         value={customerInfo.city}
                         onChange={(event) => handleInputChange('city', event.target.value)}
                         onBlur={(event) => handleInputBlur('city', event.target.value)}
-                        className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${fieldErrors.city ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
+                        aria-invalid={!!fieldErrors.city}
+                        aria-describedby={fieldErrors.city ? "city-error" : undefined}
+                        className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground ${fieldErrors.city ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
                         placeholder="Panaji"
                       />
                       {fieldErrors.city && (
-                        <span className="text-[10px] text-red-400 mt-1 block pl-1">{fieldErrors.city}</span>
+                        <span id="city-error" role="alert" aria-live="polite" className="text-xs text-red-400 mt-1 block pl-1">{fieldErrors.city}</span>
                       )}
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label htmlFor="state" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">State</label>
+                      <label htmlFor="state" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">State</label>
                       <input
                         type="text"
                         id="state"
+                        autoComplete="address-level1"
                         required={orderType === 'Delivery'}
                         value={customerInfo.state}
                         onChange={(event) => handleInputChange('state', event.target.value)}
                         onBlur={(event) => handleInputBlur('state', event.target.value)}
-                        className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${fieldErrors.state ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
+                        aria-invalid={!!fieldErrors.state}
+                        aria-describedby={fieldErrors.state ? "state-error" : undefined}
+                        className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground ${fieldErrors.state ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
                         placeholder="Goa"
                       />
                       {fieldErrors.state && (
-                        <span className="text-[10px] text-red-400 mt-1 block pl-1">{fieldErrors.state}</span>
+                        <span id="state-error" role="alert" aria-live="polite" className="text-xs text-red-400 mt-1 block pl-1">{fieldErrors.state}</span>
                       )}
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label htmlFor="pincode" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Pincode</label>
+                      <label htmlFor="pincode" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pincode</label>
                       <input
                         type="text"
                         id="pincode"
+                        autoComplete="postal-code"
                         required={orderType === 'Delivery'}
                         value={customerInfo.pincode}
                         onChange={(event) => handlePincodeChange(event.target.value)}
                         onBlur={(event) => handleInputBlur('pincode', event.target.value)}
-                        className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 ${fieldErrors.pincode ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
+                        aria-invalid={!!fieldErrors.pincode}
+                        aria-describedby={fieldErrors.pincode ? "pincode-error" : undefined}
+                        className={`w-full bg-muted/10 border rounded-lg px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground ${fieldErrors.pincode ? 'border-red-500/80 focus:ring-2 focus:ring-red-500/20 focus:border-red-500' : 'border-border focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
                         placeholder="6-digit PIN"
                       />
                       {fieldErrors.pincode && (
-                        <span className="text-[10px] text-red-400 mt-1 block pl-1">{fieldErrors.pincode}</span>
+                        <span id="pincode-error" role="alert" aria-live="polite" className="text-xs text-red-400 mt-1 block pl-1">{fieldErrors.pincode}</span>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-medium">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
                     <Shield className="h-3.5 w-3.5 text-muted-foreground" />
                     All hardware orders are eligible for secure shipping.
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="notes" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Order Notes (Optional)</label>
+                    <label htmlFor="notes" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Order Notes (Optional)</label>
                     <textarea
                       id="notes"
                       rows={2}
                       value={customerInfo.notes}
                       onChange={(event) => handleInputChange('notes', event.target.value)}
-                      className="w-full bg-muted/10 border border-border rounded-lg px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground/50"
+                      className="w-full bg-muted/10 border border-border rounded-lg px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground"
                       placeholder="Delivery instructions, landmarks, etc."
                     ></textarea>
                   </div>
@@ -866,7 +889,8 @@ export default function CheckoutPage() {
                   <Wallet className="h-4 w-4 text-muted-foreground" />
                   <h2 className="text-sm font-bold text-foreground uppercase tracking-wider font-sans tech-heading">Secure Transaction</h2>
                 </div>
-                <div className="space-y-4">
+                <fieldset className="space-y-4">
+                  <legend className="sr-only">Select Payment Method</legend>
                   {paymentLoading && (
                     <div className="space-y-4 min-h-[220px]">
                       {Array.from({ length: 3 }).map((_, index) => (
@@ -877,7 +901,7 @@ export default function CheckoutPage() {
                   {!paymentLoading && getEnabledPaymentMethods().length === 0 && (
                     <div className="text-muted-foreground text-sm text-center py-6">No payment methods available. Please contact support.</div>
                   )}
-                  {!paymentLoading && getEnabledPaymentMethods().map((method) => {
+                  {!paymentLoading && getEnabledPaymentMethods().map((method: any) => {
                     const getPaymentIcon = (methodId: string) => {
                       switch (methodId) {
                         case 'cod':
@@ -899,9 +923,9 @@ export default function CheckoutPage() {
                           value={method.id}
                           checked={selectedPaymentMethod === method.id}
                           onChange={() => setSelectedPaymentMethod(method.id)}
-                          className="hidden"
+                          className="sr-only"
                         />
-                        <div className={`border rounded-xl p-5 flex items-center gap-4 transition-all ${
+                        <div className={`border rounded-xl p-5 flex items-center gap-4 transition-all group-focus-within:ring-2 group-focus-within:ring-primary group-focus-within:ring-offset-2 ${
                           selectedPaymentMethod === method.id
                             ? 'border-primary bg-primary/10 shadow-sm shadow-primary/5'
                             : 'border-border bg-muted/10 hover:bg-muted/30 hover:border-border/70'
@@ -934,25 +958,25 @@ export default function CheckoutPage() {
                       </label>
                     );
                   })}
-                </div>
+                </fieldset>
 
                 {/* Trust Badges & Compliance */}
                 <div className="mt-10 pt-8 border-t border-border grid grid-cols-2 sm:grid-cols-4 gap-6">
                   <div className="flex flex-col items-center text-center gap-2.5">
                     <Shield className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider leading-snug">BIS Certified Hardware</span>
+                    <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider leading-snug">BIS Certified Hardware</span>
                   </div>
                   <div className="flex flex-col items-center text-center gap-2.5">
                     <CheckCircle className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider leading-snug">Regional Tech Compliance</span>
+                    <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider leading-snug">Regional Tech Compliance</span>
                   </div>
                   <div className="flex flex-col items-center text-center gap-2.5">
                     <CreditCard className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider leading-snug">Secure UPI / Cards</span>
+                    <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider leading-snug">Secure UPI / Cards</span>
                   </div>
                   <div className="flex flex-col items-center text-center gap-2.5">
                     <User className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider leading-snug">Verified Installer Network</span>
+                    <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider leading-snug">Verified Installer Network</span>
                   </div>
                 </div>
               </div>
@@ -998,7 +1022,7 @@ export default function CheckoutPage() {
                     {/* Custom Part Payment Options */}
                     {!!quote && (
                       <div className="mt-4 p-4 bg-muted/10 border border-border rounded-xl space-y-3.5">
-                        <label className="flex items-center gap-2.5 text-xs text-foreground cursor-pointer font-medium">
+                        <label className="flex items-center gap-2.5 text-xs text-foreground cursor-pointer font-medium py-3">
                           <input
                             type="checkbox"
                             checked={isPartPayment}
@@ -1016,7 +1040,7 @@ export default function CheckoutPage() {
                         </label>
                         {isPartPayment && (
                           <div className="space-y-1.5 animate-fade-in">
-                            <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Amount (₹)</label>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Amount (₹)</label>
                             <input
                               type="number"
                               min={1}
@@ -1027,7 +1051,7 @@ export default function CheckoutPage() {
                               value={partPaymentAmount}
                               onChange={(e) => setPartPaymentAmount(e.target.value)}
                             />
-                            <p className="text-[10px] text-muted-foreground leading-normal">
+                            <p className="text-xs text-muted-foreground leading-normal">
                               Remaining balance of ₹{Math.round(displayTotal - (Number(partPaymentAmount) || 0)).toLocaleString()} will be due later.
                             </p>
                           </div>
@@ -1036,7 +1060,7 @@ export default function CheckoutPage() {
                     )}
 
                     {!!quote && showAdvance && !isPartPayment && (
-                      <div className="mt-3 bg-muted/10 border border-border rounded-xl p-3 text-[10px] font-semibold text-muted-foreground text-center tracking-wide uppercase">
+                      <div className="mt-3 bg-muted/10 border border-border rounded-xl p-3 text-xs font-semibold text-muted-foreground text-center tracking-wide uppercase">
                         Advance Payable (50%): <span className="text-foreground font-bold ml-1">₹{advanceAmount.toFixed(2)}</span>
                       </div>
                     )}
@@ -1052,7 +1076,7 @@ export default function CheckoutPage() {
                           -₹{autoOfferDiscount.toFixed(2)}
                         </span>
                       </div>
-                      <p className="mt-1.5 text-emerald-600/80 dark:text-emerald-400/70 text-[11px]">{autoOffer.description}</p>
+                      <p className="mt-1.5 text-emerald-600/80 dark:text-emerald-400/70 text-xs">{autoOffer.description}</p>
                     </div>
                   )}
 
@@ -1061,7 +1085,7 @@ export default function CheckoutPage() {
                       <span className="flex items-center gap-2 font-medium">
                         <Tag className="h-3.5 w-3.5 text-primary" /> {appliedCoupon.code}
                       </span>
-                      <button type="button" className="text-xs text-primary hover:text-primary/80 underline animate-fade-in" onClick={removeCoupon}>Remove</button>
+                      <button type="button" className="text-xs text-primary hover:text-primary/80 underline animate-fade-in p-2 -m-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded" onClick={removeCoupon}>Remove</button>
                     </div>
                   )}
 
@@ -1079,7 +1103,7 @@ export default function CheckoutPage() {
                       onChange={(event) => setPrivacyAccepted(event.target.checked)}
                       className="mt-0.5 h-3.5 w-3.5 rounded border-border bg-background text-foreground focus:ring-primary/20"
                     />
-                    <label htmlFor="checkout-privacy-consent" className="text-[11px] text-muted-foreground leading-normal">
+                    <label htmlFor="checkout-privacy-consent" className="text-xs text-muted-foreground leading-normal py-2 cursor-pointer w-full">
                       I have read and agree to the{' '}
                       <Link href="/info/policies/privacy" className="text-primary hover:underline">Privacy Policy</Link>
                       {' '}and{' '}
@@ -1090,7 +1114,8 @@ export default function CheckoutPage() {
                   <button
                     type="submit"
                     disabled={isProcessingOrder || !selectedPaymentMethod || paymentLoading || !privacyAccepted}
-                    className="w-full py-4 bg-primary hover:bg-primary/95 text-white font-bold text-sm tracking-wider uppercase rounded-xl transition-all shadow-md flex items-center justify-center gap-2 disabled:bg-muted/40 disabled:text-muted-foreground/50 disabled:opacity-40 disabled:cursor-not-allowed font-medium"
+                    aria-busy={isProcessingOrder}
+                    className="w-full py-4 bg-primary hover:bg-primary/95 text-white font-bold text-sm tracking-wider uppercase rounded-xl transition-all shadow-md flex items-center justify-center gap-2 disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-40 disabled:cursor-not-allowed font-medium"
                   >
                     {isProcessingOrder ? (
                       <span className="flex items-center gap-2">
@@ -1112,7 +1137,7 @@ export default function CheckoutPage() {
                     <h3 className="text-xs font-bold text-white uppercase tracking-wider font-sans tech-heading">WhatsApp Recovery Simulator</h3>
                   </div>
 
-                  <p className="text-[11px] text-muted-foreground leading-relaxed font-light">
+                  <p className="text-xs text-muted-foreground leading-relaxed font-light">
                     Test the Conversational Commerce triggers. Input your phone number in the contact form, then click below to preview the formatted WhatsApp recovery message with UPI deep-link.
                   </p>
 
@@ -1167,7 +1192,7 @@ export default function CheckoutPage() {
                         });
                       }
                     }}
-                    className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] uppercase tracking-wider rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
+                    className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
                   >
                     Simulate WhatsApp Recovery
                   </button>
@@ -1182,24 +1207,24 @@ export default function CheckoutPage() {
 
                   <div className="space-y-3.5 text-xs text-muted-foreground">
                     <div>
-                      <span className="block text-[10px] uppercase font-bold text-muted-foreground/75 tracking-wider">Registered Entity</span>
+                      <span className="block text-xs uppercase font-bold text-muted-foreground/75 tracking-wider">Registered Entity</span>
                       <span className="text-foreground font-semibold">TECBUNNY SOLUTIONS PVT LTD</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="block text-[10px] uppercase font-bold text-muted-foreground/75 tracking-wider">GSTIN</span>
-                        <span className="font-mono text-[10px] text-foreground font-medium">30AAMCT1608G1ZO</span>
+                        <span className="block text-xs uppercase font-bold text-muted-foreground/75 tracking-wider">GSTIN</span>
+                        <span className="font-mono text-xs text-foreground font-medium">30AAMCT1608G1ZO</span>
                       </div>
                       <div>
-                        <span className="block text-[10px] uppercase font-bold text-muted-foreground/75 tracking-wider">CIN</span>
-                        <span className="font-mono text-[10px] text-foreground font-medium">U80200GA2025PTC017488</span>
+                        <span className="block text-xs uppercase font-bold text-muted-foreground/75 tracking-wider">CIN</span>
+                        <span className="font-mono text-xs text-foreground font-medium">U80200GA2025PTC017488</span>
                       </div>
                     </div>
 
                     <div>
-                      <span className="block text-[10px] uppercase font-bold text-muted-foreground/75 tracking-wider">Corporate Headquarters</span>
-                      <address className="not-italic leading-relaxed font-light text-[11px]">
+                      <span className="block text-xs uppercase font-bold text-muted-foreground/75 tracking-wider">Corporate Headquarters</span>
+                      <address className="not-italic leading-relaxed font-light text-xs">
                         H. No. 11, Nhayginwada, Parse, Parxem, Pernem, North Goa, Goa - 403512
                       </address>
                     </div>
@@ -1210,14 +1235,14 @@ export default function CheckoutPage() {
                       href="https://wa.me/919604136010"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/30 text-emerald-450 hover:text-emerald-400 font-bold text-[10px] uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2"
+                      className="w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/30 text-emerald-450 hover:text-emerald-400 font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2"
                     >
                       <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 text-emerald-500 fill-emerald-500">
                         <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2m.01 1.67c4.56 0 8.25 3.69 8.25 8.25 0 4.56-3.69 8.25-8.25 8.25-1.53 0-3-.42-4.29-1.19l-.3-.18-3.18.83.85-3.11-.2-.32a8.182 8.182 0 0 1-1.25-4.38c0-4.56 3.69-8.25 8.25-8.25M9.42 7.72l-.12.02c-.15.03-.3.06-.44.09-.15.03-.28.06-.41.1-.39.12-.76.3-1.09.56-.33.27-.63.6-.88.97-.27.41-.43.85-.43 1.32 0 .5.16.98.48 1.41.32.43.72.84 1.2 1.24.48.4 1 1.03 1.63 1.28.63.25 1.22.4 1.84.4.45 0 .86-.08 1.23-.25.37-.17.63-.38.83-.63.2-.25.32-.54.4-.85.08-.31.13-.64.13-1s-.05-.72-.13-1.03c-.08-.31-.2-.59-.4-.84-.2-.25-.46-.46-.83-.63-.37-.17-.78-.25-1.23-.25-.62 0-1.21.15-1.84.4-.05.02-.1.04-.15.07-.1.03-.18.07-.27.1-.1.03-.18.05-.28.07l-.17.04c-.06.01-.1.02-.12.02-.02 0-.04.01-.06.01-.02 0-.03 0-.03-.01s0-.01 0-.01l-.01-.01c0-.01.01-.02.01-.04 0-.02 0-.04.01-.06.01-.02.01-.04.02-.06a.7.7 0 0 1 .05-.12c.04-.08.08-.15.14-.23.06-.08.12-.15.2-.22.07-.07.15-.14.23-.2.08-.06.16-.12.25-.17.09-.05.18-.09.28-.13.05-.02.1-.04.13-.05.28-.11.53-.17.75-.17.22 0 .43.03.62.09.19.06.37.14.53.25.16.11.3.25.41.41s.19.34.24.54c.05.2.07.4.07.61 0 .02 0 .03 0 .03s0 .02 0 .02l-.01.03c0 .01-.01.02-.01.03 0 .01-.01.02-.02.03-.01.01-.02.02-.04.03l-.05.03-.06.03c-.02.01-.05.02-.08.03-.03.01-.06.02-.1.04-.04.01-.07.02-.11.04-.04.01-.07.03-.11.04-.04.02-.07.03-.1.05s-.07.04-.1.06-.06.04-.1.07c-.03.02-.06.04-.1.07l-.07.05c-.01 0-.01.01-.01.01s0 .01 0 .01l.01.01c.22-.12.44-.24.67-.35.23-.11.45-.24.67-.35.22-.11.44-.22.65-.33.21-.11.42-.22.62-.33l.2-.1c.14-.07.26-.15.39-.22.13-.07.25-.15.36-.24.11-.09.22-.18.31-.29s.18-.23.25-.36a2.64 2.64 0 0 0 .28-1.38c0-.52-.13-1-.39-1.44a3.17 3.17 0 0 0-1.08-1.21c-.4-.33-.86-.57-1.36-.72s-1.02-.22-1.56-.22c-.54 0-1.06.07-1.56.22s-.96.39-1.36.72c-.4.34-.72.75-.97 1.21-.25.46-.38.96-.38 1.51 0 .42.09.82.26 1.17.17.35.4.66.68.92.28.26.59.47.92.62.33.15.68.25 1.04.28h.1c.02 0 .03 0 .03-.01s0-.01 0-.01l-.01-.01c0-.01 0-.01.01-.02l.01-.02c0-.01.01-.02.01-.03l.01-.03c.01-.02.01-.03.01-.05 0-.02 0-.04.01-.06 0-.02.01-.04.01-.06a.71.71 0 0 0 0-.1c0-.04 0-.08-.02-.13s-.04-.1-.07-.15a.43.43 0 0 0-.1-.13c-.04-.04-.08-.08-.13-.11-.05-.03-.1-.06-.17-.08-.07-.02-.13-.04-.2-.06-.07-.02-.15-.03-.22-.04-.04-.01-.07-.01-.11-.02l-.11-.02h-.04z" />
                       </svg>
                       Direct Help Line
                     </a>
-                    <div className="flex items-center justify-center gap-1.5 text-[9px] text-muted-foreground/50 tracking-wider">
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/50 tracking-wider">
                       <span>100% SECURE SSL ENCRYPTED TRANSACTION</span>
                     </div>
                   </div>
@@ -1227,6 +1252,6 @@ export default function CheckoutPage() {
           </form>
         </div>
       </section>
-    </div>
+    </main>
   );
 }

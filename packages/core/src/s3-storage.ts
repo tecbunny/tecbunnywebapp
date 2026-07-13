@@ -4,6 +4,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand, Obje
 // @ts-ignore
 import { getSignedUrl as getPresignedUrl } from '@aws-sdk/s3-request-presigner';
 
+import crypto from 'crypto';
 import { logger } from '@tecbunny/core';
 
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
@@ -45,6 +46,29 @@ export interface S3UploadResult {
   bytes?: number;
 }
 
+// Add magic bytes validation
+function verifyMagicBytes(buffer: Buffer, extension: string): boolean {
+  if (buffer.length < 4) return false;
+  const hex = buffer.toString('hex', 0, 4).toUpperCase();
+
+  switch (extension) {
+    case 'jpg':
+    case 'jpeg':
+      return hex.startsWith('FFD8FF');
+    case 'png':
+      return hex === '89504E47';
+    case 'pdf':
+      return hex === '25504446'; // %PDF
+    case 'webp':
+      if (buffer.length < 12) return false;
+      const riff = buffer.toString('hex', 0, 4).toUpperCase();
+      const webp = buffer.toString('hex', 8, 12).toUpperCase();
+      return riff === '52494646' && webp === '57454250';
+    default:
+      return true; // Allow other extensions if allowedExtensions explicitly permits them
+  }
+}
+
 /**
  * Upload file to S3
  */
@@ -54,6 +78,8 @@ export async function uploadToS3(
   options?: {
     publicAccess?: boolean;
     fileName?: string;
+    allowedExtensions?: string[];
+    maxSizeBytes?: number;
   }
 ): Promise<S3UploadResult> {
   try {
@@ -61,15 +87,26 @@ export async function uploadToS3(
 
     // Generate unique filename
     const timestamp = Date.now();
-    const randomId = Math.random().toString(36).substring(2, 15);
+    const randomId = crypto.randomBytes(16).toString('hex');
     let fileName = options?.fileName || `${timestamp}-${randomId}`;
+    let extension = '';
 
-    // Add appropriate file extension if missing
-    if (file instanceof File && !fileName.includes('.')) {
-      const extension = file.name.split('.').pop();
-      if (extension) {
-        fileName += `.${extension}`;
+    if (file instanceof File) {
+      if (fileName.includes('.')) {
+        extension = fileName.split('.').pop()?.toLowerCase() || '';
+      } else {
+        extension = file.name.split('.').pop()?.toLowerCase() || '';
+        if (extension) {
+          fileName += `.${extension}`;
+        }
       }
+    } else if (fileName.includes('.')) {
+      extension = fileName.split('.').pop()?.toLowerCase() || '';
+    }
+
+    const allowedExtensions = options?.allowedExtensions || ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
+    if (extension && !allowedExtensions.includes(extension)) {
+      throw new Error(`File extension not allowed: .${extension}. Allowed: ${allowedExtensions.join(', ')}`);
     }
 
     const key = `${folder}/${fileName}`;
@@ -87,6 +124,15 @@ export async function uploadToS3(
       fileBuffer = Buffer.from(file, 'base64');
     } else {
       throw new Error('Invalid file format');
+    }
+
+    const maxSizeBytes = options?.maxSizeBytes || 10 * 1024 * 1024; // 10MB default
+    if (fileBuffer.length > maxSizeBytes) {
+      throw new Error(`File size exceeds the limit of ${maxSizeBytes / 1024 / 1024}MB`);
+    }
+
+    if (extension && !verifyMagicBytes(fileBuffer, extension)) {
+      throw new Error(`Invalid file signature (Magic byte mismatch) for extension .${extension}`);
     }
 
     // Upload to S3

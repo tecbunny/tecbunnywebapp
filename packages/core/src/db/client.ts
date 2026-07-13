@@ -14,10 +14,10 @@ export class DbClient {
   get supabase() { return this.client; }
 
   // Expose commonly used query builders
-  get from() { return this.client.from.bind(this.client); }
-  get rpc() { return this.client.rpc.bind(this.client); }
-  get storage() { return this.client.storage; }
-  get auth() { return this.client.auth; }
+  get from(): SupabaseClient['from'] { return this.client.from.bind(this.client); }
+  get rpc(): SupabaseClient['rpc'] { return this.client.rpc.bind(this.client); }
+  get storage(): SupabaseClient['storage'] { return this.client.storage; }
+  get auth(): SupabaseClient['auth'] { return this.client.auth; }
 
   /**
    * Standardized execute method to unwrap Supabase { data, error } 

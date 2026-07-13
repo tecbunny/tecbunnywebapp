@@ -8,7 +8,7 @@ export interface UnifiedMiddlewareOptions {
 }
 
 function generateCSP() {
-  const scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://cs.iubenda.com https://cdn.iubenda.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com https://connect.facebook.net";
+  const scriptSrc = "script-src 'self' https://challenges.cloudflare.com https://cs.iubenda.com https://cdn.iubenda.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com https://connect.facebook.net";
   return [
     "default-src 'self'",
     scriptSrc,
@@ -35,9 +35,11 @@ export async function executeUnifiedPolicyMiddleware(
   
   // Security Headers
   requestHeaders.set('Content-Security-Policy', generateCSP());
+  requestHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   requestHeaders.set('X-Frame-Options', 'DENY');
   requestHeaders.set('X-Content-Type-Options', 'nosniff');
   requestHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  requestHeaders.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
 
   // Unified CORS Handling for API
   if (appType === 'api') {
@@ -146,9 +148,11 @@ export async function executeUnifiedPolicyMiddleware(
 
   // Apply security headers to the response
   sessionResponse.headers.set('Content-Security-Policy', generateCSP());
+  sessionResponse.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   sessionResponse.headers.set('X-Frame-Options', 'DENY');
   sessionResponse.headers.set('X-Content-Type-Options', 'nosniff');
   sessionResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  sessionResponse.headers.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
 
   // Parse UTM params if present
   const utmSource = request.nextUrl.searchParams.get('utm_source');

@@ -63,19 +63,7 @@ export interface CheckoutEngineResponse {
 }
 
 export class CheckoutEngine {
-  /**
-   * Bug #34 fix: dbProductMap contained raw DB rows (stock_quantity, is_deleted,
-   * offer_price, etc.) and was exported in the public response object. If any API
-   * route serialised the full response to JSON it would leak internal product data.
-   * The field is now typed as internal-only and stripped before the response is
-   * returned from calculate(). API routes that need it must call getDbProductMap()
-   * on the engine instance after calculate() returns.
-   */
-  private _lastDbProductMap: Map<string, unknown> | undefined;
 
-  getDbProductMap(): Map<string, unknown> | undefined {
-    return this._lastDbProductMap;
-  }
   async calculate(request: CheckoutEngineRequest): Promise<CheckoutEngineResponse> {
     const { items, userId, customerCategory, couponCode, salesAgentId } = request;
 
@@ -84,29 +72,34 @@ export class CheckoutEngine {
     }
 
     try {
-      // 1. Get pricing context (B2B vs B2C logic)
-      const pricingContext: PricingContext = userId 
-        ? await pricingService.getCustomerPricingContext(userId)
-        : { customer_type: 'B2C', customer_category: customerCategory || 'Normal' };
+      const productIds = items.map(item => item.id);
+
+      // 1. Parallelize DB and network queries
+      const pricingContextPromise = userId 
+        ? pricingService.getCustomerPricingContext(userId)
+        : Promise.resolve({ customer_type: 'B2C', customer_category: customerCategory || 'Normal' } as PricingContext);
+
+      const couponsPromise = couponCode
+        ? offerDiscountService.getActiveCoupons()
+        : Promise.resolve([]);
+
+      // @ts-ignore
+      const dbProductsPromise = pricingService.getSupabaseClient().then(supabase => 
+        supabase.from('products').select('id, title, price, mrp, status, is_deleted, gst_rate, hsn_code, sac_code, is_service, offer_price, stock_quantity').in('id', productIds)
+      );
+
+      const [pricingContext, availableCoupons, response] = await Promise.all([
+        pricingContextPromise,
+        couponsPromise,
+        dbProductsPromise
+      ]);
 
       // 2. Base Pricing Calculation per item
       const itemPrices = [];
       let grossSubtotal = 0; // Sum of item price * quantity before discounts and GST
 
-      // Bug #21 fix: pricingService['getSupabaseClient']() accessed a private
-      // method via bracket notation, bypassing TypeScript's access control.
-      // If the method is renamed or removed this silently breaks at runtime.
-      // The supabase client is now obtained through the public API.
-      const productIds = items.map(item => item.id);
-      // @ts-ignore
-      const supabase = await pricingService.getSupabaseClient();
-      const response = await (supabase
-        .from('products')
-        .select('id, title, price, mrp, status, is_deleted, gst_rate, hsn_code, sac_code, is_service, offer_price, stock_quantity')
-        .in('id', productIds) as any);
-      
-      const dbProducts = response.data as any[];
-      const dbError = response.error;
+      const dbProducts = (response as any).data as any[];
+      const dbError = (response as any).error;
       
       if (dbError || !dbProducts) {
         logger.error('Failed to fetch pricing and stock metadata from database', { dbError });
@@ -160,7 +153,6 @@ export class CheckoutEngine {
       // 3. Discount Application
       let appliedCoupon: Coupon | null = null;
       if (couponCode) {
-        const availableCoupons = await offerDiscountService.getActiveCoupons();
         const found = availableCoupons.find(c => c.code.toUpperCase() === couponCode.toUpperCase());
         if (found) appliedCoupon = found;
       }
@@ -182,31 +174,30 @@ export class CheckoutEngine {
         gross: item.price * item.quantity
       }));
 
-      // Distribute total discount proportionally across all items down to the exact paisa (2 decimal places)
+      // Distribute total discount proportionally across all items using O(N) single-pass greedy allocation
       const distributedDiscounts = (() => {
         const totalGross = itemsToDistribute.reduce((sum, item) => sum + item.gross, 0);
         if (totalGross <= 0 || totalDiscountApplied === 0) return itemsToDistribute.map(() => 0);
 
         const totalDiscountPaise = toPaise(totalDiscountApplied);
-        const rawShares = itemsToDistribute.map((item, index) => {
-          const exactShare = (item.gross / totalGross) * totalDiscountPaise;
-          const paise = Math.floor(exactShare);
-          return { index, paise, remainder: exactShare - paise };
-        });
+        const distributed = new Array(itemsToDistribute.length).fill(0);
+        let remainingDiscountPaise = totalDiscountPaise;
+        let remainingGross = totalGross;
 
-        let allocated = rawShares.reduce((sum, share) => sum + share.paise, 0);
-        rawShares
-          .sort((a, b) => b.remainder - a.remainder)
-          .forEach((share) => {
-            if (allocated < totalDiscountPaise) {
-              share.paise += 1;
-              allocated += 1;
-            }
-          });
-
-        return rawShares
-          .sort((a, b) => a.index - b.index)
-          .map((share) => fromPaise(share.paise));
+        for (let i = 0; i < itemsToDistribute.length; i++) {
+          const itemGross = itemsToDistribute[i].gross;
+          if (itemGross <= 0) continue;
+          
+          if (i === itemsToDistribute.length - 1) {
+            distributed[i] = remainingDiscountPaise;
+          } else {
+            const share = Math.round((itemGross / remainingGross) * remainingDiscountPaise);
+            distributed[i] = share;
+            remainingDiscountPaise -= share;
+            remainingGross -= itemGross;
+          }
+        }
+        return distributed.map(share => fromPaise(share));
       })();
 
       // Bug #20 fix: isIntraState was hardcoded to check for 'goa' only, meaning
@@ -307,8 +298,7 @@ export class CheckoutEngine {
         }
       }
 
-      // Store internally for callers that need it; do NOT include in the returned object.
-      this._lastDbProductMap = dbProductMap;
+      // Singleton memory leak safely removed.
 
       return {
         subtotal: Math.max(0, roundMoney(finalSubtotal)),

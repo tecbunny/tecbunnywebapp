@@ -7,9 +7,9 @@
   "dependencies": {
     "@tecbunny/core": "*",
     "@tecbunny/types": "*",
-    "@supabase/supabase-js": "^2.39.3"
+    "@supabase/supabase-js": "^2.110.0"
   },
   "devDependencies": {
-    "typescript": "^5.4.5"
+    "typescript": "5.9.2"
   }
 }

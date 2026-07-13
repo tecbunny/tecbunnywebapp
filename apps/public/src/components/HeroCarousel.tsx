@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import sanitizeHtml from "@tecbunny/core/sanitize-html";
 
-import { usePageContent } from '../hooks/use-page-content';
+import { usePageContent } from '@tecbunny/core/hooks';
 import { usePrefersReducedMotion } from '../hooks/use-prefers-reduced-motion';
 import type { HeroCarouselContent, HeroCarouselItem, HeroCarouselPageKey } from '@tecbunny/core';
 import { cn } from "@tecbunny/core/utils";

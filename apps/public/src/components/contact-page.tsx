@@ -19,7 +19,7 @@ import { Button } from "@tecbunny/ui";
 import { Checkbox } from "@tecbunny/ui";
 import { Input } from "@tecbunny/ui";
 import { Textarea } from "@tecbunny/ui";
-import { usePageContent } from '../hooks/use-page-content';
+import { usePageContent } from '@tecbunny/core/hooks';
 import {
   Form,
   FormControl,

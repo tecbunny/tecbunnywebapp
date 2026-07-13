@@ -1,5 +1,6 @@
 import { createClient } from "@tecbunny/core/supabase/client";
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 
 import { sendOrderNotification, sendWhatsAppNotification } from "@tecbunny/core/whatsapp-service";
@@ -19,13 +20,23 @@ export async function POST(request: NextRequest) {
     
     let body: any;
     try {
-      body = JSON.parse(rawBody);
+      const parsedJSON = JSON.parse(rawBody);
+      const OrderPlacedWebhookSchema = z.object({
+        id: z.string().optional(),
+        event_id: z.string().optional(),
+        order_id: z.string().optional(),
+        order_number: z.string().optional(),
+      }).passthrough();
+      
+      body = OrderPlacedWebhookSchema.parse(parsedJSON);
     } catch (e) {
-      logger.error('Failed to parse order placed webhook body', { error: e });
-      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+      logger.error('Failed to parse or validate order placed webhook body', { error: e });
+      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
     }
     
-    logger.info('Order placed webhook received:', { body: JSON.stringify(body), correlationId });
+    // Safely log only identifiers, DO NOT log full raw body containing PII
+    const safeEventId = body.id || body.event_id || body.order_id || body.order_number || 'unknown';
+    logger.info('Order placed webhook received:', { eventId: safeEventId, correlationId });
 
     // Validate webhook signature
     const signature = request.headers.get('x-webhook-signature');

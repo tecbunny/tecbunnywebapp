@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 import sanitizeHtml from "@tecbunny/core/sanitize-html";
-import { usePageContent } from '../hooks/use-page-content';
+import { usePageContent } from '@tecbunny/core/hooks';
 
 
 interface PolicyPageProps {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { sanitizeHtml } from '@tecbunny/core/sanitize-html';
 import { 
   Sparkles, 
   Download, 
@@ -379,7 +380,7 @@ export default function UpcomingProjectsPage() {
                     className="text-sm text-zinc-350 leading-relaxed font-light space-y-4 prose prose-invert max-w-none 
                       prose-h3:text-white prose-h3:font-tech prose-h3:mt-4 prose-h3:text-sm prose-h3:uppercase prose-h3:tracking-wider
                       prose-ul:list-disc prose-ul:pl-5 prose-ul:space-y-1.5 prose-li:text-zinc-300"
-                    dangerouslySetInnerHTML={{ __html: selectedProject.detailed_information }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(selectedProject.detailed_information) }}
                   />
                 </div>
               </div>
