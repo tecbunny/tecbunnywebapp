@@ -594,7 +594,7 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
                     </ul>
                   </div>
                 )}
-                <div className="prose prose-invert prose-sm sm:prose-base max-w-none text-muted-foreground leading-relaxed prose-headings:text-foreground prose-headings:mt-6 prose-headings:mb-3 prose-strong:text-foreground prose-ul:list-disc prose-ul:pl-5 prose-li:my-2 prose-p:my-3">
+                <div className="prose prose-invert prose-sm sm:prose-base max-w-none text-muted-foreground leading-relaxed prose-headings:text-foreground prose-headings:mt-8 prose-headings:mb-4 prose-headings:border-b prose-headings:border-border/40 prose-headings:pb-2 prose-strong:text-foreground prose-ul:list-disc prose-ul:pl-5 sm:prose-ul:columns-2 prose-ul:gap-x-8 prose-li:my-2 prose-li:break-inside-avoid-column prose-p:my-4">
                   <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
                 </div>
               </div>
@@ -764,7 +764,7 @@ export function ProductDetailPage({ productId, initialProduct, sourceContext }: 
               )}
 
               {activeTab === 'description' && (
-                <div className="prose prose-invert prose-sm sm:prose-base max-w-none text-muted-foreground leading-relaxed prose-headings:text-foreground prose-strong:text-foreground prose-ul:list-disc prose-ul:pl-5 prose-li:my-1 prose-p:my-3">
+                <div className="prose prose-invert prose-sm sm:prose-base max-w-none text-muted-foreground leading-relaxed prose-headings:text-foreground prose-headings:mt-8 prose-headings:mb-4 prose-headings:border-b prose-headings:border-border/40 prose-headings:pb-2 prose-strong:text-foreground prose-ul:list-disc prose-ul:pl-5 sm:prose-ul:columns-2 prose-ul:gap-x-8 prose-li:my-2 prose-li:break-inside-avoid-column prose-p:my-4">
                   <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
                 </div>
               )}

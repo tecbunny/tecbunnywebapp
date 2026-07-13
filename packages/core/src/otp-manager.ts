@@ -256,7 +256,13 @@ export class OTPManager {
                 templateData: {
                   body: {
                     placeholders: [code]
-                  }
+                  },
+                  buttons: [
+                    {
+                      type: 'URL',
+                      parameter: code
+                    }
+                  ]
                 },
                 language
               }
