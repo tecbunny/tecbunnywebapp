@@ -27,7 +27,13 @@ export async function middleware(request: NextRequest) {
     return await executeUnifiedPolicyMiddleware(request, {
       appType: 'api',
       loginRoute: '/login',
-      publicRoutes: ['/api/auth/extension'],
+      publicRoutes: [
+        '/api/auth',          // Includes /api/auth/extension, signup, login, OTP
+        '/api/admin-auth',    // Includes /api/admin-auth/login and logout
+        '/api/webhooks',      // Stripe/custom webhooks
+        '/api/payment/payu',  // Payment callbacks
+        '/api/health'         // Health checks
+      ],
     });
   }
 
