@@ -133,36 +133,48 @@ export async function PATCH(
       );
     }
 
-    const mergedProductForTax = { ...existingProduct, ...updateData };
-    try {
-      const taxClassification = await classifyProductTax({
-        title: pickFirst(mergedProductForTax.title, mergedProductForTax.name),
-        description: mergedProductForTax.description,
-        category: mergedProductForTax.category,
-        productType: mergedProductForTax.product_type,
-        targetIndustry: pickFirst(
-          mergedProductForTax.target_industry,
-          mergedProductForTax.industry,
-          mergedProductForTax.industryType
-        ),
-        brand: pickFirst(mergedProductForTax.brand, mergedProductForTax.vendor),
-        modelNumber: mergedProductForTax.model_number,
-        specifications: mergedProductForTax.specifications,
-      });
-      updateData.hsn_code = taxClassification.hsn_code;
-      updateData.gst_rate = taxClassification.gst_rate;
-      updateData.tax_ai_confidence = taxClassification.confidence_score;
-      updateData.tax_ai_justification = taxClassification.justification;
-      updateData.tax_ai_model = 'gemini-2.5-flash-lite';
-      updateData.tax_ai_classified_at = new Date().toISOString();
-      if (auditUserId) {
-        updateData.tax_ai_requested_by = auditUserId;
+    const taxRelevantFields = [
+      'title', 'name', 'description', 'category', 'product_type',
+      'target_industry', 'industry', 'industryType', 'brand', 'vendor',
+      'model_number', 'specifications'
+    ];
+
+    const needsTaxClassification = taxRelevantFields.some(
+      (field) => field in updateData && updateData[field] !== existingProduct[field]
+    );
+
+    if (needsTaxClassification) {
+      const mergedProductForTax = { ...existingProduct, ...updateData };
+      try {
+        const taxClassification = await classifyProductTax({
+          title: pickFirst(mergedProductForTax.title, mergedProductForTax.name),
+          description: mergedProductForTax.description,
+          category: mergedProductForTax.category,
+          productType: mergedProductForTax.product_type,
+          targetIndustry: pickFirst(
+            mergedProductForTax.target_industry,
+            mergedProductForTax.industry,
+            mergedProductForTax.industryType
+          ),
+          brand: pickFirst(mergedProductForTax.brand, mergedProductForTax.vendor),
+          modelNumber: mergedProductForTax.model_number,
+          specifications: mergedProductForTax.specifications,
+        });
+        updateData.hsn_code = taxClassification.hsn_code;
+        updateData.gst_rate = taxClassification.gst_rate;
+        updateData.tax_ai_confidence = taxClassification.confidence_score;
+        updateData.tax_ai_justification = taxClassification.justification;
+        updateData.tax_ai_model = 'gemini-2.5-flash-lite';
+        updateData.tax_ai_classified_at = new Date().toISOString();
+        if (auditUserId) {
+          updateData.tax_ai_requested_by = auditUserId;
+        }
+        updateData.tax_ai_reviewed = false;
+        updateData.tax_ai_reviewed_by = null;
+        updateData.tax_ai_reviewed_at = null;
+      } catch (error) {
+        return taxErrorResponse(error);
       }
-      updateData.tax_ai_reviewed = false;
-      updateData.tax_ai_reviewed_by = null;
-      updateData.tax_ai_reviewed_at = null;
-    } catch (error) {
-      return taxErrorResponse(error);
     }
 
     logger.info('product_update_request', { 
