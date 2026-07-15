@@ -68,9 +68,20 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Invalid HMAC signature' }, { status: 401 });
       }
     } else if (token) {
-      if (token !== process.env.INFOBIP_HMAC_SECRET) {
-        console.error('Invalid URL token.');
-        return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+      const envSecret = process.env.INFOBIP_HMAC_SECRET?.replace(/["']/g, ""); // Strip quotes if user pasted them in Vercel by accident
+      if (!envSecret) {
+         console.error('INFOBIP_HMAC_SECRET is missing in Vercel environment variables!');
+         return NextResponse.json({ error: 'Server configuration error: INFOBIP_HMAC_SECRET is missing in Vercel Environment Variables.' }, { status: 500 });
+      }
+      if (token !== envSecret) {
+        console.error(`Invalid URL token. Received: ${token}, Expected: ${envSecret}`);
+        return NextResponse.json({ 
+          error: 'Invalid token mismatch.', 
+          debug: { 
+            receivedToken: token, 
+            expectedMatches: token === envSecret 
+          } 
+        }, { status: 401 });
       }
     } else {
       console.error('Missing signature header and no URL token provided.');
