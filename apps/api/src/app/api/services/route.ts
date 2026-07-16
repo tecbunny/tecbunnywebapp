@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Calculate stats for each service
-    const servicesWithStats = services?.map(service => ({
+    const servicesWithStats = services?.map((service: any) => ({
       ...service,
       total_requests: service.service_requests?.length || 0,
       pending_requests: service.service_requests?.filter((req: any) => req.request_status === 'pending').length || 0,

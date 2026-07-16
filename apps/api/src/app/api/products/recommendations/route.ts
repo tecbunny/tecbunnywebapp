@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Extract Product IDs and Categories
-  const viewedProductIds = [...new Set(events.map(e => e.resource_id).filter(Boolean))];
+  const viewedProductIds = [...new Set(events.map((e: any) => e.resource_id).filter(Boolean))];
   
   // 2. Fetch Viewed Products Details
   const { data: viewedProducts } = await supabase

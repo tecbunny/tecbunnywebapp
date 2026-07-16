@@ -117,7 +117,7 @@ export async function POST(_request: NextRequest) {
       return NextResponse.json({ success: true, cancelled: 0 });
     }
 
-    const staleIds = staleOrders.map((order) => order.id).filter(Boolean);
+    const staleIds = staleOrders.map((order: any) => order.id).filter(Boolean);
     if (staleIds.length === 0) {
       return NextResponse.json({ success: true, cancelled: 0 });
     }
@@ -149,7 +149,7 @@ export async function POST(_request: NextRequest) {
       return NextResponse.json({ error: 'Failed to cancel stale orders' }, { status: 500 });
     }
 
-    const cancelledIds = new Set((cancelledOrders ?? []).map((order) => order.id));
+    const cancelledIds = new Set((cancelledOrders ?? []).map((order: any) => order.id));
     const skippedByRace = staleIds.length - cancelledIds.size;
 
     // Restore stock for cancelled orders

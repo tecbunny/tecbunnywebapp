@@ -309,9 +309,9 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Failed to fetch offers' }, { status: 500 });
       }
 
-      normalizedOffers = (legacyResult.data || []).map((row) => mapLegacyOffer(row));
+      normalizedOffers = (legacyResult.data || []).map((row: any) => mapLegacyOffer(row));
     } else {
-      normalizedOffers = (fetchResult.data || []).map((row) => normalizeOffer(row));
+      normalizedOffers = (fetchResult.data || []).map((row: any) => normalizeOffer(row));
     }
 
     const filteredOffers = applyOfferFilters(normalizedOffers ?? [], {

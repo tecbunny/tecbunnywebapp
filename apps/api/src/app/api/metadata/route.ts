@@ -24,7 +24,7 @@ export async function GET() {
     
     // Convert to object
     const settingsMap = new Map();
-    settings?.forEach(setting => {
+    settings?.forEach((setting: any) => {
       settingsMap.set(setting.key, setting.value);
     });
     

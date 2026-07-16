@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
       .ilike('title', `%${safeQuery}%`)
       .limit(5);
 
-    const safeProducts = (products || []).map((product) => ({
+    const safeProducts = (products || []).map((product: any) => ({
       id: product.id,
       title: product.title || product.name || 'Product',
       description: redactPrices(product.description || ''),
@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
     }
 
     const productContext = safeProducts
-      .map((product, index) => {
+      .map((product: any, index: number) => {
         const parts = [
           `Product ${index + 1}: ${product.title}`,
           product.category ? `Category: ${product.category}` : null,

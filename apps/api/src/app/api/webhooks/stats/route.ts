@@ -44,10 +44,10 @@ export async function GET(request: NextRequest) {
     
     // Calculate summary statistics
     const summary = {
-      total_events: stats?.reduce((sum, row) => sum + (row.count || 0), 0) || 0,
+      total_events: stats?.reduce((sum: number, row: any) => sum + (row.count || 0), 0) || 0,
       success_rate: 0,
       avg_processing_time: 0,
-      event_types: new Set(stats?.map(row => row.event_type) || []).size,
+      event_types: new Set(stats?.map((row: any) => row.event_type) || []).size,
       date_range: {
         from: new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         to: new Date().toISOString().split('T')[0]
@@ -56,19 +56,19 @@ export async function GET(request: NextRequest) {
     
     if (stats && stats.length > 0) {
       const successEvents = stats
-        .filter(row => row.status === 'processed' || row.status === 'success')
-        .reduce((sum, row) => sum + (row.count || 0), 0);
+        .filter((row: any) => row.status === 'processed' || row.status === 'success')
+        .reduce((sum: number, row: any) => sum + (row.count || 0), 0);
       
       summary.success_rate = summary.total_events > 0 
         ? (successEvents / summary.total_events) * 100 
         : 0;
       
       const avgTimes = stats
-        .filter(row => row.avg_processing_time !== null)
-        .map(row => row.avg_processing_time);
+        .filter((row: any) => row.avg_processing_time !== null)
+        .map((row: any) => row.avg_processing_time);
       
       summary.avg_processing_time = avgTimes.length > 0
-        ? avgTimes.reduce((sum, time) => sum + time, 0) / avgTimes.length
+        ? avgTimes.reduce((sum: number, time: number) => sum + time, 0) / avgTimes.length
         : 0;
     }
     
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Group by event_type and calculate totals
-    const grouped = stats?.reduce((acc: any, row) => {
+    const grouped = stats?.reduce((acc: any, row: any) => {
       const eventType = row.event_type;
       if (!acc[eventType]) {
         acc[eventType] = {

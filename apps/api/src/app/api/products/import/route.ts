@@ -142,7 +142,7 @@ del123,Mouse M16 White,Gaming mouse with RGB lighting,Dell,Electronics,"gaming,m
     // Generate CSV rows
     const rows: string[][] = [];
     
-    products.forEach(product => {
+    products.forEach((product: any) => {
       const baseRow = [
         product.handle,
         product.title,

@@ -575,7 +575,7 @@ export async function GET(request: NextRequest) {
               .order('position');
             if (opts) {
               const grouped: Record<string, any[]> = {};
-              opts.forEach(o => {
+              opts.forEach((o: any) => {
                 (grouped[o.product_id] = grouped[o.product_id] || []).push(o);
               });
               products.forEach(p => { (p as any).options = grouped[p.id] || []; });
@@ -593,7 +593,7 @@ export async function GET(request: NextRequest) {
               .order('position');
             if (vars) {
               const grouped: Record<string, any[]> = {};
-              vars.forEach(v => {
+              vars.forEach((v: any) => {
                 (grouped[v.product_id] = grouped[v.product_id] || []).push(v);
               });
               products.forEach(p => { (p as any).variants = grouped[p.id] || []; });
