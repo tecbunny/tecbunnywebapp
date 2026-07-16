@@ -24,6 +24,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@tec
 import { Toaster } from "@tecbunny/ui";
 import { cn } from "@tecbunny/core/utils";
 import type { User as TecbunnyUser } from "@tecbunny/core/types";
+import { CommandPalette, FloatingQuickActions } from "@tecbunny/ui";
 import { getPanelNavigation, type UnifiedPanelNavSection } from './unified-panel-nav';
 
 type UnifiedPanelShellProps = {
@@ -324,6 +325,8 @@ export function UnifiedPanelShell({
           </div>
         </nav>
       ) : null}
+      <FloatingQuickActions />
+      <CommandPalette />
       <Toaster />
     </div>
   );

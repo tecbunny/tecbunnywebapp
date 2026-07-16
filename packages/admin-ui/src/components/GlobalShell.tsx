@@ -20,6 +20,7 @@ import {
 } from "@tecbunny/ui";
 import { GlobalDrawer } from './GlobalDrawer';
 import { FloatingAIAssistant } from './FloatingAIAssistant';
+import { CommandPalette, FloatingQuickActions } from "@tecbunny/ui";
 
 export type NavItem = {
   href: string;
@@ -210,6 +211,8 @@ export function GlobalShell({
       </div>
 
       <FloatingAIAssistant />
+      <FloatingQuickActions />
+      <CommandPalette />
       <GlobalDrawer />
     </div>
   );

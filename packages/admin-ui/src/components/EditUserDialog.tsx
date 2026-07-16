@@ -5,11 +5,11 @@ import * as React from 'react';
 import { UserCog, User as UserIcon, Shield, Settings, Star, Crown, Headphones } from 'lucide-react';
 
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
 } from "@tecbunny/ui";
 import { Button } from "@tecbunny/ui";
 import { Input } from "@tecbunny/ui";
@@ -217,21 +217,21 @@ export function EditUserDialog({ isOpen, onClose, user, onUserUpdated, canManage
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <Sheet open={isOpen} onOpenChange={onClose}>
+      <SheetContent className="w-[500px] sm:w-[600px] max-w-none overflow-y-auto" side="right">
+        <SheetHeader>
+          <SheetTitle className="flex items-center gap-2">
             <UserCog className="h-5 w-5" />
             Edit User - {user?.name}
-          </DialogTitle>
-          <DialogDescription>
+          </SheetTitle>
+          <SheetDescription>
             {canManageStaffRoles
               ? 'Manage user information, staff roles, inherited permissions, and customer categories.'
               : 'Manage customer information and customer categories.'}
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 pt-6">
           <Tabs defaultValue="basic" className="w-full">
             <TabsList className={`grid w-full ${canManageStaffRoles ? 'grid-cols-3' : 'grid-cols-2'}`}>
               <TabsTrigger value="basic">Basic Info</TabsTrigger>
@@ -505,12 +505,13 @@ export function EditUserDialog({ isOpen, onClose, user, onUserUpdated, canManage
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
+
             <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Updating...' : 'Update User'}
             </Button>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

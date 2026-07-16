@@ -1,5 +1,5 @@
-import { RoleWorkspaceDashboard } from '@/components/mgmt/RoleWorkspaceDashboard';
+import AccountsDashboard from './accounts-dashboard';
 
-export default function AccountsDashboard() {
-  return <RoleWorkspaceDashboard kind="accounts" />;
+export default function AccountsPage() {
+  return <AccountsDashboard />;
 }

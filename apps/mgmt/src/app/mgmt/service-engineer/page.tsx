@@ -1,5 +1,5 @@
-import { RoleWorkspaceDashboard } from '@/components/mgmt/RoleWorkspaceDashboard';
+import { ServiceTicketWorkspace } from '@/components/mgmt/ServiceTicketWorkspace';
 
 export default function ServiceEngineerDashboard() {
-  return <RoleWorkspaceDashboard kind="service-engineer" />;
+  return <ServiceTicketWorkspace mode="engineer" />;
 }

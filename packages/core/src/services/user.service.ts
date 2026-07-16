@@ -11,7 +11,8 @@ export class UserService {
     const params = validated.data;
 
     let effectiveRoles = params.roles;
-    if (params.operatorRole !== 'superadmin') {
+    if (params.operatorRole !== 'superadmin' && params.operatorRole !== 'admin') {
+      // If not superadmin or admin, strictly limit to customer view (e.g. managers might only see customers for now)
       effectiveRoles = ['customer'];
     }
 
@@ -28,7 +29,7 @@ export class UserService {
 
   async getTotals(operatorRole: string | null): Promise<Result<any>> {
     try {
-      if (operatorRole === 'superadmin') {
+      if (operatorRole === 'superadmin' || operatorRole === 'admin') {
         const data = await this.userRepository.getTotals();
         return success(data);
       }

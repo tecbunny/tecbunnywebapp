@@ -17,28 +17,94 @@ export function Sidebar({
   showSidebar, setShowSidebar, currentUser, globalAiOverride, setGlobalAiOverride,
   loading, conversations, activeConversation, onSelectConversation
 }: SidebarProps) {
+  const [activeTab, setActiveTab] = React.useState('queue'); // 'queue' or 'team'
+  const [activeQueue, setActiveQueue] = React.useState('unassigned'); // unassigned, assigned, waiting, urgent, vip, resolved, closed
+  const [activeTeam, setActiveTeam] = React.useState('sales'); // sales, support, accounts, marketing, engineers
+
+  // Filter conversations based on selected queue or team
+  const filteredConversations = conversations.filter(conv => {
+    if (activeTab === 'queue') {
+      switch(activeQueue) {
+        case 'unassigned': return !conv.assigned_to;
+        case 'assigned': return !!conv.assigned_to && conv.status !== 'RESOLVED' && conv.status !== 'CLOSED';
+        case 'waiting': return conv.status === 'PENDING_HUMAN_AGENT';
+        case 'urgent': return conv.status === 'URGENT';
+        case 'vip': return conv.deal_value && parseInt(conv.deal_value) > 100000;
+        case 'resolved': return conv.status === 'RESOLVED';
+        case 'closed': return conv.status === 'CLOSED';
+        default: return true;
+      }
+    } else {
+      switch(activeTeam) {
+        case 'sales': return conv.department === 'SALES';
+        case 'support': return conv.department === 'SUPPORT';
+        case 'accounts': return conv.department === 'ACCOUNTS';
+        case 'marketing': return conv.department === 'MARKETING';
+        case 'engineers': return conv.department === 'ENGINEERS';
+        default: return true;
+      }
+    }
+  });
+
   return (
     <div className={`glass-panel sidebar ${!showSidebar ? 'hidden' : ''}`}>
-      <div className="sidebar-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Inbox <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 'normal' }}>({currentUser.name})</span></h2>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      <div className="sidebar-header" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2>Workspace <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 'normal' }}>({currentUser.name})</span></h2>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button className="mobile-toggle" onClick={() => setShowSidebar(false)}>✕</button>
+          </div>
+        </div>
+        
+        {/* Workspace Navigation Tabs */}
+        <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <button 
-            onClick={() => setGlobalAiOverride(!globalAiOverride)}
-            style={{ fontSize: '0.85rem', color: globalAiOverride ? '#ef4444' : '#10b981', textDecoration: 'none', background: globalAiOverride ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)', padding: '6px 10px', borderRadius: '6px', border: `1px solid ${globalAiOverride ? '#ef4444' : '#10b981'}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
-            title="Global AI Override (shuts down AI for all)"
+            onClick={() => setActiveTab('queue')}
+            style={{ flex: 1, padding: '8px', background: activeTab === 'queue' ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', cursor: 'pointer', borderBottom: activeTab === 'queue' ? '2px solid var(--accent)' : 'none' }}
           >
-            {globalAiOverride ? '🛑 AI Overridden' : '🤖 AI Active'}
+            Queues
           </button>
-          <a href="/templates" style={{ fontSize: '0.85rem', color: 'var(--template-color)', textDecoration: 'none', background: 'rgba(99, 102, 241, 0.1)', padding: '6px 10px', borderRadius: '6px' }}>📑 Templates</a>
-          <a href="/campaigns" style={{ fontSize: '0.85rem', color: 'var(--accent)', textDecoration: 'none', background: 'rgba(59, 130, 246, 0.1)', padding: '6px 10px', borderRadius: '6px' }}>🚀 Ads</a>
-          <button className="mobile-toggle" onClick={() => setShowSidebar(false)}>✕</button>
+          <button 
+            onClick={() => setActiveTab('team')}
+            style={{ flex: 1, padding: '8px', background: activeTab === 'team' ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', cursor: 'pointer', borderBottom: activeTab === 'team' ? '2px solid var(--accent)' : 'none' }}
+          >
+            Team View
+          </button>
+        </div>
+
+        {/* Sub-navigation */}
+        <div style={{ display: 'flex', gap: '4px', overflowX: 'auto', paddingBottom: '4px' }}>
+          {activeTab === 'queue' ? (
+            ['unassigned', 'assigned', 'waiting', 'urgent', 'vip'].map(q => (
+              <button 
+                key={q}
+                onClick={() => setActiveQueue(q)}
+                style={{ fontSize: '0.75rem', padding: '4px 8px', borderRadius: '12px', background: activeQueue === q ? 'var(--accent)' : 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', whiteSpace: 'nowrap' }}
+              >
+                {q.charAt(0).toUpperCase() + q.slice(1)}
+              </button>
+            ))
+          ) : (
+            ['sales', 'support', 'accounts', 'engineers'].map(t => (
+              <button 
+                key={t}
+                onClick={() => setActiveTeam(t)}
+                style={{ fontSize: '0.75rem', padding: '4px 8px', borderRadius: '12px', background: activeTeam === t ? 'var(--accent)' : 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', whiteSpace: 'nowrap' }}
+              >
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </button>
+            ))
+          )}
         </div>
       </div>
-      <div className="conversation-list">
+      
+      <div className="conversation-list" style={{ marginTop: '12px' }}>
         {loading ? (
           <div className="spinner"></div>
+        ) : filteredConversations.length === 0 ? (
+          <div style={{ padding: '20px', textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem' }}>No chats in this view</div>
         ) : (
-          conversations.map(conv => (
+          filteredConversations.map(conv => (
             <div 
               key={conv.id} 
               className={`conversation-item ${activeConversation === conv.sender_number ? 'active' : ''}`}
@@ -50,6 +116,12 @@ export function Sidebar({
                 <span className="last-msg">
                   {conv.messages?.[0]?.message_content || 'No messages'}
                 </span>
+                
+                {/* SLA / Countdown mockup */}
+                <div style={{ marginTop: '4px', fontSize: '0.7rem', color: conv.status === 'URGENT' ? '#ef4444' : '#f59e0b', fontWeight: 'bold' }}>
+                  ⏳ SLA: {conv.status === 'URGENT' ? '15m' : '2h 10m'} left
+                </div>
+
                 <div style={{ marginTop: '4px', display: 'flex', gap: '4px' }}>
                   {conv.ai_active !== false && !globalAiOverride ? (
                     <span style={{ fontSize: '0.7rem', color: 'var(--ai-accent)', border: '1px solid var(--ai-accent)', padding: '2px 4px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.1)' }}>AI Active</span>

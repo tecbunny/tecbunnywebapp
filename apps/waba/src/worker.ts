@@ -2,7 +2,7 @@ import { Worker, Job } from 'bullmq';
 import { getRedis, logger, WABA_WEBHOOK_QUEUE_NAME } from '@tecbunny/core/server';
 import { InboundTriageAgent } from './agents/InboundTriageAgent';
 import { AssignmentOrchestrator } from './agents/AssignmentOrchestrator';
-import { startEmailWorker, startWebhookWorker } from './workers';
+import { startEmailWorker, startWebhookWorker, startNurtureScheduler, startNurtureWorker } from './workers';
 
 async function startWorker() {
   const redisConnection = getRedis();
@@ -16,6 +16,8 @@ async function startWorker() {
   console.log('Starting Background BullMQ Workers...');
   const emailWorker = startEmailWorker();
   const webhookWorker = startWebhookWorker();
+  const nurtureScheduler = startNurtureScheduler();
+  const nurtureWorker = startNurtureWorker();
 
   const worker = new Worker(WABA_WEBHOOK_QUEUE_NAME, async (job: Job) => {
     try {
@@ -28,8 +30,15 @@ async function startWorker() {
       // 1. Process incoming message and triage
       const triageResult = await triageAgent.execute(body);
 
-      // 2. If the message was actionable and actionable payload was returned, assign to manager
+      // 2. Evaluate Rule Engine to see if an automated workflow should take over
+      let ruleEngineHandled = false;
       if (triageResult) {
+        const { RuleEngineService } = require('./services/RuleEngineService');
+        ruleEngineHandled = await RuleEngineService.evaluateRules(triageResult);
+      }
+
+      // 3. If the message was actionable and not fully handled by RuleEngine, assign to manager
+      if (triageResult && !ruleEngineHandled) {
         await orchestrator.execute(triageResult);
       }
       
@@ -60,6 +69,8 @@ async function startWorker() {
     await worker.close();
     await emailWorker.close();
     await webhookWorker.close();
+    if (nurtureScheduler) await nurtureScheduler.close();
+    if (nurtureWorker) await nurtureWorker.close();
     process.exit(0);
   };
 

@@ -97,7 +97,10 @@ export function Customer360Panel({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div className="crm-field">
               <label>Assign To Agent</label>
-              <input type="text" className="crm-input" value={crmAssignedTo} onChange={e => setCrmAssignedTo(e.target.value)} placeholder="e.g. Alice" />
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <input type="text" className="crm-input" value={crmAssignedTo} onChange={e => setCrmAssignedTo(e.target.value)} placeholder="e.g. Alice" style={{ flex: 1 }} />
+                <button style={{ padding: '0 8px', background: 'var(--accent)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Assign</button>
+              </div>
             </div>
             <div className="crm-field">
               <label>Agent Mode / Department</label>
@@ -124,10 +127,39 @@ export function Customer360Panel({
               <label>Deal Value</label>
               <input type="text" className="crm-input" value={crmDealValue} onChange={e => setCrmDealValue(e.target.value)} placeholder="₹0.00"/>
             </div>
-            <div className="crm-field">
-              <label>Internal Notes</label>
-              <textarea className="crm-textarea" value={crmNotes} onChange={e => setCrmNotes(e.target.value)} placeholder="Private notes about this lead..."/>
+            
+            {/* Slack Style Internal Notes */}
+            <div className="crm-field" style={{ marginTop: '12px' }}>
+              <label>Internal Notes & Mentions</label>
+              <div style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px', minHeight: '120px', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ flex: 1, overflowY: 'auto', marginBottom: '8px', fontSize: '0.8rem', color: '#cbd5e1' }}>
+                  {/* Mockup for slack style notes */}
+                  <div style={{ marginBottom: '4px' }}><strong style={{ color: '#3b82f6' }}>@Rahul</strong> Please check the invoice for this.</div>
+                  <div style={{ marginBottom: '4px', color: '#94a3b8' }}>Rahul: Done, sent the new link.</div>
+                </div>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <input type="text" placeholder="Type @ to mention..." style={{ flex: 1, padding: '6px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', borderRadius: '4px', fontSize: '0.8rem' }} />
+                  <button style={{ background: 'var(--accent)', color: 'white', border: 'none', borderRadius: '4px', padding: '0 8px', fontSize: '0.8rem', cursor: 'pointer' }}>Add</button>
+                </div>
+              </div>
             </div>
+
+            {/* Customer Timeline Placeholder */}
+            <div className="crm-field" style={{ marginTop: '12px' }}>
+               <label>Customer Timeline</label>
+               <div style={{ padding: '8px', borderLeft: '2px solid #3b82f6', marginLeft: '4px' }}>
+                 <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '8px' }}>
+                   <strong>Today, 10:00 AM</strong> - Visited Pricing Page
+                 </div>
+                 <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '8px' }}>
+                   <strong>Yesterday</strong> - Completed Setup Flow
+                 </div>
+                 <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                   <strong>Oct 12</strong> - Created Account
+                 </div>
+               </div>
+            </div>
+
             {activeConvObj?.ad_source && (
               <div className="crm-field" style={{ marginTop: '0.5rem' }}>
                 <label>Ad Source</label>

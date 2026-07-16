@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Shield, Plus, Save, Trash2, CheckSquare, Square } from 'lucide-react';
+import { GlobalDrawer } from '../../../../components/superadmin/GlobalDrawer';
 
 type Permission = {
   id: string;
@@ -109,41 +110,46 @@ export default function RolesPage() {
         )}
       </div>
 
-      {isCreating && (
-        <div className="bg-white p-6 rounded-xl border shadow-sm space-y-6">
-          <h2 className="text-xl font-semibold">New Role Configuration</h2>
+      <GlobalDrawer 
+        isOpen={isCreating} 
+        onClose={() => setIsCreating(false)} 
+        title="New Role Configuration"
+        width="600px"
+      >
+        <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Role Name (e.g. Warehouse Manager)</label>
+              <label className="block text-sm font-medium text-gray-700">Role Name</label>
               <input 
                 value={newRoleName} onChange={e => setNewRoleName(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500" 
+                placeholder="e.g. Warehouse Manager"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500 text-black" 
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Description</label>
               <input 
                 value={newRoleDesc} onChange={e => setNewRoleDesc(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500" 
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500 text-black" 
               />
             </div>
           </div>
 
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Permission Matrix</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <h3 className="text-lg font-medium text-gray-200 mb-4">Permission Matrix</h3>
+            <div className="grid grid-cols-1 gap-4">
               {modules.map(mod => (
-                <div key={mod} className="bg-gray-50 rounded-lg p-4 border">
-                  <h4 className="font-semibold text-gray-800 capitalize mb-3 pb-2 border-b">{mod}</h4>
-                  <div className="space-y-2">
+                <div key={mod} className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                  <h4 className="font-semibold text-gray-200 capitalize mb-3 pb-2 border-b border-gray-700">{mod}</h4>
+                  <div className="flex flex-wrap gap-4">
                     {permissions.filter(p => p.module === mod).map(p => (
-                      <label key={p.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                      <label key={p.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-700 p-2 rounded">
                         {selectedPerms.has(p.id) ? 
-                          <CheckSquare className="w-5 h-5 text-indigo-600" /> : 
-                          <Square className="w-5 h-5 text-gray-400" />
+                          <CheckSquare className="w-5 h-5 text-indigo-400" /> : 
+                          <Square className="w-5 h-5 text-gray-500" />
                         }
                         <input type="checkbox" className="hidden" checked={selectedPerms.has(p.id)} onChange={() => togglePermission(p.id)} />
-                        <span className="text-sm text-gray-700 capitalize">{p.action}</span>
+                        <span className="text-sm text-gray-300 capitalize">{p.action}</span>
                       </label>
                     ))}
                   </div>
@@ -152,14 +158,14 @@ export default function RolesPage() {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <button onClick={() => setIsCreating(false)} className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Cancel</button>
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-700">
+            <button onClick={() => setIsCreating(false)} className="px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-md">Cancel</button>
             <button onClick={handleCreateRole} className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700">
               <Save className="w-4 h-4" /> Save Custom Role
             </button>
           </div>
         </div>
-      )}
+      </GlobalDrawer>
 
       <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
