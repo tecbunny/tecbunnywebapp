@@ -82,7 +82,7 @@ export default function SalesDashboard() {
             if (deliveryRes.error) throw deliveryRes.error;
             if (recentOrdersRes.error) throw recentOrdersRes.error;
 
-            const todayRevenue = (todayOrdersRes.data || []).reduce((sum, order) => {
+            const todayRevenue = (todayOrdersRes.data || []).reduce((sum: number, order: any) => {
                 const total = typeof order.total === 'number' ? order.total : 0;
                 return sum + total;
             }, 0);

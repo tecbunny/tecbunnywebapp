@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
           adminClient.from('orders').select('total, created_at').gte('created_at', since.toISOString()),
         ]);
 
-        const revenue30d = (monthlyOrders || []).reduce((sum, order: any) => sum + Number(order.total || 0), 0);
+        const revenue30d = (monthlyOrders || []).reduce((sum: number, order: any) => sum + Number(order.total || 0), 0);
 
         contextData.orders = {
           totalOrders: totalOrders ?? 0,
@@ -278,10 +278,10 @@ export async function POST(request: NextRequest) {
             const score = tokens.reduce((sum: number, token: string) => (haystack.includes(token) ? sum + 2 : sum), 0);
             return { product, score };
           })
-          .filter((entry) => entry.score > 0)
-          .sort((a, b) => b.score - a.score)
+          .filter((entry: any) => entry.score > 0)
+          .sort((a: any, b: any) => b.score - a.score)
           .slice(0, 6)
-          .map((entry) => entry.product);
+          .map((entry: any) => entry.product);
 
         contextData.relatedProducts = scored;
         dataPayload = {

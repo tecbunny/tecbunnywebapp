@@ -41,7 +41,7 @@ export default function ManagerReportsPage() {
           .eq('processed_by', user.id)
           .eq('status', 'Completed');
 
-        const selfVol = (selfOrders || []).reduce((acc, order) => acc + Number(order.total || 0), 0);
+        const selfVol = (selfOrders || []).reduce((acc: number, order: any) => acc + Number(order.total || 0), 0);
         setSelfStats({
           count: selfOrders?.length || 0,
           volume: selfVol,
@@ -62,7 +62,7 @@ export default function ManagerReportsPage() {
               .eq('processed_by', agent.id)
               .eq('status', 'Completed');
 
-            const agentVol = (agentOrders || []).reduce((acc, order) => acc + Number(order.total || 0), 0);
+            const agentVol = (agentOrders || []).reduce((acc: number, order: any) => acc + Number(order.total || 0), 0);
             perfList.push({
               id: agent.id,
               name: agent.name || 'Unnamed Agent',

@@ -69,10 +69,10 @@ export async function POST(request: NextRequest) {
         product,
         score: scoreProduct(tokens, product),
       }))
-      .filter(entry => entry.score > 0)
-      .sort((a, b) => b.score - a.score)
+      .filter((entry: any) => entry.score > 0)
+      .sort((a: any, b: any) => b.score - a.score)
       .slice(0, limit)
-      .map(entry => entry.product);
+      .map((entry: any) => entry.product);
 
     return NextResponse.json({
       success: true,

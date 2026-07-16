@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Build base array
-    const allProducts = (products || []).map(p => ({ ...p }));
+    const allProducts = (products || []).map((p: any) => ({ ...p }));
 
     // Compute scores for trending
     const trendingSorted = [...allProducts]

@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       logger.warn('Failed to fetch analytics for auto-fill', { err });
     }
 
-    const allProducts = (products || []).map(p => ({
+    const allProducts = (products || []).map((p: any) => ({
       id: p.id,
       title: p.title ?? p.name ?? p.id,
       name: p.name ?? p.title ?? p.id,

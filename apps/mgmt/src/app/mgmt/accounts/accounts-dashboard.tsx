@@ -48,11 +48,11 @@ export default function AccountsDashboard() {
             if (pendingRes.error) throw pendingRes.error;
             if (recentRes.error) throw recentRes.error;
 
-            const totalRevenue = (revenueRes.data || []).reduce((sum, order) => {
+            const totalRevenue = (revenueRes.data || []).reduce((sum: number, order: any) => {
                 return sum + (typeof order.total === 'number' ? order.total : 0);
             }, 0);
 
-            const pendingPayments = (pendingRes.data || []).reduce((sum, order) => {
+            const pendingPayments = (pendingRes.data || []).reduce((sum: number, order: any) => {
                 return sum + (typeof order.total === 'number' ? order.total : 0);
             }, 0);
 

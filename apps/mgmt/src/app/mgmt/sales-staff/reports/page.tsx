@@ -35,7 +35,7 @@ export default function SalesStaffReportsPage() {
 
         if (error) throw error;
 
-        const vol = (orders || []).reduce((acc, o) => acc + Number(o.total || 0), 0);
+        const vol = (orders || []).reduce((acc: number, o: any) => acc + Number(o.total || 0), 0);
         setStats({
           count: orders?.length || 0,
           volume: vol,
