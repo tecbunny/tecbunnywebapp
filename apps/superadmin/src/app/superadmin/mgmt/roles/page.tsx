@@ -94,11 +94,11 @@ export default function RolesPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-3xl font-bold text-white flex items-center gap-2">
             <Shield className="w-8 h-8 text-indigo-600" />
             Dynamic Role Builder
           </h1>
-          <p className="text-gray-500 mt-1">Create and manage granular permissions for organizational roles.</p>
+          <p className="text-zinc-400 mt-1">Create and manage granular permissions for organizational roles.</p>
         </div>
         {!isCreating && (
           <button 
@@ -167,37 +167,48 @@ export default function RolesPage() {
         </div>
       </GlobalDrawer>
 
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="bg-zinc-900/50 rounded-xl border border-zinc-800 shadow-sm overflow-hidden">
+        <table className="min-w-full divide-y divide-zinc-800">
+          <thead className="bg-zinc-900/80">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permissions Count</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-zinc-400 uppercase tracking-wider">Role</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-zinc-400 uppercase tracking-wider">Permissions Count</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-zinc-400 uppercase tracking-wider text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="divide-y divide-zinc-800/60 bg-transparent">
             {roles.map(role => (
-              <tr key={role.id}>
+              <tr key={role.id} className="hover:bg-zinc-900/30 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="font-medium text-gray-900">{role.name}</div>
-                  <div className="text-sm text-gray-500">{role.description}</div>
+                  <div className="font-bold text-white text-sm">{role.name}</div>
+                  <div className="text-xs text-zinc-400">{role.description}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span className="bg-indigo-100 text-indigo-800 py-1 px-3 rounded-full text-xs font-medium">
+                <td className="px-6 py-4 whitespace-nowrap text-xs text-zinc-400">
+                  <span className="bg-indigo-950/40 text-indigo-300 border border-indigo-900/50 py-1 px-3 rounded-full text-xs font-semibold">
                     {role.permissions?.length || 0} Permissions
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button className="text-red-600 hover:text-red-900">
-                    <Trash2 className="w-5 h-5" />
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                  <button onClick={() => {
+                    if (confirm('Delete this role?')) {
+                      fetch(`/api/roles`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: role.id })
+                      }).then(res => {
+                        if (res.ok) fetchData();
+                        else alert('Failed to delete role');
+                      });
+                    }
+                  }} className="p-1.5 text-zinc-500 hover:text-red-500 rounded-md hover:bg-red-500/10 transition-all inline-flex items-center">
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </td>
               </tr>
             ))}
             {roles.length === 0 && (
               <tr>
-                <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
+                <td colSpan={3} className="px-6 py-16 text-center text-zinc-500 italic text-sm">
                   No custom roles defined. Create one to get started.
                 </td>
               </tr>
