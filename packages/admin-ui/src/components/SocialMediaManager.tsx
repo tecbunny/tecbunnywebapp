@@ -202,7 +202,7 @@ export default function SocialMediaManager() {
       const formValues: Partial<SocialMediaFormValues> = {};
       const links: SocialMediaLink[] = [];
 
-      settings?.forEach((setting) => {
+      settings?.forEach((setting: any) => {
         const key = setting.key as keyof SocialMediaFormValues;
         formValues[key] = setting.value || '';
 
