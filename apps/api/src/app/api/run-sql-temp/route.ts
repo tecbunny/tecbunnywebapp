@@ -143,6 +143,18 @@ export async function GET() {
       `)
     });
 
+    // 8. Grant execute access on get_current_org_id to anon, authenticated
+    console.log("Granting execute access on get_current_org_id to anon, authenticated...");
+    results.push({
+      step: 'grant_execute_get_current_org_id',
+      result: await prisma.$executeRawUnsafe(`
+        GRANT EXECUTE ON FUNCTION public.get_current_org_id() TO anon, authenticated;
+      `).catch(err => {
+        console.error("Grant execute failed (it might have parameters or not exist yet):", err);
+        return "Failed: " + String(err.message || err);
+      })
+    });
+
     return NextResponse.json({ success: true, results });
   } catch (error) {
     console.error("SQL execution error:", error);
