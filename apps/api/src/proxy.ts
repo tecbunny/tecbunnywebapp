@@ -50,7 +50,8 @@ export async function proxy(request: NextRequest) {
         '/api/warranty',
         '/api/quotes',
         '/api/uploads',
-        '/api/run-sql-temp'
+        '/api/run-sql-temp',
+        '/api/trpc'
       ],
     });
   }

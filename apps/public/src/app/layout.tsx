@@ -317,7 +317,7 @@ export default function RootLayout({
             dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }}
           />
       </head>
-      <body className={`${outfit.variable} font-body antialiased overflow-x-hidden w-full`}>
+      <body className={`${outfit.variable} font-body antialiased overflow-x-hidden w-full`} suppressHydrationWarning>
         <ThemeProvider>
           <TRPCProvider>
             <FeatureFlagProviderLoader>

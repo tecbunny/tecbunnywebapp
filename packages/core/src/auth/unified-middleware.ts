@@ -42,11 +42,10 @@ export async function executeUnifiedPolicyMiddleware(
   requestHeaders.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
 
   // Unified CORS Handling for API
+  let allowedOrigin = 'null';
+  const origin = request.headers.get('origin');
   if (appType === 'api') {
-    const origin = request.headers.get('origin');
-    
     // Strict CORS validation
-    let allowedOrigin = 'null';
     if (origin) {
       try {
         const url = new URL(origin);
@@ -67,6 +66,7 @@ export async function executeUnifiedPolicyMiddleware(
         status: 200,
         headers: {
           'Access-Control-Allow-Origin': allowedOrigin,
+          'Access-Control-Allow-Credentials': 'true',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
           'Access-Control-Max-Age': '86400'
@@ -193,6 +193,13 @@ export async function executeUnifiedPolicyMiddleware(
   sessionResponse.headers.set('X-Content-Type-Options', 'nosniff');
   sessionResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   sessionResponse.headers.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
+
+  if (appType === 'api' && origin) {
+    sessionResponse.headers.set('Access-Control-Allow-Origin', allowedOrigin);
+    sessionResponse.headers.set('Access-Control-Allow-Credentials', 'true');
+    sessionResponse.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    sessionResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  }
 
   // Parse UTM params if present
   const utmSource = request.nextUrl.searchParams.get('utm_source');
