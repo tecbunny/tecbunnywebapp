@@ -7,7 +7,7 @@ const withBundleAnalyzer = process.env.ANALYZE === 'true'
 
 const nextConfig: NextConfig = {
   output: process.env.DOCKER_BUILD === 'true' ? 'standalone' : undefined,
-  transpilePackages: ["@tecbunny/core", "@tecbunny/ui", "@tecbunny/database"],
+  transpilePackages: ["@tecbunny/core", "@tecbunny/ui", "@tecbunny/database", "@tecbunny/config"],
   experimental: {
     optimizePackageImports: ['@tecbunny/ui', 'lucide-react'],
   },

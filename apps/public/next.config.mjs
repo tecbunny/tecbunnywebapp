@@ -28,7 +28,7 @@ const allowedImageHosts = Array.from(new Set([
 
 const nextConfig = {
   ...(isStaticExport ? { output: 'export' } : process.env.DOCKER_BUILD === 'true' ? { output: 'standalone' } : {}),
-  transpilePackages: ["@tecbunny/core", "@tecbunny/ui", "@tecbunny/database"],
+  transpilePackages: ["@tecbunny/core", "@tecbunny/ui", "@tecbunny/database", "@tecbunny/config"],
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['lucide-react']

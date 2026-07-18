@@ -2,13 +2,13 @@
   "extends": "@tecbunny/config-typescript/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "composite": true,
     "jsx": "react-jsx",
     "tsBuildInfoFile": "dist/.tsbuildinfo",
     "allowImportingTsExtensions": true,
     "emitDeclarationOnly": true
   },
-  "include": ["src/**/*", "index.tsx", "theme.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
